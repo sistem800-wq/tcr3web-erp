@@ -1,0 +1,23 @@
+<svg width="260" height="74" viewBox="0 0 260 74" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="TCR3WEB ERP MASTER V1">
+  <defs>
+    <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#8CFF55"/>
+      <stop offset="0.5" stop-color="#22C55E"/>
+      <stop offset="1" stop-color="#0A8F3B"/>
+    </linearGradient>
+    <linearGradient id="s" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#FFFFFF"/>
+      <stop offset="0.55" stop-color="#E2E8F0"/>
+      <stop offset="1" stop-color="#94A3B8"/>
+    </linearGradient>
+    <filter id="sh" x="-20%" y="-40%" width="140%" height="180%">
+      <feDropShadow dx="0" dy="4" stdDeviation="3" flood-color="#000" flood-opacity="0.34"/>
+    </filter>
+  </defs>
+  <g filter="url(#sh)">
+    <text x="8" y="37" font-family="Inter,Arial,sans-serif" font-size="34" font-weight="900" font-style="italic" letter-spacing="-2.5" fill="url(#g)">TCR3</text>
+    <text x="118" y="37" font-family="Inter,Arial,sans-serif" font-size="34" font-weight="900" font-style="italic" letter-spacing="-2.5" fill="url(#s)">WEB</text>
+    <rect x="10" y="46" width="154" height="3" rx="1.5" fill="url(#g)"/>
+    <text x="10" y="64" font-family="Inter,Arial,sans-serif" font-size="16" font-weight="850" letter-spacing="1.2" fill="#F8FAFC">ERP MASTER V1</text>
+  </g>
+</svg>

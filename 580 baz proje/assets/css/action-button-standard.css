@@ -1,0 +1,43 @@
+/* TCR3WEB Action Button Standard - demo only */
+:root{
+  --act-blue:#2563eb;--act-blue-dark:#1d4ed8;
+  --act-green:#16a34a;--act-green-dark:#15803d;
+  --act-red:#dc2626;--act-red-dark:#b91c1c;
+  --act-yellow:#d97706;--act-yellow-dark:#b45309;
+  --act-cyan:#0891b2;--act-cyan-dark:#0e7490;
+  --act-purple:#7c3aed;--act-purple-dark:#6d28d9;
+  --act-slate:#475569;--act-slate-dark:#334155;
+}
+.action-demo-grid{display:grid;gap:18px}.action-demo-card{background:#fff;border:1px solid #dbe3ee;border-radius:14px;box-shadow:0 5px 18px rgba(15,23,42,.06);overflow:hidden}.action-demo-card-head{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 16px;border-bottom:1px solid #e5e7eb;background:#f8fafc}.action-demo-card-head h2{font-size:15px;font-weight:800;color:#111827;margin:0}.action-demo-card-body{padding:16px}.action-row{display:flex;align-items:center;flex-wrap:wrap;gap:10px}.action-note{font-size:12px;color:#475569;margin-top:10px}
+
+.tcr-btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;min-height:38px;padding:8px 13px;border-radius:9px;border:1px solid currentColor;background:#fff;font:700 13px/1 Inter,sans-serif;cursor:pointer;transition:background-color .16s ease,border-color .16s ease,color .16s ease,box-shadow .16s ease}.tcr-btn svg{width:16px;height:16px;flex:0 0 auto}.tcr-btn:hover,.tcr-btn:focus-visible{color:#fff;box-shadow:0 5px 13px rgba(15,23,42,.13);outline:none}.tcr-btn-primary{color:var(--act-blue)}.tcr-btn-primary:hover{background:var(--act-blue);border-color:var(--act-blue)}.tcr-btn-success{color:var(--act-green)}.tcr-btn-success:hover{background:var(--act-green);border-color:var(--act-green)}.tcr-btn-danger{color:var(--act-red)}.tcr-btn-danger:hover{background:var(--act-red);border-color:var(--act-red)}.tcr-btn-warning{color:var(--act-yellow)}.tcr-btn-warning:hover{background:var(--act-yellow);border-color:var(--act-yellow)}.tcr-btn-info{color:var(--act-cyan)}.tcr-btn-info:hover{background:var(--act-cyan);border-color:var(--act-cyan)}.tcr-btn-purple{color:var(--act-purple)}.tcr-btn-purple:hover{background:var(--act-purple);border-color:var(--act-purple)}.tcr-btn-secondary{color:var(--act-slate)}.tcr-btn-secondary:hover{background:var(--act-slate);border-color:var(--act-slate)}
+.tcr-btn-solid{color:#fff}.tcr-btn-solid.tcr-btn-primary{background:var(--act-blue);border-color:var(--act-blue)}.tcr-btn-solid.tcr-btn-success{background:var(--act-green);border-color:var(--act-green)}.tcr-btn-solid.tcr-btn-danger{background:var(--act-red);border-color:var(--act-red)}.tcr-btn-solid.tcr-btn-warning{background:var(--act-yellow);border-color:var(--act-yellow)}
+
+.tcr-table-action{display:inline-flex;align-items:center;justify-content:center;width:32px;height:32px;border-radius:8px;border:1px solid #93c5fd;background:#fff;color:#2563eb;cursor:pointer;transition:.16s ease}.tcr-table-action svg{width:15px;height:15px}.tcr-table-action:hover,.tcr-table-action:focus-visible{background:#2563eb;border-color:#2563eb;color:#fff;box-shadow:0 4px 10px rgba(37,99,235,.22);outline:none}
+.demo-table{width:100%;border-collapse:separate;border-spacing:0}.demo-table thead th{background:#f1f5f9;color:#111827;font-size:13px;font-weight:800;padding:12px;border-top:1px solid #dbe3ee;border-bottom:1px solid #cbd5e1;text-align:left}.demo-table tbody td{color:#111827;font-size:13px;font-weight:500;padding:12px;border-bottom:1px solid #e5e7eb}.demo-table tbody tr:hover{background:#eef4ff}.demo-table-actions{display:flex;justify-content:flex-end;gap:6px}
+.demo-form{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}.demo-field{min-width:0}.demo-field.full{grid-column:1/-1}.demo-field label{display:block;font-size:12px;font-weight:700;color:#1f2937;margin-bottom:6px}.demo-field input,.demo-field select,.demo-field textarea{width:100%;border:1px solid #cbd5e1;border-radius:9px;padding:10px 11px;color:#111827;background:#fff}.demo-form-footer{display:flex;justify-content:flex-end;gap:9px;margin-top:16px;padding-top:14px;border-top:1px solid #e5e7eb}
+.standard-chip{display:inline-flex;align-items:center;padding:5px 9px;border-radius:999px;background:#eaf1ff;color:#1d4ed8;font-size:11px;font-weight:800}
+@media(max-width:700px){.demo-form{grid-template-columns:1fr}.demo-form-footer,.page-actions{width:100%}.tcr-btn{flex:1}.action-row{align-items:stretch}.action-row .tcr-btn{flex:1 1 140px}.demo-table{min-width:720px}.action-demo-card-body{overflow-x:auto}}
+
+/* Tablo örnekleri: tüm işlem butonları hover/focus sırasında primary mavi */
+.demo-table-actions .tcr-table-action:hover,
+.demo-table-actions .tcr-table-action:focus-visible,
+.demo-table :is(.tcr-btn,.btn,.icon-btn,.tcr-action):hover,
+.demo-table :is(.tcr-btn,.btn,.icon-btn,.tcr-action):focus-visible{
+  background:#2563eb!important;
+  border-color:#2563eb!important;
+  color:#fff!important;
+  background-image:none!important;
+}
+.demo-table-actions .tcr-table-action:is(:hover,:focus-visible) svg,
+.demo-table :is(.tcr-btn,.btn,.icon-btn,.tcr-action):is(:hover,:focus-visible) svg,
+.demo-table-actions .tcr-table-action:is(:hover,:focus-visible) svg *,
+.demo-table :is(.tcr-btn,.btn,.icon-btn,.tcr-action):is(:hover,:focus-visible) svg *{
+  color:#fff!important;
+  stroke:#fff!important;
+}
+
+/* Context return action */
+.tcr-context-return{border-color:#2563eb!important;color:#1d4ed8!important;background:#fff!important;white-space:nowrap}
+.tcr-context-return:hover,.tcr-context-return:focus-visible{background:#1e3a5f!important;border-color:#1e3a5f!important;color:#fff!important}
+.tcr-context-return svg{flex:0 0 auto}

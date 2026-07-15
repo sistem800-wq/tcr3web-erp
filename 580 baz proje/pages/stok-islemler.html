@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#10243f" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-title" content="Tcr3WEB" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <link rel="manifest" href="../manifest.webmanifest?v=20260711-699" />
+  <link rel="icon" type="image/png" href="../assets/icons/favicon-64.png" />
+  <link rel="apple-touch-icon" href="../assets/icons/icon-180.png" />
+  <title>Tcr3WEB · Stok Fişleri</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../assets/css/style.css?v=20260712-653" />
+  <link rel="stylesheet" href="../assets/css/responsive-master.css?v=20260713-591" />
+  <link rel="stylesheet" href="../assets/css/performance.css?v=20260711-700" />
+  <link rel="stylesheet" href="../assets/css/tcr-table.css?v=20260713-583" />
+  <link rel="stylesheet" href="../assets/css/kpi-standard.css?v=20260712-694" />
+  <link rel="stylesheet" href="../assets/css/text-readability.css?v=20260712-657" />
+</head>
+<body>
+  <div id="app" class="app"></div>
+  <script src="../assets/js/app.js?v=20260712-653"></script>
+  <script src="../assets/js/tcr-actions.js?v=20260713-600"></script>
+  <script src="../assets/js/master-init.js?v=20260713-583"></script>
+  <script src="../assets/js/tcr-table.js?v=20260713-587"></script>
+  <script>
+    const FIS_TIPLERI = [
+      { id: 'devir',   label: 'Devir Fişi',    iconKey: 'trend_up',    color: 'var(--c-primary-500)', desc: 'Dönem başı stok devir işlemleri' },
+      { id: 'acilis',  label: 'Açılış Fişi',   iconKey: 'inbox',       color: 'var(--c-accent-500)',  desc: 'İlk açılış stok girişi' },
+      { id: 'sayim',   label: 'Sayım Fişi',     iconKey: 'file_check',  color: 'var(--c-warn-400)',    desc: 'Fiziki sayım sonrası stok düzeltme' },
+      { id: 'virman',  label: 'Virman Fişi',    iconKey: 'send',        color: 'var(--c-danger-400)',  desc: 'Depolar arası stok transferi' },
+    ];
+
+    const MOCK_FIS = [
+      { no: 'DVR2026001', tip: 'devir',  tarih: '2026-01-01', stok: 'Plastik Ham Madde PP', miktar: 4500, birim: 'kg',   durum: 'Onaylandı' },
+      { no: 'ACS2026001', tip: 'acilis', tarih: '2026-01-01', stok: 'Karton Koli 40x30x30', miktar: 1200, birim: 'adet', durum: 'Onaylandı' },
+      { no: 'SAY2026001', tip: 'sayim',  tarih: '2026-06-30', stok: 'Çelik Profil 6m',      miktar: 320,  birim: 'mt',   durum: 'Onaylandı' },
+      { no: 'VIR2026001', tip: 'virman', tarih: '2026-07-01', stok: 'Endüstriyel Yağ 20L',  miktar: 50,   birim: 'lt',   durum: 'Taslak' },
+      { no: 'SAY2026002', tip: 'sayim',  tarih: '2026-07-04', stok: 'Vida 6mm Paket',        miktar: 45,   birim: 'paket',durum: 'Bekliyor' },
+      { no: 'VIR2026002', tip: 'virman', tarih: '2026-07-04', stok: 'İş Eldiveni Mavi',      miktar: 100,  birim: 'çift', durum: 'Onaylandı' },
+    ];
+
+    bootPage('stok-islemler', () => {
+      const tipCards = FIS_TIPLERI.map(t => {
+        const count = MOCK_FIS.filter(f => f.tip === t.id).length;
+        const colorClass = t.color.includes('accent') ? 'green' : t.color.includes('danger') ? 'red' : t.color.includes('primary') ? 'blue' : t.color.includes('warn') ? 'orange' : 'blue';
+        return `
+        <div class="tcr-action-card tcr-ac-${colorClass}" onclick="location.href='stok-fis-form.html?tip=${t.id}'">
+          <span class="tcr-ac-icon">${ICONS[t.iconKey]}</span>
+          <span class="tcr-ac-content">
+            <span class="tcr-ac-title">${t.label}</span>
+            <span class="tcr-ac-desc">${t.desc}</span>
+          </span>
+          <span class="tcr-ac-badge">${count}</span>
+        </div>`;
+      }).join('');
+
+      const fisRows = MOCK_FIS.map(f => {
+        const tip = FIS_TIPLERI.find(t => t.id === f.tip);
+        const durumColor = f.durum === 'Onaylandı' ? 'success' : f.durum === 'Bekliyor' ? 'warn' : '';
+        return `<tr>
+          <td class="mono strong">${f.no}</td>
+          <td><span class="pill" style="background:${tip?.color||''}1a;color:${tip?.color||'var(--text-mute)'}">${tip?.label||f.tip}</span></td>
+          <td>${fmtDate(f.tarih)}</td>
+          <td class="strong">${f.stok}</td>
+          <td class="num">${fmtNum(f.miktar)} ${f.birim}</td>
+          <td><span class="badge badge-${durumColor}">${f.durum}</span></td>
+          <td>
+            <div class="flex gap-2">
+              <button class="icon-btn" style="width:30px;height:30px" onclick="location.href='stok-fis-form.html?tip=${f.tip}&id=${f.no}'" title="Görüntüle">${ICONS.eye}</button>
+              <button class="icon-btn" style="width:30px;height:30px" onclick="location.href='stok-fis-form.html?tip=${f.tip}&id=${f.no}'" title="Düzenle">${ICONS.edit}</button>
+            </div>
+          </td>
+        </tr>`;
+      }).join('');
+
+      return `
+      <div class="page-head">
+        <div>
+          <div class="breadcrumb">
+            <a href="dashboard.html">Genel</a><span>›</span>
+            <a href="stok.html">Stok</a><span>›</span>
+            <span>Stok Fişleri</span>
+          </div>
+          <h1 class="page-title">${ICONS.trend_up} Stok Fişleri</h1>
+          <div class="page-sub">Devir, açılış, sayım ve virman fiş kayıtları</div>
+        </div>
+        <div class="page-actions">
+          <button class="btn btn-ghost" onclick="toast('Rapor indirildi (prototip)')">${ICONS.download} Rapor</button>
+          <button class="btn btn-primary" onclick="location.href='stok-fis-form.html?tip=devir'">${ICONS.plus} Yeni Fiş</button>
+        </div>
+      </div>
+
+      <div class="tcr-ac-grid cols-4">
+        ${tipCards}
+      </div>
+
+      <div class="card">
+        <div class="card-body" style="padding:var(--s-4)">
+          <div class="toolbar">
+            <div class="toolbar-search">
+              <span class="toolbar-search-icon">${ICONS.search}</span>
+              <input type="text" placeholder="Fiş no veya ürün ara..." oninput="filterFisTable(this.value)" />
+            </div>
+            <select class="filter-select" onchange="filterFisTip(this.value)">
+              <option value="">Tüm Tipler</option>
+              ${FIS_TIPLERI.map(t => `<option value="${t.id}">${t.label}</option>`).join('')}
+            </select>
+            <select class="filter-select">
+              <option>Tüm Durumlar</option>
+              <option>Onaylandı</option>
+              <option>Bekliyor</option>
+              <option>Taslak</option>
+            </select>
+          </div>
+          <div class="table-wrap" style="border:none">
+            <table class="data" id="fisTable">
+              <thead><tr>
+                <th>Fiş No</th><th>Tip</th><th>Tarih</th><th>Ürün</th><th class="num">Miktar</th><th>Durum</th><th></th>
+              </tr></thead>
+              <tbody>${fisRows}</tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      `;
+    });
+
+    function filterFisTable(v) {
+      const lv = v.toLowerCase();
+      document.querySelectorAll('#fisTable tbody tr').forEach(r => {
+        r.style.display = r.textContent.toLowerCase().includes(lv) ? '' : 'none';
+      });
+    }
+
+    function filterFisTip(tip) {
+      document.querySelectorAll('#fisTable tbody tr').forEach(r => {
+        r.style.display = (!tip || r.children[1]?.textContent.toLowerCase().includes(tip.toLowerCase())) ? '' : 'none';
+      });
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#10243f" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-title" content="Tcr3WEB" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <link rel="manifest" href="../manifest.webmanifest?v=20260711-699" />
+  <link rel="icon" type="image/png" href="../assets/icons/favicon-64.png" />
+  <link rel="apple-touch-icon" href="../assets/icons/icon-180.png" />
+  <title>Tcr3WEB · Stok Yönetimi</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../assets/css/style.css?v=20260712-653" />
+  <link rel="stylesheet" href="../assets/css/responsive-master.css?v=20260713-591" />
+  <link rel="stylesheet" href="../assets/css/performance.css?v=20260711-700" />
+  <link rel="stylesheet" href="../assets/css/tcr-table.css?v=20260713-583" />
+  <link rel="stylesheet" href="../assets/css/kpi-standard.css?v=20260712-694" />
+  <link rel="stylesheet" href="../assets/css/text-readability.css?v=20260712-657" />
+</head>
+<body>
+  <div id="app" class="app"></div>
+  <script src="../assets/js/app.js?v=20260712-653"></script>
+  <script src="../assets/js/tcr-actions.js?v=20260713-600"></script>
+  <script src="../assets/js/master-init.js?v=20260713-583"></script>
+  <script src="../assets/js/tcr-table.js?v=20260713-587"></script>
+  <script>
+    bootPage('stok', () => {
+      const totalStok = MOCK.stok.reduce((s,x) => s + x.miktar * x.fiyat, 0);
+      const dusuk = MOCK.stok.filter(x => x.miktar < x.min).length;
+      const kategoriler = [...new Set(MOCK.stok.map(x => x.kategori))];
+
+      return `
+      <div class="page-head">
+        <div>
+          <div class="breadcrumb">
+            <a href="dashboard.html">Genel</a><span>›</span>
+            <a href="stok.html">Ticaret</a><span>›</span>
+            <span>Stok Yönetimi</span>
+          </div>
+          <h1 class="page-title">Stok Yönetimi</h1>
+          <div class="page-sub">Ürün kartları, stok seviyeleri ve depo hareketleri</div>
+        </div>
+        <div class="page-actions">
+          <button class="btn btn-ghost" onclick="location.href='stok-ekstre.html'">${ICONS.chart} Stok Ekstresi</button>
+          <button class="btn btn-ghost" onclick="toast('Stok raporu indirildi (prototip)')">${ICONS.download} Stok Raporu</button>
+          <button class="btn btn-primary" onclick="location.href='stok-form.html'">${ICONS.plus} Yeni Ürün</button>
+        </div>
+      </div>
+
+      <div class="tcr-ac-grid">
+        <div class="tcr-action-card tcr-ac-green" onclick="filterStok('')">
+          <span class="tcr-ac-icon">${ICONS.box}</span>
+          <span class="tcr-ac-content">
+            <span class="tcr-ac-title">Toplam Ürün</span>
+            <span class="tcr-ac-desc">${MOCK.stok.length} kayıt · ${kategoriler.length} kategori</span>
+          </span>
+        </div>
+        <div class="tcr-action-card tcr-ac-blue" onclick="toast('Stok değeri detayı raporlar bölümünde açılacak')">
+          <span class="tcr-ac-icon">${ICONS.wallet}</span>
+          <span class="tcr-ac-content">
+            <span class="tcr-ac-title">Stok Değeri</span>
+            <span class="tcr-ac-desc">${fmtMoney(totalStok)}</span>
+          </span>
+        </div>
+        <div class="tcr-action-card tcr-ac-red" onclick="filterLowStock()">
+          <span class="tcr-ac-icon">${ICONS.alert}</span>
+          <span class="tcr-ac-content">
+            <span class="tcr-ac-title">Düşük Stok</span>
+            <span class="tcr-ac-desc">${dusuk} ürün · min. seviye altı</span>
+          </span>
+        </div>
+        <div class="tcr-action-card tcr-ac-orange" onclick="toast('Depo listesi açılacak')">
+          <span class="tcr-ac-icon">${ICONS.building}</span>
+          <span class="tcr-ac-content">
+            <span class="tcr-ac-title">Depo Sayısı</span>
+            <span class="tcr-ac-desc">3 depo · Ana / Kimya / Metal</span>
+          </span>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-body" style="padding:var(--s-4)">
+          <div class="toolbar">
+            <div class="toolbar-search">
+              <span class="toolbar-search-icon">${ICONS.search}</span>
+              <input type="text" placeholder="Ürün adı veya kodu ara..." oninput="filterStok(this.value)" />
+            </div>
+            <select class="filter-select">
+              <option>Tüm Kategoriler</option>
+              ${kategoriler.map(k => `<option>${k}</option>`).join('')}
+            </select>
+            <select class="filter-select">
+              <option>Tüm Depolar</option>
+              <option>Ana Depo</option>
+              <option>Kimya Depo</option>
+              <option>Metal Depo</option>
+            </select>
+            <div class="toolbar-spacer"></div>
+            <label class="checkbox"><input type="checkbox" /> Sadece düşük stok</label>
+          </div>
+
+          <div class="table-wrap" style="border:none">
+            <table class="data" id="stokTable">
+              <thead><tr><th style="width:42px"><input type="checkbox" onclick="document.querySelectorAll('#stokTable tbody input[type=checkbox]').forEach(x=>x.checked=this.checked)" /></th><th>Kod</th><th>Ürün Adı</th><th>Kategori</th><th>Depo</th><th class="num">Miktar</th><th>Min</th><th>Seviye</th><th class="num">Fiyat</th><th class="num">Değer</th><th></th></tr></thead>
+              <tbody>
+                ${MOCK.stok.map(s => {
+                  const pct = Math.min(100, (s.miktar / (s.min * 3)) * 100);
+                  const low = s.miktar < s.min;
+                  return `
+                  <tr data-ad="${s.ad.toLowerCase()}">
+                    <td><input type="checkbox" onclick="event.stopPropagation()" /></td>
+                    <td class="mono strong">${s.kod}</td>
+                    <td class="strong">${s.ad}</td>
+                    <td><span class="pill">${s.kategori}</span></td>
+                    <td class="muted">${s.depo}</td>
+                    <td class="num strong">${fmtNum(s.miktar)} ${s.birim}</td>
+                    <td class="num muted">${fmtNum(s.min)}</td>
+                    <td style="min-width:90px"><div class="progress"><div class="progress-bar ${low?'danger':pct<50?'warn':'accent'}" style="width:${pct}%"></div></div></td>
+                    <td class="num">${fmtMoney(s.fiyat)}</td>
+                    <td class="num strong">${fmtMoney(s.miktar * s.fiyat)}</td>
+                    <td><div class="flex gap-2"><button class="icon-btn" style="width:30px;height:30px" onclick="location.href='stok-form.html?id=${s.kod}'" title="Düzenle">${ICONS.edit}</button><button class="icon-btn" style="width:30px;height:30px" onclick="location.href='stok-ekstre.html?stokKod=${encodeURIComponent(s.kod)}&stokAd=${encodeURIComponent(s.ad)}'" title="Stok Ekstresi">${ICONS.trend_up}</button><button class="icon-btn" style="width:30px;height:30px" onclick="openStokEvrak('${s.kod}')" title="Evraklar">${ICONS.file_check}</button></div></td>
+                  </tr>`;
+                }).join('')}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      ${modalHtml('stokModal', 'Yeni Stok Kartı', `
+        <div class="form-grid-2">
+          <div class="form-field"><label class="form-label">Stok Kodu</label><input class="form-input" value="ST009" readonly /></div>
+          <div class="form-field"><label class="form-label">Kategori</label><select class="form-input"><option>Hammadde</option><option>Ambalaj</option><option>Kimyasal</option><option>Metal</option><option>Sarf</option><option>Elektrik</option></select></div>
+          <div class="form-field full"><label class="form-label">Ürün Adı</label><input class="form-input" placeholder="Örn: Plastik Ham Madde PP" /></div>
+          <div class="form-field"><label class="form-label">Birim</label><select class="form-input"><option>adet</option><option>kg</option><option>lt</option><option>mt</option><option>paket</option><option>kutu</option><option>çift</option></select></div>
+          <div class="form-field"><label class="form-label">Depo</label><select class="form-input"><option>Ana Depo</option><option>Kimya Depo</option><option>Metal Depo</option></select></div>
+          <div class="form-field"><label class="form-label">Min. Stok Seviyesi</label><input class="form-input" type="number" value="100" /></div>
+          <div class="form-field"><label class="form-label">KDV Oranı (%)</label><select class="form-input"><option>1</option><option>10</option><option>20</option></select></div>
+          <div class="form-field"><label class="form-label">Satış Fiyatı</label><input class="form-input" type="number" value="0.00" /></div>
+          <div class="form-field"><label class="form-label">Açılış Miktarı</label><input class="form-input" type="number" value="0" /></div>
+        </div>
+      `, `<button class="btn btn-ghost" onclick="closeModal('stokModal')">İptal</button><button class="btn btn-primary" onclick="closeModal('stokModal');toast('Stok kartı kaydedildi','success')">${ICONS.check} Kaydet</button>`, 'lg')}
+
+      ${modalHtml('hareketModal', 'Stok Hareketi', `
+        <div class="form-grid-2">
+          <div class="form-field full"><label class="form-label">Ürün</label><select class="form-input"><option>Plastik Ham Madde PP (ST001)</option><option>Karton Koli 40x30x30 (ST002)</option></select></div>
+          <div class="form-field"><label class="form-label">Hareket Tipi</label><select class="form-input"><option>Giriş (Alım)</option><option>Çıkış (Satış)</option><option>Transfer</option><option>Sayım Düzeltme</option></select></div>
+          <div class="form-field"><label class="form-label">Miktar</label><input class="form-input" type="number" value="100" /></div>
+          <div class="form-field"><label class="form-label">Depo</label><select class="form-input"><option>Ana Depo</option><option>Kimya Depo</option><option>Metal Depo</option></select></div>
+          <div class="form-field"><label class="form-label">Tarih</label><input class="form-input" type="date" value="2026-07-04" /></div>
+          <div class="form-field full"><label class="form-label">Açıklama</label><textarea class="form-input"></textarea></div>
+        </div>
+      `, `<button class="btn btn-ghost" onclick="closeModal('hareketModal')">İptal</button><button class="btn btn-primary" onclick="closeModal('hareketModal');toast('Stok hareketi işlendi','success')">${ICONS.check} Kaydet</button>`)}
+
+      ${modalHtml('evrakModal', 'Stok Evrakları', `
+        <div class="evrak-manager">
+          <div class="evrak-manager-head">
+            <div class="evrak-entity-icon stock">${ICONS.box}</div>
+            <div>
+              <div id="evrak-stok-ad" class="evrak-entity-title">-</div>
+              <div id="evrak-stok-kod" class="evrak-entity-sub">-</div>
+            </div>
+            <div class="evrak-head-spacer"></div>
+            <span class="badge badge-info">Stok Evrakları</span>
+          </div>
+          <div class="evrak-manager-grid">
+            <label class="evrak-drop-card">
+              <input type="file" multiple accept="image/*,.pdf,.doc,.docx,.xls,.xlsx" style="display:none" onchange="eklerModalStok(this)">
+              <span class="evrak-drop-icon">${ICONS.download}</span>
+              <b>Dosya yükle</b>
+              <small>PDF, Word, Excel veya resimleri buradan ekleyin.</small>
+              <em>Çoklu seçim desteklenir</em>
+            </label>
+            <div class="evrak-list-card">
+              <div class="evrak-list-head">
+                <div>
+                  <b>Ekli Evraklar</b>
+                  <small>Önizleme, indirme ve silme işlemleri</small>
+                </div>
+                <input class="form-input evrak-search" placeholder="Evrak ara..." oninput="filterEvrakList(this,'ekl-modal-stok-list')" />
+              </div>
+              <div class="ekler-list evrak-list-modern" id="ekl-modal-stok-list"><div class="ekler-empty">Evrak yükleniyor…</div></div>
+            </div>
+          </div>
+        </div>
+      `, `<span class="modal-footer-info">Evraklar seçili stok kartına bağlanır.<span class="ek-selected-info" data-ekler-selected-count="ekl-modal-stok-list">Seçili evrak yok</span></span><button class="btn btn-ghost" onclick="eklerDownloadSelected('stok',_stokEvrakId,'ekl-modal-stok-list')">${ICONS.download} İndir</button><button class="btn btn-success" onclick="eklerWhatsappSelected('stok',_stokEvrakId,'ekl-modal-stok-list')">${ICONS.whatsapp} WhatsApp Gönder</button><button class="btn btn-danger" onclick="closeModal('evrakModal')">Kapat</button>`, 'xl')}
+      `;
+    });
+
+    function filterStok(v) {
+      document.querySelectorAll('#stokTable tbody tr').forEach(r => {
+        r.style.display = r.dataset.ad.includes(v.toLowerCase()) ? '' : 'none';
+      });
+    }
+
+    let _stokEvrakId = null;
+    function openStokEvrak(kod) {
+      _stokEvrakId = kod;
+      const s = MOCK.stok.find(x => x.kod === kod);
+      openModal('evrakModal');
+      document.getElementById('evrak-stok-ad').textContent = s ? s.ad : kod;
+      document.getElementById('evrak-stok-kod').textContent = kod;
+      initEkler('stok', kod, 'ekl-modal-stok-list');
+    }
+    async function eklerModalStok(input) {
+      if (!_stokEvrakId) return;
+      await eklerUpload(input, 'stok', _stokEvrakId);
+    }
+  </script>
+</body>
+</html>

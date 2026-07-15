@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#10243f" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-title" content="Tcr3WEB" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <link rel="manifest" href="../manifest.webmanifest?v=20260711-699" />
+  <link rel="icon" type="image/png" href="../assets/icons/favicon-64.png" />
+  <link rel="apple-touch-icon" href="../assets/icons/icon-180.png" />
+  <title>Tcr3WEB · Depo İşlemleri</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../assets/css/style.css?v=20260712-653" />
+  <link rel="stylesheet" href="../assets/css/responsive-master.css?v=20260713-591" />
+  <link rel="stylesheet" href="../assets/css/performance.css?v=20260711-700" />
+  <link rel="stylesheet" href="../assets/css/tcr-table.css?v=20260713-583" />
+  <link rel="stylesheet" href="../assets/css/kpi-standard.css?v=20260712-694" />
+  <link rel="stylesheet" href="../assets/css/text-readability.css?v=20260712-657" />
+</head>
+<body>
+  <div id="app" class="app"></div>
+  <script src="../assets/js/app.js?v=20260712-653"></script>
+  <script src="../assets/js/tcr-actions.js?v=20260713-600"></script>
+  <script src="../assets/js/master-init.js?v=20260713-583"></script>
+  <script src="../assets/js/tcr-table.js?v=20260713-587"></script>
+  <script>
+    const DEPO_FIS = [
+      { id: 'kayit',  label: 'Depo Kayıt',   iconKey: 'building',    color: 'var(--c-primary-500)', desc: 'Yeni depo tanımlama ve ayarları' },
+      { id: 'virman', label: 'Depo Virman',  iconKey: 'send',        color: 'var(--c-primary-500)', desc: 'Kaynak depodan hedef depoya stok aktarımı' },
+      { id: 'devir',  label: 'Depo Devir',   iconKey: 'file_text',   color: 'var(--c-accent-500)',  desc: 'Açılış/devir stok fişi' },
+      { id: 'giris',  label: 'Depo Giriş',   iconKey: 'inbox',       color: 'var(--c-accent-600)',  desc: 'Depoya gelen ürün girişi' },
+      { id: 'cikis',  label: 'Depo Çıkış',   iconKey: 'trend_up',    color: 'var(--c-warn-400)',    desc: 'Depodan çıkan ürün çıkışı' },
+      { id: 'sayim',  label: 'Depo Sayım',   iconKey: 'file_check',  color: 'var(--c-danger-400)',  desc: 'Fiziki sayım ve stok eşleştirme' },
+    ];
+
+    const DEPOLAR = [
+      { ad: 'Ana Depo',   kod: 'D001', konum: 'Merkez Fabrika', kapasite: 5000, dolu: 3200, tur: 'Genel' },
+      { ad: 'Kimya Depo', kod: 'D002', konum: 'Kimya Tesisi',   kapasite: 1500, dolu: 890,  tur: 'Kimyasal' },
+      { ad: 'Metal Depo', kod: 'D003', konum: 'Metal Atölye',   kapasite: 2000, dolu: 1400, tur: 'Metal' },
+    ];
+
+    const MOCK_DEPO_FIS = [
+      { no: 'DG2026001', tip: 'giris', tarih: '2026-07-04', depo: 'Ana Depo',   stok: 'Plastik Ham Madde PP',  miktar: 500,  birim: 'kg',    durum: 'Tamamlandı' },
+      { no: 'DC2026001', tip: 'cikis', tarih: '2026-07-04', depo: 'Ana Depo',   stok: 'Karton Koli 40x30x30', miktar: 200,  birim: 'adet',  durum: 'Tamamlandı' },
+      { no: 'DV2026001', tip: 'virman', tarih: '2026-07-05', depo: 'Ana Depo → Metal Depo', stok: 'Çelik Profil 6m',      miktar: 120,  birim: 'mt',    durum: 'Tamamlandı' },
+      { no: 'DD2026001', tip: 'devir',  tarih: '2026-07-03', depo: 'Kimya Depo', stok: 'Endüstriyel Yağ 20L',  miktar: 30,   birim: 'lt',    durum: 'Tamamlandı' },
+      { no: 'DS2026001', tip: 'sayim', tarih: '2026-07-02', depo: 'Metal Depo', stok: 'Çelik Profil 6m',      miktar: 320,  birim: 'mt',    durum: 'Tamamlandı' },
+      { no: 'DG2026002', tip: 'giris', tarih: '2026-07-01', depo: 'Ana Depo',   stok: 'Elektrik Kablosu 2.5mm',miktar:500,  birim: 'mt',    durum: 'Bekliyor' },
+      { no: 'DC2026002', tip: 'cikis', tarih: '2026-06-30', depo: 'Kimya Depo', stok: 'Boya Akrilik 5L Beyaz', miktar: 10,   birim: 'kutu',  durum: 'Tamamlandı' },
+    ];
+
+    bootPage('depo', () => {
+      const depoCards = DEPOLAR.map(d => {
+        const pct = Math.round((d.dolu / d.kapasite) * 100);
+        const barColor = pct > 85 ? 'var(--c-danger-400)' : pct > 65 ? 'var(--c-warn-400)' : 'var(--c-accent-500)';
+        return `<div class="card">
+          <div class="card-body" style="padding:var(--s-4)">
+            <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:var(--s-3)">
+              <div>
+                <div style="font-size:16px;font-weight:700;color:var(--text)">${d.ad}</div>
+                <div style="font-size:12px;color:var(--text-mute);margin-top:2px">${d.konum} · ${d.tur}</div>
+              </div>
+              <span class="pill mono" style="font-size:11px">${d.kod}</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:var(--s-2)">
+              <span style="color:var(--text-mute)">Doluluk</span>
+              <span style="font-weight:600;color:${barColor}">${pct}%</span>
+            </div>
+            <div class="progress" style="height:8px;border-radius:4px">
+              <div class="progress-bar" style="width:${pct}%;background:${barColor};border-radius:4px"></div>
+            </div>
+            <div style="display:flex;justify-content:space-between;font-size:12px;color:var(--text-mute);margin-top:var(--s-2)">
+              <span>${fmtNum(d.dolu)} / ${fmtNum(d.kapasite)} birim</span>
+              <span>${fmtNum(d.kapasite - d.dolu)} boş</span>
+            </div>
+            <div style="display:flex;gap:var(--s-2);margin-top:var(--s-3)">
+              <button class="btn btn-ghost btn-sm" style="flex:1" onclick="location.href='depo-fis-form.html?tip=giris&depo=${encodeURIComponent(d.ad)}'">${ICONS.inbox} Giriş</button>
+              <button class="btn btn-ghost btn-sm" style="flex:1" onclick="location.href='depo-fis-form.html?tip=cikis&depo=${encodeURIComponent(d.ad)}'">${ICONS.trend_up} Çıkış</button>
+              <button class="btn btn-ghost btn-sm" style="flex:1" onclick="location.href='depo-fis-form.html?tip=virman&depo=${encodeURIComponent(d.ad)}'">${ICONS.send} Virman</button>
+              <button class="btn btn-ghost btn-sm" style="flex:1" onclick="location.href='depo-fis-form.html?tip=sayim&depo=${encodeURIComponent(d.ad)}'">${ICONS.file_check} Sayım</button>
+            </div>
+          </div>
+        </div>`;
+      }).join('');
+
+      const fisTipCards = DEPO_FIS.map(t => `
+        <div class="tcr-action-card" style="--tcr-ac-color:${t.color};--tcr-ac-soft:${t.color}1a" onclick="${t.id === 'kayit' ? "openModal('depoKayitModal')" : `location.href='depo-fis-form.html?tip=${t.id}'`}">
+          <span class="tcr-ac-icon">${ICONS[t.iconKey]}</span>
+          <span class="tcr-ac-content"><span class="tcr-ac-title">${t.label}</span><span class="tcr-ac-desc">${t.desc}</span></span>
+          <span class="tcr-ac-badge">${MOCK_DEPO_FIS.filter(f=>f.tip===t.id).length}</span>
+        </div>
+      `).join('');
+
+      const fisRows = MOCK_DEPO_FIS.map(f => {
+        const tip = DEPO_FIS.find(t => t.id === f.tip);
+        const durumColor = f.durum === 'Tamamlandı' ? 'success' : f.durum === 'Bekliyor' ? 'warn' : '';
+        return `<tr>
+          <td class="mono strong">${f.no}</td>
+          <td><span class="pill" style="background:${tip?.color||''}1a;color:${tip?.color||'var(--text-mute)'}">${tip?.label||f.tip}</span></td>
+          <td>${fmtDate(f.tarih)}</td>
+          <td class="muted">${f.depo}</td>
+          <td class="strong">${f.stok}</td>
+          <td class="num">${fmtNum(f.miktar)} ${f.birim}</td>
+          <td><span class="badge badge-${durumColor}">${f.durum}</span></td>
+          <td>
+            <div class="flex gap-2">
+              <button class="icon-btn" style="width:30px;height:30px" title="Görüntüle" onclick="location.href='depo-fis-form.html?tip=${f.tip}&id=${f.no}'">${ICONS.eye}</button>
+              <button class="icon-btn" style="width:30px;height:30px" title="Düzenle" onclick="location.href='depo-fis-form.html?tip=${f.tip}&id=${f.no}'">${ICONS.edit}</button>
+            </div>
+          </td>
+        </tr>`;
+      }).join('');
+
+      return `
+      <div class="page-head">
+        <div>
+          <div class="breadcrumb">
+            <a href="dashboard.html">Genel</a><span>›</span>
+            <a href="stok.html">Stok</a><span>›</span>
+            <span>Depo İşlemleri</span>
+          </div>
+          <h1 class="page-title">${ICONS.building} Depo İşlemleri</h1>
+          <div class="page-sub">Depo giriş, çıkış, virman, devir ve sayım fiş yönetimi</div>
+        </div>
+        <div class="page-actions">
+          <button class="btn btn-ghost" onclick="location.href='depo-akis.html'">${ICONS.send} Depo Akışı</button>
+          <button class="btn btn-ghost" onclick="toast('Rapor indirildi (prototip)')">${ICONS.download} Rapor</button>
+          <button class="btn btn-ghost" onclick="location.href='depo-fis-form.html?tip=virman'">${ICONS.send} Depo Virman</button>
+          <button class="btn btn-primary" onclick="location.href='depo-fis-form.html?tip=giris'">${ICONS.plus} Yeni Fiş</button>
+        </div>
+      </div>
+
+      <div class="depo-warehouse-grid" style="display:grid;grid-template-columns:repeat(3,1fr);gap:var(--s-4);margin-bottom:var(--s-5)">
+        ${depoCards}
+      </div>
+
+      <div class="tcr-ac-grid" style="display:grid;grid-template-columns:repeat(6,1fr);gap:var(--s-3);margin-bottom:var(--s-5)">
+        ${fisTipCards}
+      </div>
+
+      <div class="card">
+        <div class="card-body" style="padding:var(--s-4)">
+          <div class="toolbar">
+            <div class="toolbar-search">
+              <span class="toolbar-search-icon">${ICONS.search}</span>
+              <input type="text" placeholder="Fiş no veya ürün ara..." oninput="filterDepoFis(this.value)" />
+            </div>
+            <select class="filter-select" onchange="filterDepoTip(this.value)">
+              <option value="">Tüm Tipler</option>
+              ${DEPO_FIS.map(t => `<option value="${t.id}">${t.label}</option>`).join('')}
+            </select>
+            <select class="filter-select">
+              <option>Tüm Depolar</option>
+              ${DEPOLAR.map(d => `<option>${d.ad}</option>`).join('')}
+            </select>
+          </div>
+          <div class="table-wrap" style="border:none">
+            <table class="data" id="depoFisTable">
+              <thead><tr>
+                <th>Fiş No</th><th>Tip</th><th>Tarih</th><th>Depo</th><th>Ürün</th><th class="num">Miktar</th><th>Durum</th><th></th>
+              </tr></thead>
+              <tbody>${fisRows}</tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      ${modalHtml('depoKayitModal', 'Depo Tanımla', `
+        <div class="form-grid-2">
+          <div class="form-field">
+            <label class="form-label">Depo Kodu</label>
+            <input class="form-input mono" value="D004" readonly />
+          </div>
+          <div class="form-field">
+            <label class="form-label">Depo Türü</label>
+            <select class="form-input"><option>Genel</option><option>Kimyasal</option><option>Metal</option><option>Soğuk Zincir</option><option>Tehlikeli Madde</option></select>
+          </div>
+          <div class="form-field span2">
+            <label class="form-label">Depo Adı</label>
+            <input class="form-input" placeholder="Örn: Yeni Depo" />
+          </div>
+          <div class="form-field span2">
+            <label class="form-label">Konum / Adres</label>
+            <input class="form-input" placeholder="Depo fiziki konumu" />
+          </div>
+          <div class="form-field">
+            <label class="form-label">Kapasite (birim)</label>
+            <input class="form-input" type="number" value="1000" />
+          </div>
+          <div class="form-field">
+            <label class="form-label">Sorumlu Personel</label>
+            <select class="form-input">
+              ${(MOCK?.personel||[]).map(p => `<option>${p.ad}</option>`).join('')}
+            </select>
+          </div>
+        </div>
+      `, `<button class="btn btn-ghost" onclick="closeModal('depoKayitModal')">İptal</button><button class="btn btn-success" onclick="closeModal('depoKayitModal');toast('Depo kaydedildi','success')">${ICONS.check} Kaydet</button>`, 'lg')}
+      `;
+    });
+
+    function filterDepoFis(v) {
+      const lv = v.toLowerCase();
+      document.querySelectorAll('#depoFisTable tbody tr').forEach(r => {
+        r.style.display = r.textContent.toLowerCase().includes(lv) ? '' : 'none';
+      });
+    }
+
+    function filterDepoTip(tip) {
+      document.querySelectorAll('#depoFisTable tbody tr').forEach(r => {
+        r.style.display = (!tip || r.children[1]?.textContent.toLowerCase().includes(tip.toLowerCase())) ? '' : 'none';
+      });
+    }
+  </script>
+</body>
+</html>

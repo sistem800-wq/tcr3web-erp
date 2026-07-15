@@ -1,0 +1,36 @@
+<!--
+  SHARED BODY TEMPLATE
+  Her sayfanın <body> içindeki ortak yapı.
+  Sidebar + Topbar + Footer: assets/js/app.js?v=20260711-699 > renderShell() fonksiyonunda merkezi.
+  Sayfa içeriği: bootPage() callback'inde template literal olarak yazılır.
+-->
+
+<!-- Sayfa şablonu: -->
+<body>
+  <div id="app" class="app"></div>
+  <script src="../assets/js/app.js?v=20260711-699"></script>
+  <script src="../assets/js/tcr-actions.js?v=20260713-600"></script>
+  <script src="../assets/js/master-init.js?v=20260713-583"></script>
+  <script src="../assets/js/tcr-table.js?v=20260713-587"></script>
+  <script>
+    bootPage('SAYFA_ID', () => {
+      return `
+        <!-- Sayfa içeriği burada -->
+      `;
+    });
+
+    // Sayfa spesifik JS fonksiyonları
+  </script>
+</body>
+
+<!--
+  NOTLAR:
+  - Sidebar, Topbar, Footer → app.js?v=20260711-700 > renderShell() → merkezi
+  - NAV (menü) → app.js?v=20260711-700 > const NAV = [...] → merkezi
+  - ICONS → app.js?v=20260711-700 > const ICONS = {...} → merkezi
+  - MOCK veri → app.js?v=20260711-700 > const MOCK = {...} → merkezi
+  - Modal, Toast, Chart yardımcıları → app.js?v=20260711-700 → merkezi
+  - Print/PDF → printDoc() → app.js?v=20260711-700
+  - WhatsApp paylaşım → shareWhatsApp() → app.js?v=20260711-700
+  - Evrak/dosya yönetimi → eklerPanel(), initEkler(), eklerUpload(), eklerDelete() → app.js?v=20260711-700
+-->

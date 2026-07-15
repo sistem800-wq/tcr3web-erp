@@ -1,0 +1,922 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#10243f" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-title" content="Tcr3WEB" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <link rel="manifest" href="../manifest.webmanifest?v=20260711-699" />
+  <link rel="icon" type="image/png" href="../assets/icons/favicon-64.png" />
+  <link rel="apple-touch-icon" href="../assets/icons/icon-180.png" />
+  <title>Tcr3WEB · Sistem Ayarları</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../assets/css/style.css?v=20260712-637" />
+  <link rel="stylesheet" href="../assets/css/responsive-master.css?v=20260713-591" />
+  <link rel="stylesheet" href="../assets/css/performance.css?v=20260711-700" />
+  <link rel="stylesheet" href="../assets/css/tcr-table.css?v=20260713-583" />
+  <link rel="stylesheet" href="../assets/css/api-settings.css?v=20260712-670" />
+  <link rel="stylesheet" href="../assets/css/text-readability.css?v=20260712-657" />
+  <link rel="stylesheet" href="../assets/css/company-settings.css?v=20260712-627" />
+</head>
+<body>
+  <div id="app" class="app"></div>
+  <script src="../assets/js/app.js?v=20260712-653"></script>
+  <script src="../assets/js/tcr-actions.js?v=20260713-600"></script>
+  <script src="../assets/js/master-init.js?v=20260713-583"></script>
+  <script src="../assets/js/tcr-table.js?v=20260713-587"></script>
+  <script>
+    bootPage('settings', () => `
+      <div class="page-head">
+        <div>
+          <div class="breadcrumb">
+            <a href="dashboard.html">Genel</a>
+            <span>›</span>
+            <span>Sistem Ayarları</span>
+          </div>
+          <h1 class="page-title">Sistem Ayarları</h1>
+          <div class="page-sub">Şirket bilgileri, para birimi, dil ve numara serileri</div>
+        </div>
+        <div class="page-actions">
+          <button class="btn btn-ghost" onclick="toast('Sıfırlandı (prototip)')">Sıfırla</button>
+          <button class="btn btn-primary" onclick="saveSettings()">${ICONS.check} Kaydet</button>
+        </div>
+      </div>
+
+      <div class="tabs">
+        <div class="tab active" onclick="switchTab(this,'tab-genel')">Genel</div>
+        <div class="tab" onclick="switchTab(this,'tab-bolge')">Bölge &amp; Format</div>
+        <div class="tab" onclick="switchTab(this,'tab-numara')">Numara Serileri</div>
+        <div class="tab" onclick="switchTab(this,'tab-arayuz')">Arayüz</div>
+        <div class="tab" onclick="switchTab(this,'tab-kullanici')">Kullanıcılar</div>
+        <div class="tab" onclick="switchTab(this,'tab-roller')">Roller</div>
+        <div class="tab" onclick="switchTab(this,'tab-sms')">SMS Ayarları</div>
+        <div class="tab" onclick="switchTab(this,'tab-email')">E-Posta Ayarları</div>
+        <div class="tab" onclick="switchTab(this,'tab-pos')">Sanal POS</div>
+        <div class="tab" onclick="switchTab(this,'tab-kilit')">Kayıt Erişimi</div>
+        <div class="tab" onclick="switchTab(this,'tab-servis')">Servis Kuralları</div>
+        <div class="tab" onclick="switchTab(this,'tab-api')">API Ayarları</div>
+      </div>
+
+      <div id="tab-servis" class="hidden">
+        <div class="card service-settings-card mb-5">
+          <div class="card-head"><div><div class="card-title">Servis Havuzu Kabul Kuralları</div><div class="text-mute small">Bir ustanın havuzdaki tüm servisleri kabul etmesini önleyen merkezi limitler.</div></div></div>
+          <div class="card-body">
+            <div class="form-grid-3">
+              <div class="form-field"><label class="form-label">Maksimum Aktif Servis</label><input class="form-input" id="set-service-max-active" type="number" min="1" max="50" value="3"><div class="form-help">Ustanın aynı anda taşıyabileceği açık servis sayısı.</div></div>
+              <div class="form-field"><label class="form-label">Günlük Kabul Limiti</label><input class="form-input" id="set-service-max-daily" type="number" min="1" max="100" value="8"><div class="form-help">Bir ustanın bir günde kabul edebileceği toplam servis.</div></div>
+              <div class="form-field"><label class="form-label">Başlama Süresi</label><div class="input-group"><input class="form-input" id="set-service-start-minutes" type="number" min="5" max="240" value="45"><span class="input-addon">dk</span></div><div class="form-help">Kabulden sonra yola çıkma veya müdahaleye başlama süresi.</div></div>
+              <label class="checkbox"><input id="set-service-auto-return" type="checkbox" checked> Süre aşımında tekrar havuza düşür</label>
+              <label class="checkbox"><input id="set-service-zone-required" type="checkbox" checked> Bölge eşleşmesi zorunlu</label>
+              <label class="checkbox"><input id="set-service-skill-required" type="checkbox" checked> Uzmanlık eşleşmesi zorunlu</label>
+            </div>
+          </div>
+        </div>
+        <div class="card service-settings-card">
+          <div class="card-head"><div class="card-title">Usta Kapasite Örneği</div><span class="pill">Canlı Önizleme</span></div>
+          <div class="card-body">
+            <div class="service-capacity-preview">
+              <div><strong>Ahmet Usta</strong><span>2 / 3 aktif servis</span><em>1 servis daha alabilir</em></div>
+              <div><strong>Mehmet Usta</strong><span>3 / 3 aktif servis</span><em class="danger-text">Limit dolu</em></div>
+              <div><strong>Hasan Usta</strong><span>1 / 3 aktif servis</span><em>2 servis daha alabilir</em></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div id="tab-genel">
+        <div class="card mb-5">
+          <div class="card-head">
+            <div>
+              <div class="card-title">Firma Bilgileri</div>
+              <div class="form-help">Bu bilgiler teklif, sipariş, çek, senet, ekstre, yazdırma ve PDF çıktılarında ortak kullanılır.</div>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="form-grid-3 company-form-grid">
+              <div class="form-field">
+                <label class="form-label">Kısa Ünvan</label>
+                <input class="form-input" id="set-company-name" value="Tcr3WEB" />
+              </div>
+              <div class="form-field span-2">
+                <label class="form-label">Uzun Ünvan</label>
+                <input class="form-input" id="set-company-long-name" value="Tcr3WEB Yazılım ve Teknoloji Hizmetleri Limited Şirketi" />
+              </div>
+              <div class="form-field">
+                <label class="form-label">Vergi Dairesi</label>
+                <input class="form-input" id="set-company-taxoffice" value="Bahçe" />
+              </div>
+              <div class="form-field">
+                <label class="form-label">Vergi No</label>
+                <input class="form-input" id="set-company-taxno" inputmode="numeric" value="1234567890" />
+              </div>
+              <div class="form-field">
+                <label class="form-label">MERSİS No</label>
+                <input class="form-input" id="set-company-mersis" inputmode="numeric" placeholder="16 haneli MERSİS numarası" />
+              </div>
+              <div class="form-field">
+                <label class="form-label">Ticaret Sicil No</label>
+                <input class="form-input" id="set-company-trade-registry" placeholder="Ticaret sicil numarası" />
+              </div>
+              <div class="form-field">
+                <label class="form-label">İl</label>
+                <select class="form-input" id="set-company-city"><option value="Adana">Adana</option><option value="Adıyaman">Adıyaman</option><option value="Afyonkarahisar">Afyonkarahisar</option><option value="Ağrı">Ağrı</option><option value="Amasya">Amasya</option><option value="Ankara">Ankara</option><option value="Antalya">Antalya</option><option value="Artvin">Artvin</option><option value="Aydın">Aydın</option><option value="Balıkesir">Balıkesir</option><option value="Bilecik">Bilecik</option><option value="Bingöl">Bingöl</option><option value="Bitlis">Bitlis</option><option value="Bolu">Bolu</option><option value="Burdur">Burdur</option><option value="Bursa">Bursa</option><option value="Çanakkale">Çanakkale</option><option value="Çankırı">Çankırı</option><option value="Çorum">Çorum</option><option value="Denizli">Denizli</option><option value="Diyarbakır">Diyarbakır</option><option value="Edirne">Edirne</option><option value="Elazığ">Elazığ</option><option value="Erzincan">Erzincan</option><option value="Erzurum">Erzurum</option><option value="Eskişehir">Eskişehir</option><option value="Gaziantep">Gaziantep</option><option value="Giresun">Giresun</option><option value="Gümüşhane">Gümüşhane</option><option value="Hakkâri">Hakkâri</option><option value="Hatay">Hatay</option><option value="Isparta">Isparta</option><option value="Mersin">Mersin</option><option value="İstanbul">İstanbul</option><option value="İzmir">İzmir</option><option value="Kars">Kars</option><option value="Kastamonu">Kastamonu</option><option value="Kayseri">Kayseri</option><option value="Kırklareli">Kırklareli</option><option value="Kırşehir">Kırşehir</option><option value="Kocaeli">Kocaeli</option><option value="Konya">Konya</option><option value="Kütahya">Kütahya</option><option value="Malatya">Malatya</option><option value="Manisa">Manisa</option><option value="Kahramanmaraş">Kahramanmaraş</option><option value="Mardin">Mardin</option><option value="Muğla">Muğla</option><option value="Muş">Muş</option><option value="Nevşehir">Nevşehir</option><option value="Niğde">Niğde</option><option value="Ordu">Ordu</option><option value="Rize">Rize</option><option value="Sakarya">Sakarya</option><option value="Samsun">Samsun</option><option value="Siirt">Siirt</option><option value="Sinop">Sinop</option><option value="Sivas">Sivas</option><option value="Tekirdağ">Tekirdağ</option><option value="Tokat">Tokat</option><option value="Trabzon">Trabzon</option><option value="Tunceli">Tunceli</option><option value="Şanlıurfa">Şanlıurfa</option><option value="Uşak">Uşak</option><option value="Van">Van</option><option value="Yozgat">Yozgat</option><option value="Zonguldak">Zonguldak</option><option value="Aksaray">Aksaray</option><option value="Bayburt">Bayburt</option><option value="Karaman">Karaman</option><option value="Kırıkkale">Kırıkkale</option><option value="Batman">Batman</option><option value="Şırnak">Şırnak</option><option value="Bartın">Bartın</option><option value="Ardahan">Ardahan</option><option value="Iğdır">Iğdır</option><option value="Yalova">Yalova</option><option value="Karabük">Karabük</option><option value="Kilis">Kilis</option><option value="Osmaniye" selected>Osmaniye</option><option value="Düzce">Düzce</option></select>
+              </div>
+              <div class="form-field">
+                <label class="form-label">İlçe</label>
+                <input class="form-input" id="set-company-district" value="Bahçe" />
+              </div>
+              <div class="form-field">
+                <label class="form-label">Telefon</label>
+                <input class="form-input" id="set-company-phone" value="0328 555 00 00" />
+              </div>
+              <div class="form-field">
+                <label class="form-label">E-Posta</label>
+                <input class="form-input" id="set-company-email" type="email" value="info@tcr3web.com" />
+              </div>
+              <div class="form-field">
+                <label class="form-label">Web</label>
+                <input class="form-input" id="set-company-web" value="https://www.tcr3web.com" />
+              </div>
+              <div class="form-field span-3">
+                <label class="form-label">Adres</label>
+                <textarea class="form-input company-address" id="set-company-address">Merkez Mah. Cumhuriyet Cad. No:12 Bahçe / Osmaniye</textarea>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-head">
+            <div>
+              <div class="card-title">Logo &amp; Kaşe</div>
+              <div class="form-help">PNG, JPG veya WEBP dosyaları kullanılabilir.</div>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="company-media-grid">
+              <div class="company-media-card">
+                <div class="company-media-preview" id="company-logo-preview"><span>${ICONS.image || ICONS.file_text}</span><small>Logo seçilmedi</small></div>
+                <div class="company-media-info"><strong>Firma Logosu</strong><span>Belge başlıklarında ve yazdırma şablonlarında kullanılır.</span></div>
+                <div class="company-media-actions">
+                  <input id="set-company-logo" type="file" accept="image/png,image/jpeg,image/webp" hidden onchange="previewCompanyMedia(this,'logo')">
+                  <button class="btn btn-ghost btn-sm" type="button" onclick="document.getElementById('set-company-logo').click()">${ICONS.upload || ICONS.download} Logo Seç</button>
+                  <button class="btn btn-danger-outline btn-sm" type="button" onclick="clearCompanyMedia('logo')">${ICONS.trash || ICONS.x} Kaldır</button>
+                </div>
+              </div>
+              <div class="company-media-card">
+                <div class="company-media-preview stamp" id="company-stamp-preview"><span>${ICONS.file_check || ICONS.file_text}</span><small>Kaşe seçilmedi</small></div>
+                <div class="company-media-info"><strong>Firma Kaşesi</strong><span>Onaylı çıktı, makbuz ve evrak şablonlarında kullanılır.</span></div>
+                <div class="company-media-actions">
+                  <input id="set-company-stamp" type="file" accept="image/png,image/jpeg,image/webp" hidden onchange="previewCompanyMedia(this,'stamp')">
+                  <button class="btn btn-ghost btn-sm" type="button" onclick="document.getElementById('set-company-stamp').click()">${ICONS.upload || ICONS.download} Kaşe Seç</button>
+                  <button class="btn btn-danger-outline btn-sm" type="button" onclick="clearCompanyMedia('stamp')">${ICONS.trash || ICONS.x} Kaldır</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div id="tab-bolge" class="hidden">
+        <div class="card mb-5">
+          <div class="card-head">
+            <div class="card-title">Para Birimi &amp; Dil</div>
+          </div>
+          <div class="card-body">
+            <div class="form-grid-2">
+              <div class="form-field">
+                <label class="form-label">Para Birimi</label>
+                <select class="form-input" id="set-currency">
+                  <option value="TRY" ${APP_CURRENCY==='TRY'?'selected':''}>Türk Lirası (₺)</option>
+                  <option value="USD" ${APP_CURRENCY==='USD'?'selected':''}>ABD Doları ($)</option>
+                  <option value="EUR" ${APP_CURRENCY==='EUR'?'selected':''}>Euro (€)</option>
+                  <option value="GBP" ${APP_CURRENCY==='GBP'?'selected':''}>İngiliz Sterlini (£)</option>
+                </select>
+                <div class="form-help">Sistem genelinde kullanılacak tek para birimi (döviz çevrimi yapılmaz)</div>
+              </div>
+              <div class="form-field">
+                <label class="form-label">Sistem Dili</label>
+                <select class="form-input" id="set-lang">
+                  <option value="tr" ${APP_LANG==='tr'?'selected':''}>Türkçe</option>
+                  <option value="en" ${APP_LANG==='en'?'selected':''}>English</option>
+                </select>
+                <div class="form-help">Arayüz dilini değiştirir</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-head">
+            <div class="card-title">Format &amp; Yerel Ayarlar</div>
+          </div>
+          <div class="card-body">
+            <div class="form-grid-3">
+              <div class="form-field">
+                <label class="form-label">Tarih Formatı</label>
+                <select class="form-input" id="set-date-format">
+                  <option value="DD.MM.YYYY">GG.AA.YYYY (31.12.2026)</option>
+                  <option value="YYYY-MM-DD">YYYY-AA-GG (2026-12-31)</option>
+                  <option value="DD/MM/YYYY">GG/AA/YYYY (31/12/2026)</option>
+                  <option value="MM/DD/YYYY">AA/GG/YYYY (12/31/2026)</option>
+                </select>
+              </div>
+              <div class="form-field">
+                <label class="form-label">Saat Formatı</label>
+                <select class="form-input" id="set-time-format">
+                  <option value="24">24 saat (23:45)</option>
+                  <option value="12">12 saat (11:45 PM)</option>
+                </select>
+              </div>
+              <div class="form-field">
+                <label class="form-label">Hafta Başlangıcı</label>
+                <select class="form-input" id="set-week-start">
+                  <option value="monday">Pazartesi</option>
+                  <option value="sunday">Pazar</option>
+                </select>
+              </div>
+              <div class="form-field">
+                <label class="form-label">Parasal Ondalık Basamak</label>
+                <select class="form-input" id="set-number-decimals">
+                  <option value="0">0</option><option value="2">2</option><option value="3">3</option><option value="4">4</option>
+                </select>
+              </div>
+              <div class="form-field">
+                <label class="form-label">Binlik Ayraç</label>
+                <select class="form-input" id="set-thousand-separator">
+                  <option value=".">Nokta (.)</option><option value=",">Virgül (,)</option><option value=" ">Boşluk</option>
+                </select>
+              </div>
+              <div class="form-field">
+                <label class="form-label">Ondalık Ayraç</label>
+                <select class="form-input" id="set-decimal-separator">
+                  <option value=",">Virgül (,)</option><option value=".">Nokta (.)</option>
+                </select>
+              </div>
+              <div class="form-field">
+                <label class="form-label">Para Simgesi Konumu</label>
+                <select class="form-input" id="set-currency-position">
+                  <option value="suffix">Sayıdan sonra (1.250,00 ₺)</option><option value="prefix">Sayıdan önce (₺ 1.250,00)</option>
+                </select>
+              </div>
+              <div class="form-field">
+                <label class="form-label">Yüzde Ondalık Basamak</label>
+                <select class="form-input" id="set-percent-decimals">
+                  <option value="0">0</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option>
+                </select>
+              </div>
+              <div class="form-field">
+                <label class="form-label">Canlı Format Önizleme</label>
+                <div class="form-input" id="format-preview" style="height:auto;min-height:42px;display:flex;align-items:center;font-weight:700">31.12.2026 · 1.250.000,00 ₺ · 18,00%</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div id="tab-numara" class="hidden">
+        <div class="card">
+          <div class="card-head">
+            <div class="card-title">Numara Serileri</div>
+            <button class="btn btn-ghost btn-sm" onclick="toast('Yeni seri eklendi (prototip)')">${ICONS.plus} Yeni Seri</button>
+          </div>
+          <div class="card-body" style="padding:0">
+            <table class="data">
+              <thead><tr><th>Belge Tipi</th><th>Ön Ek</th><th>Son Numara</th><th>Örnek</th><th></th></tr></thead>
+              <tbody>
+                <tr><td class="strong">Satış Siparişi</td><td>S</td><td class="mono">20260006</td><td class="mono muted">S20260007</td><td><button class="btn btn-ghost btn-sm">${ICONS.edit}</button></td></tr>
+                <tr><td class="strong">Satın Alma Siparişi</td><td>A</td><td class="mono">20260004</td><td class="mono muted">A20260005</td><td><button class="btn btn-ghost btn-sm">${ICONS.edit}</button></td></tr>
+                <tr><td class="strong">Satış Faturası</td><td>SF</td><td class="mono">20260012</td><td class="mono muted">SF20260013</td><td><button class="btn btn-ghost btn-sm">${ICONS.edit}</button></td></tr>
+                <tr><td class="strong">Satın Alma Faturası</td><td>AF</td><td class="mono">20260008</td><td class="mono muted">AF20260009</td><td><button class="btn btn-ghost btn-sm">${ICONS.edit}</button></td></tr>
+                <tr><td class="strong">İrsaliye</td><td>IR</td><td class="mono">20260015</td><td class="mono muted">IR20260016</td><td><button class="btn btn-ghost btn-sm">${ICONS.edit}</button></td></tr>
+                <tr><td class="strong">Cari Kod</td><td>CR</td><td class="mono">0008</td><td class="mono muted">CR0009</td><td><button class="btn btn-ghost btn-sm">${ICONS.edit}</button></td></tr>
+                <tr><td class="strong">Stok Kod</td><td>ST</td><td class="mono">008</td><td class="mono muted">ST009</td><td><button class="btn btn-ghost btn-sm">${ICONS.edit}</button></td></tr>
+                <tr><td class="strong">Çek No</td><td>CK</td><td class="mono">0007</td><td class="mono muted">CK0008</td><td><button class="btn btn-ghost btn-sm">${ICONS.edit}</button></td></tr>
+                <tr><td class="strong">Senet No</td><td>SN</td><td class="mono">0006</td><td class="mono muted">SN0007</td><td><button class="btn btn-ghost btn-sm">${ICONS.edit}</button></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+
+      <div id="tab-arayuz" class="hidden">
+        <div class="card mb-5">
+          <div class="card-head">
+            <div>
+              <div class="card-title">Sayfa Geçiş Loader Ayarları</div>
+              <div class="text-soft" style="font-size:12px;margin-top:4px">Sadece sol menü / slider üzerinden sayfa değiştirirken görünür.</div>
+            </div>
+            <span class="badge badge-info">Ortak Arayüz</span>
+          </div>
+          <div class="card-body">
+            <div class="form-grid-3">
+              <label class="checkbox" style="align-self:end;margin-bottom:11px">
+                <input type="checkbox" id="set-loader-enabled" ${APP_PAGE_LOADER_ENABLED ? 'checked' : ''} /> Loader aktif
+              </label>
+              <div class="form-field">
+                <label class="form-label">Görünme Süresi (ms)</label>
+                <input class="form-input" id="set-loader-duration" type="number" min="150" max="5000" step="50" value="${APP_PAGE_LOADER_DURATION}" />
+                <div class="form-help">Önerilen: 500 - 900 ms. Sadece menü tıklamasında uygulanır.</div>
+              </div>
+              <div class="form-field">
+                <label class="form-label">Önizleme</label>
+                <button class="btn btn-info" type="button" onclick="showPageLoader(); setTimeout(hidePageLoader, Math.max(150, Number(document.getElementById('set-loader-duration').value || 650)))">${ICONS.eye} Loader Göster</button>
+                <div class="form-help">Normal sayfa içi işlemlerde loader açılmaz.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card mb-5">
+          <div class="card-head">
+            <div>
+              <div class="card-title">Toast Bildirim Ayarları</div>
+              <div class="text-soft" style="font-size:12px;margin-top:4px">Üst ortada gösterilen ikonlu işlem bildirimlerini yönetir.</div>
+            </div>
+            <span class="badge badge-info">Ortak Arayüz</span>
+          </div>
+          <div class="card-body">
+            <div class="form-grid-3">
+              <label class="checkbox" style="align-self:end;margin-bottom:11px">
+                <input type="checkbox" id="set-toast-enabled" ${APP_TOAST_ENABLED ? 'checked' : ''} /> Toast bildirimleri aktif
+              </label>
+              <div class="form-field">
+                <label class="form-label">Görünme Süresi (ms)</label>
+                <input class="form-input" id="set-toast-duration" type="number" min="500" max="15000" step="100" value="${APP_TOAST_DURATION}" />
+                <div class="form-help">Önerilen: 2000 - 4000 ms.</div>
+              </div>
+              <label class="checkbox" style="align-self:end;margin-bottom:11px">
+                <input type="checkbox" id="set-toast-progress" ${APP_TOAST_PROGRESS_ENABLED ? 'checked' : ''} /> Alt progress bar aktif
+              </label>
+              <label class="checkbox" style="align-self:end;margin-bottom:11px">
+                <input type="checkbox" id="set-toast-colored-bg" ${APP_TOAST_COLORED_BG ? 'checked' : ''} /> Duruma göre pastel arka plan
+              </label>
+              <label class="checkbox" style="align-self:end;margin-bottom:11px">
+                <input type="checkbox" id="set-toast-icons" ${APP_TOAST_ICONS_ENABLED ? 'checked' : ''} /> Lucide SVG ikon göster
+              </label>
+              <div class="form-field">
+                <label class="form-label">Maksimum Toast</label>
+                <input class="form-input" id="set-toast-max" type="number" min="1" max="5" value="${APP_TOAST_MAX}" />
+              </div>
+              <div class="form-field">
+                <label class="form-label">Toast Konumu</label>
+                <select class="form-select" id="set-toast-position">
+                  <option value="top-center" ${APP_TOAST_POSITION==='top-center'?'selected':''}>Üst Orta</option>
+                  <option value="top-right" ${APP_TOAST_POSITION==='top-right'?'selected':''}>Sağ Üst</option>
+                  <option value="top-left" ${APP_TOAST_POSITION==='top-left'?'selected':''}>Sol Üst</option>
+                </select>
+              </div>
+              <div class="form-field">
+                <label class="form-label">Önizleme</label>
+                <button class="btn btn-info" type="button" onclick="previewToastSettings()">${ICONS.eye} Toast Göster</button>
+                <div class="form-help">SVG ikon, kırmızı kapatma simgesi, pastel zemin ve progress bar birlikte gösterilir.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div id="tab-kullanici" class="hidden">
+        <div class="card">
+          <div class="card-head">
+            <div class="card-title">Sistem Kullanıcıları</div>
+            <button class="btn btn-ghost btn-sm" onclick="toast('Kullanıcı ekleme (prototip)')">${ICONS.plus} Yeni Kullanıcı</button>
+          </div>
+          <div class="card-body" style="padding:0">
+            <table class="data">
+              <thead><tr><th>Kullanıcı</th><th>E-posta</th><th>Rol</th><th>Durum</th><th></th></tr></thead>
+              <tbody>
+                <tr><td class="flex items-center gap-3"><div class="avatar avatar-sm">AY</div><div><div class="strong">Ahmet Yılmaz</div><div class="text-mute" style="font-size:11px">Genel Müdür</div></div></td><td>ahmet@sirket.com</td><td><span class="badge badge-info">Yönetici</span></td><td><span class="badge badge-success">Aktif</span></td><td><button class="btn btn-ghost btn-sm">${ICONS.edit}</button></td></tr>
+                <tr><td class="flex items-center gap-3"><div class="avatar avatar-sm" style="background:linear-gradient(135deg,#168a55,#085636)">AK</div><div><div class="strong">Ayşe Kaya</div><div class="text-mute" style="font-size:11px">Mali İşler Müdürü</div></div></td><td>ayse@sirket.com</td><td><span class="badge badge-info">Muhasebe</span></td><td><span class="badge badge-success">Aktif</span></td><td><button class="btn btn-ghost btn-sm">${ICONS.edit}</button></td></tr>
+                <tr><td class="flex items-center gap-3"><div class="avatar avatar-sm" style="background:linear-gradient(135deg,#e6a93c,#a06a10)">MD</div><div><div class="strong">Mehmet Demir</div><div class="text-mute" style="font-size:11px">Satış Temsilcisi</div></div></td><td>mehmet@sirket.com</td><td><span class="badge badge-neutral">Satış</span></td><td><span class="badge badge-success">Aktif</span></td><td><button class="btn btn-ghost btn-sm">${ICONS.edit}</button></td></tr>
+                <tr><td class="flex items-center gap-3"><div class="avatar avatar-sm" style="background:linear-gradient(135deg,#c93838,#761515)">FŞ</div><div><div class="strong">Fatma Şahin</div><div class="text-mute" style="font-size:11px">İK Uzmanı</div></div></td><td>fatma@sirket.com</td><td><span class="badge badge-neutral">İK</span></td><td><span class="badge badge-success">Aktif</span></td><td><button class="btn btn-ghost btn-sm">${ICONS.edit}</button></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+
+      <div id="tab-roller" class="hidden">
+        <div class="card mb-5">
+          <div class="card-head">
+            <div class="card-title">Roller</div>
+            <button class="btn btn-ghost btn-sm" onclick="toast('Yeni rol eklendi (prototip)')">${ICONS.plus} Yeni Rol</button>
+          </div>
+          <div class="card-body" style="padding:0">
+            <table class="data">
+              <thead><tr><th>Rol</th><th>Kullanıcı</th><th>Yetki Seviyesi</th><th>Durum</th><th></th></tr></thead>
+              <tbody>
+                <tr><td class="strong">Yönetici</td><td>2</td><td><span class="badge badge-info">Tam Yetki</span></td><td><span class="badge badge-success">Aktif</span></td><td><button class="btn btn-ghost btn-sm">${ICONS.edit}</button></td></tr>
+                <tr><td class="strong">Muhasebe</td><td>4</td><td><span class="badge badge-neutral">Finans + Cari</span></td><td><span class="badge badge-success">Aktif</span></td><td><button class="btn btn-ghost btn-sm">${ICONS.edit}</button></td></tr>
+                <tr><td class="strong">Satış</td><td>5</td><td><span class="badge badge-neutral">Teklif + Sipariş</span></td><td><span class="badge badge-success">Aktif</span></td><td><button class="btn btn-ghost btn-sm">${ICONS.edit}</button></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-head"><div class="card-title">Yetki Grupları</div></div>
+          <div class="card-body">
+            <div class="form-grid-3">
+              <label class="checkbox"><input type="checkbox" checked /> Cari işlemleri</label>
+              <label class="checkbox"><input type="checkbox" checked /> Stok fişleri</label>
+              <label class="checkbox"><input type="checkbox" checked /> Fatura işlemleri</label>
+              <label class="checkbox"><input type="checkbox" /> Sistem ayarları</label>
+              <label class="checkbox"><input type="checkbox" /> Kullanıcı yönetimi</label>
+              <label class="checkbox"><input type="checkbox" /> Raporlar</label>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div id="tab-sms" class="hidden">
+        <div class="card mb-5">
+          <div class="card-head"><div class="card-title">SMS Servis Ayarları</div></div>
+          <div class="card-body">
+            <div class="form-grid-3">
+              <div class="form-field"><label class="form-label">Servis Sağlayıcı</label><select class="form-input"><option>VatanSMS</option><option>NetGSM</option><option>Özel API</option></select></div>
+              <div class="form-field"><label class="form-label">Gönderici Başlığı</label><input class="form-input" value="TCR3WEB" /></div>
+              <div class="form-field"><label class="form-label">API URL</label><input class="form-input" value="https://api.smsservis.com" /></div>
+              <div class="form-field"><label class="form-label">Kullanıcı Adı</label><input class="form-input" value="demo_user" /></div>
+              <div class="form-field"><label class="form-label">Şifre / Token</label><input class="form-input" type="password" value="123456" /></div>
+              <div class="form-field"><label class="form-label">Varsayılan Ülke Kodu</label><input class="form-input" value="+90" /></div>
+            </div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-head"><div class="card-title">Test SMS</div></div>
+          <div class="card-body">
+            <div class="form-grid-2">
+              <div class="form-field"><label class="form-label">Telefon</label><input class="form-input" value="0532 000 00 00" /></div>
+              <div class="form-field"><label class="form-label">Mesaj</label><input class="form-input" value="Tcr3WEB test mesajıdır." /></div>
+            </div>
+            <button class="btn btn-primary mt-4" onclick="toast('Test SMS gönderildi (prototip)')">Gönder</button>
+          </div>
+        </div>
+      </div>
+
+      <div id="tab-email" class="hidden">
+        <div class="card mb-5">
+          <div class="card-head">
+            <div>
+              <div class="card-title">E-Posta Servis Ayarları</div>
+              <div class="form-help">SMTP, Gmail ve Microsoft 365 gönderim bilgilerini merkezi olarak yönetin.</div>
+            </div>
+            <button class="btn btn-primary btn-sm" type="button" onclick="testEmailSettings()">${ICONS.send || ICONS.mail} Bağlantıyı Test Et</button>
+          </div>
+          <div class="card-body">
+            <div class="form-grid-3">
+              <div class="form-field"><label class="form-label">Servis Sağlayıcı</label><select class="form-input" id="set-email-provider"><option value="smtp">Özel SMTP</option><option value="gmail">Gmail SMTP</option><option value="microsoft365">Microsoft 365</option></select></div>
+              <div class="form-field"><label class="form-label">SMTP Sunucusu</label><input class="form-input" id="set-email-host" placeholder="smtp.firma.com" /></div>
+              <div class="form-field"><label class="form-label">Port</label><input class="form-input" id="set-email-port" type="number" min="1" max="65535" value="587" /></div>
+              <div class="form-field"><label class="form-label">Şifreleme</label><select class="form-input" id="set-email-encryption"><option value="tls">TLS</option><option value="ssl">SSL</option><option value="none">Yok</option></select></div>
+              <div class="form-field"><label class="form-label">Kullanıcı Adı</label><input class="form-input" id="set-email-username" autocomplete="username" placeholder="mail@firma.com" /></div>
+              <div class="form-field"><label class="form-label">Şifre / Uygulama Şifresi</label><input class="form-input" id="set-email-password" type="password" autocomplete="new-password" placeholder="••••••••" /></div>
+              <div class="form-field"><label class="form-label">Gönderen E-Posta</label><input class="form-input" id="set-email-from-address" type="email" placeholder="noreply@firma.com" /></div>
+              <div class="form-field"><label class="form-label">Gönderen Adı</label><input class="form-input" id="set-email-from-name" value="Tcr3WEB ERP" /></div>
+              <div class="form-field"><label class="form-label">Yanıt Adresi</label><input class="form-input" id="set-email-reply-to" type="email" placeholder="destek@firma.com" /></div>
+              <label class="checkbox"><input id="set-email-auth" type="checkbox" checked /> SMTP kimlik doğrulaması kullan</label>
+              <label class="checkbox"><input id="set-email-active" type="checkbox" checked /> E-posta gönderimi aktif</label>
+              <label class="checkbox"><input id="set-email-save-copy" type="checkbox" /> Gönderilenlerin kopyasını sakla</label>
+            </div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-head"><div class="card-title">Test E-Postası</div></div>
+          <div class="card-body">
+            <div class="form-grid-2">
+              <div class="form-field"><label class="form-label">Alıcı E-Posta</label><input class="form-input" id="set-email-test-recipient" type="email" value="info@tcr3web.com" /></div>
+              <div class="form-field"><label class="form-label">Konu</label><input class="form-input" id="set-email-test-subject" value="Tcr3WEB test e-postası" /></div>
+              <div class="form-field full"><label class="form-label">Mesaj</label><textarea class="form-input" id="set-email-test-message" rows="3">E-posta ayarları başarıyla test edildi.</textarea></div>
+            </div>
+            <button class="btn btn-primary mt-4" type="button" onclick="sendTestEmail()">${ICONS.send || ICONS.mail} Test E-Postası Gönder</button>
+          </div>
+        </div>
+      </div>
+
+
+      <div id="tab-kilit" class="hidden">
+        <div class="card mb-5">
+          <div class="card-head">
+            <div>
+              <div class="card-title">Modül Bazlı Kayıt Erişim Günleri</div>
+              <div class="text-soft" style="font-size:12px;margin-top:4px">Belirlenen gün sayısına ulaşan ana kayıtlar kırmızı durum noktasıyla kilitlenir.</div>
+            </div>
+            <span class="lock-policy-badge">Aktif Güvenlik Politikası</span>
+          </div>
+          <div class="card-body" style="padding:0">
+            <div class="table-wrap">
+              <table class="data lock-policy-table">
+                <thead><tr><th>Modül</th><th>Erişim Günü</th><th>Açıklama</th></tr></thead>
+                <tbody id="lockPolicyRows"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-head"><div class="card-title">Durum Göstergesi</div></div>
+          <div class="card-body">
+            <div class="flex gap-5 flex-wrap items-center">
+              <div class="flex gap-2 items-center"><span class="record-state-dot is-open"></span><strong>İşlem yapılabilir</strong></div>
+              <div class="flex gap-2 items-center"><span class="record-state-dot is-locked"></span><strong>Kilitli kayıt</strong></div>
+            </div>
+            <div class="lock-policy-note mt-4">Tablolarda yalnızca kırmızı veya yeşil daire gösterilir. Dairenin üzerine gelindiğinde işlem tarihi, kilit süresi, kalan veya geçen gün bilgisi görünür. Görüntüleme ve yazdırma işlemleri açık kalır; düzenleme, silme, onay ve benzeri işlemler kilitlenir.</div>
+          </div>
+        </div>
+      </div>
+
+      <div id="tab-pos" class="hidden">
+        <div class="card mb-5">
+          <div class="card-head">
+            <div>
+              <div class="card-title">Sanal POS Sağlayıcıları</div>
+              <div class="text-soft" style="font-size:12px;margin-top:4px">Aktif sağlayıcı: Moka Sanal POS</div>
+            </div>
+            <button class="btn btn-primary btn-sm" onclick="toast('Moka bağlantısı test edildi (prototip)')">Bağlantıyı Test Et</button>
+          </div>
+          <div class="card-body">
+            <div class="form-grid-3">
+              <div class="form-field"><label class="form-label">POS Sağlayıcı</label><select class="form-input"><option selected>Moka</option><option>Param POS</option><option>PayTR</option><option>İyzico</option><option>Banka POS</option></select></div>
+              <div class="form-field"><label class="form-label">Çalışma Modu</label><select class="form-input"><option>Test</option><option>Canlı</option></select></div>
+              <div class="form-field"><label class="form-label">Varsayılan İşlem</label><select class="form-input"><option>3D Secure Satış</option><option>3D'siz Satış</option><option>Ön Provizyon</option></select></div>
+              <div class="form-field"><label class="form-label">Moka Dealer Code</label><input class="form-input mono" value="DEALER-1001" /></div>
+              <div class="form-field"><label class="form-label">Moka Username</label><input class="form-input" value="tcr3web_user" /></div>
+              <div class="form-field"><label class="form-label">Moka Password</label><input class="form-input" type="password" value="moka_password" /></div>
+              <div class="form-field"><label class="form-label">Moka Check Key</label><input class="form-input" type="password" value="check_key" /></div>
+              <div class="form-field"><label class="form-label">API URL</label><input class="form-input" value="https://service.moka.com" /></div>
+              <div class="form-field"><label class="form-label">Callback URL</label><input class="form-input" value="https://tcr3web.com/pos/moka/callback" /></div>
+              <label class="checkbox"><input type="checkbox" checked /> 3D Secure zorunlu</label>
+              <label class="checkbox"><input type="checkbox" checked /> Ödeme sonrası cari tahsilat oluştur</label>
+              <label class="checkbox"><input type="checkbox" /> Komisyonu müşteriye yansıt</label>
+            </div>
+          </div>
+        </div>
+        <div class="card mb-5">
+          <div class="card-head"><div class="card-title">Moka İşlem Ayarları</div></div>
+          <div class="card-body">
+            <div class="form-grid-3">
+              <div class="form-field"><label class="form-label">Başarılı Dönüş Mesajı</label><input class="form-input" value="Ödeme başarıyla tamamlandı." /></div>
+              <div class="form-field"><label class="form-label">Başarısız Dönüş Mesajı</label><input class="form-input" value="Ödeme işlemi tamamlanamadı." /></div>
+              <div class="form-field"><label class="form-label">Dekont Tipi</label><select class="form-input"><option>A5 Yatay POS Dekontu</option><option>A4 POS Raporu</option></select></div>
+              <label class="checkbox"><input type="checkbox" checked /> SMS dekont gönder</label>
+              <label class="checkbox"><input type="checkbox" checked /> Mail dekont gönder</label>
+              <label class="checkbox"><input type="checkbox" /> Kart saklama aktif</label>
+            </div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-head"><div class="card-title">Taksit / Komisyon</div></div>
+          <div class="card-body" style="padding:0">
+            <table class="data">
+              <thead><tr><th>Taksit</th><th>Moka Komisyon</th><th>Vade</th><th>Durum</th><th></th></tr></thead>
+              <tbody>
+                <tr><td>Tek Çekim</td><td>%0,00</td><td>Ertesi Gün</td><td><span class="badge badge-success">Aktif</span></td><td><button class="btn btn-ghost btn-sm">${ICONS.edit}</button></td></tr>
+                <tr><td>3 Taksit</td><td>%3,20</td><td>+30 Gün</td><td><span class="badge badge-success">Aktif</span></td><td><button class="btn btn-ghost btn-sm">${ICONS.edit}</button></td></tr>
+                <tr><td>6 Taksit</td><td>%6,80</td><td>+60 Gün</td><td><span class="badge badge-success">Aktif</span></td><td><button class="btn btn-ghost btn-sm">${ICONS.edit}</button></td></tr>
+                <tr><td>9 Taksit</td><td>%9,90</td><td>+90 Gün</td><td><span class="badge badge-warning">Pasif</span></td><td><button class="btn btn-ghost btn-sm">${ICONS.edit}</button></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <div id="tab-api" class="hidden">
+        <div class="card api-manager-card">
+          <div class="card-head api-manager-head">
+            <div>
+              <div class="card-title">API Yönetimi</div>
+              <div class="text-mute small">Harita, hava durumu ve dış servis anahtarlarını tek merkezden yönetin.</div>
+            </div>
+            <span class="badge badge-info">Laravel / .env Uyumlu</span>
+          </div>
+          <div class="card-body">
+            <div class="api-provider-tabs" role="tablist">
+              <button type="button" class="api-provider-tab active" data-api-panel="api-panel-genel" onclick="switchApiProvider(this)">Genel</button>
+              <button type="button" class="api-provider-tab" data-api-panel="api-panel-google" onclick="switchApiProvider(this)">Google</button>
+              <button type="button" class="api-provider-tab" data-api-panel="api-panel-yandex" onclick="switchApiProvider(this)">Yandex</button>
+              <button type="button" class="api-provider-tab" data-api-panel="api-panel-bing" onclick="switchApiProvider(this)">Bing</button>
+              <button type="button" class="api-provider-tab" data-api-panel="api-panel-weather" onclick="switchApiProvider(this)">Hava Durumu</button>
+              <button type="button" class="api-provider-tab" data-api-panel="api-panel-mail" onclick="switchApiProvider(this)">E-Posta</button>
+              <button type="button" class="api-provider-tab" data-api-panel="api-panel-ai" onclick="switchApiProvider(this)">AI</button>
+            </div>
+
+            <div id="api-panel-genel" class="api-provider-panel">
+              <div class="api-info-box">
+                <div class="api-info-icon">${ICONS.settings}</div>
+                <div><strong>Aktif Servis Seçimleri</strong><span>Harita ve hava durumu sağlayıcısını belirleyin.</span></div>
+              </div>
+              <div class="form-grid-2 mt-4">
+                <div class="form-field">
+                  <label class="form-label">Harita Sağlayıcısı</label>
+                  <select class="form-input" id="set-map-provider" data-api-setting="tcr3_api_map_provider">
+                    <option value="google">Google Maps</option><option value="yandex">Yandex Maps</option><option value="bing">Bing Maps</option><option value="osm">OpenStreetMap</option>
+                  </select>
+                </div>
+                <div class="form-field">
+                  <label class="form-label">Hava Durumu Sağlayıcısı</label>
+                  <select class="form-input" id="set-weather-provider" data-api-setting="tcr3_api_weather_provider">
+                    <option value="google">Google Weather</option><option value="openweather">OpenWeather</option><option value="weatherapi">WeatherAPI</option><option value="visualcrossing">Visual Crossing</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            <div id="api-panel-google" class="api-provider-panel hidden">
+              <div class="api-section-title"><strong>Google Cloud</strong><span>Maps, Geocoding ve Weather servisleri</span></div>
+              <div class="form-grid-2">
+                <div class="form-field full"><label class="form-label">Google API Anahtarı</label><div class="input-group"><input class="form-input" id="set-google-api-key" data-api-setting="tcr3web_google_maps_api_key" type="password" autocomplete="off" placeholder="AIza..." /><button class="btn btn-ghost" type="button" onclick="toggleApiSecret('set-google-api-key')">Göster / Gizle</button></div><div class="form-help">Google Maps, Geocoding ve Weather API için kullanılacak anahtar.</div></div>
+                <div class="form-field"><label class="form-label">Google Project ID</label><input class="form-input" data-api-setting="tcr3_api_google_project_id" placeholder="project-id" /></div>
+                <div class="form-field"><label class="form-label">Google Map ID</label><input class="form-input" data-api-setting="tcr3_api_google_map_id" placeholder="Map ID" /></div>
+              </div>
+              <div class="api-actions"><button class="btn btn-primary" type="button" onclick="testApiField('set-google-api-key','Google')">${ICONS.check} Bağlantıyı Test Et</button></div>
+            </div>
+
+            <div id="api-panel-yandex" class="api-provider-panel hidden">
+              <div class="api-section-title"><strong>Yandex Developer</strong><span>Maps ve Geocoder servisleri</span></div>
+              <div class="form-grid-2">
+                <div class="form-field full"><label class="form-label">Yandex Maps API Anahtarı</label><div class="input-group"><input class="form-input" id="set-yandex-api-key" data-api-setting="tcr3_api_yandex_maps_key" type="password" autocomplete="off" placeholder="Yandex API Key" /><button class="btn btn-ghost" type="button" onclick="toggleApiSecret('set-yandex-api-key')">Göster / Gizle</button></div></div>
+                <div class="form-field"><label class="form-label">Yandex Geocoder Anahtarı</label><input class="form-input" data-api-setting="tcr3_api_yandex_geocoder_key" type="password" placeholder="Geocoder Key" /></div>
+                <div class="form-field"><label class="form-label">Dil / Bölge</label><select class="form-input" data-api-setting="tcr3_api_yandex_locale"><option value="tr_TR">Türkçe / Türkiye</option><option value="en_US">English / USA</option></select></div>
+              </div>
+              <div class="api-actions"><button class="btn btn-primary" type="button" onclick="testApiField('set-yandex-api-key','Yandex')">${ICONS.check} Bağlantıyı Test Et</button></div>
+            </div>
+
+            <div id="api-panel-bing" class="api-provider-panel hidden">
+              <div class="api-section-title"><strong>Microsoft Bing Maps</strong><span>Harita, konum ve arama servisleri</span></div>
+              <div class="form-grid-2">
+                <div class="form-field full"><label class="form-label">Bing Maps API Anahtarı</label><div class="input-group"><input class="form-input" id="set-bing-api-key" data-api-setting="tcr3_api_bing_maps_key" type="password" autocomplete="off" placeholder="Bing Maps Key" /><button class="btn btn-ghost" type="button" onclick="toggleApiSecret('set-bing-api-key')">Göster / Gizle</button></div></div>
+                <div class="form-field"><label class="form-label">Bing Search API Anahtarı</label><input class="form-input" data-api-setting="tcr3_api_bing_search_key" type="password" placeholder="Search API Key" /></div>
+                <div class="form-field"><label class="form-label">Azure Resource Region</label><input class="form-input" data-api-setting="tcr3_api_bing_region" placeholder="westeurope" /></div>
+              </div>
+              <div class="api-actions"><button class="btn btn-primary" type="button" onclick="testApiField('set-bing-api-key','Bing')">${ICONS.check} Bağlantıyı Test Et</button></div>
+            </div>
+
+            <div id="api-panel-weather" class="api-provider-panel hidden">
+              <div class="api-section-title"><strong>Hava Durumu Servisleri</strong><span>Google dışındaki alternatif sağlayıcı anahtarları</span></div>
+              <div class="form-grid-2">
+                <div class="form-field"><label class="form-label">OpenWeather API Key</label><input class="form-input" data-api-setting="tcr3_api_openweather_key" type="password" placeholder="API Key" /></div>
+                <div class="form-field"><label class="form-label">WeatherAPI Key</label><input class="form-input" data-api-setting="tcr3_api_weatherapi_key" type="password" placeholder="API Key" /></div>
+                <div class="form-field"><label class="form-label">Visual Crossing API Key</label><input class="form-input" data-api-setting="tcr3_api_visualcrossing_key" type="password" placeholder="API Key" /></div>
+                <div class="form-field"><label class="form-label">Cache Süresi</label><div class="input-group"><input class="form-input" data-api-setting="tcr3_api_weather_cache_minutes" type="number" min="5" max="240" value="30" /><span class="input-addon">dk</span></div></div>
+              </div>
+              <div class="api-actions"><button class="btn btn-ghost" type="button" onclick="clearGoogleWeatherCache()">Hava Durumu Cache Temizle</button></div>
+            </div>
+
+            <div id="api-panel-mail" class="api-provider-panel hidden">
+              <div class="api-section-title"><strong>E-Posta / SMTP</strong><span>Gmail, Microsoft 365 veya özel SMTP</span></div>
+              <div class="form-grid-2">
+                <div class="form-field"><label class="form-label">SMTP Sunucu</label><input class="form-input" data-api-setting="tcr3_api_smtp_host" placeholder="smtp.example.com" /></div>
+                <div class="form-field"><label class="form-label">Port</label><input class="form-input" data-api-setting="tcr3_api_smtp_port" type="number" value="587" /></div>
+                <div class="form-field"><label class="form-label">Kullanıcı Adı</label><input class="form-input" data-api-setting="tcr3_api_smtp_user" /></div>
+                <div class="form-field"><label class="form-label">Şifre</label><input class="form-input" data-api-setting="tcr3_api_smtp_password" type="password" /></div>
+              </div>
+            </div>
+
+            <div id="api-panel-ai" class="api-provider-panel hidden">
+              <div class="api-section-title"><strong>Yapay Zekâ Servisleri</strong><span>ERP yardımcısı ve içerik üretimi için</span></div>
+              <div class="form-grid-2">
+                <div class="form-field"><label class="form-label">OpenAI API Key</label><input class="form-input" data-api-setting="tcr3_api_openai_key" type="password" placeholder="sk-..." /></div>
+                <div class="form-field"><label class="form-label">Google Gemini API Key</label><input class="form-input" data-api-setting="tcr3_api_gemini_key" type="password" /></div>
+                <div class="form-field"><label class="form-label">Anthropic API Key</label><input class="form-input" data-api-setting="tcr3_api_anthropic_key" type="password" /></div>
+                <div class="form-field"><label class="form-label">Varsayılan AI Sağlayıcısı</label><select class="form-input" data-api-setting="tcr3_api_ai_provider"><option value="openai">OpenAI</option><option value="gemini">Google Gemini</option><option value="anthropic">Anthropic Claude</option></select></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    `);
+
+    function switchTab(el, id) {
+      document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+      el.classList.add('active');
+      ['tab-genel','tab-bolge','tab-numara','tab-arayuz','tab-kullanici','tab-roller','tab-sms','tab-pos','tab-kilit','tab-servis','tab-api'].forEach(t => {
+        document.getElementById(t).classList.add('hidden');
+      });
+      document.getElementById(id).classList.remove('hidden');
+    }
+
+    const LOCK_POLICY_LABELS = {
+      'cari':'Cari Kartlar','cari-islemler':'Cari İşlemleri','cari-fisleri':'Cari Fişleri','stok':'Stok Kartları','stok-islemler':'Stok İşlemleri',
+      'satis':'Satış Faturaları','alim':'Alış Faturaları','teklif':'Teklifler','as':'Alış Siparişleri','vs':'Satış Siparişleri','kasa':'Kasa','banka':'Banka',
+      'cek':'Çek','senet':'Senet','depo-islemler':'Depo İşlemleri','depo-akis':'Depo Akışı','servis':'Servis','servis-talep':'Servis Talepleri',
+      'sanal-pos':'Sanal POS','uretim':'Üretim','personel':'Personel','avans':'Avans','maas':'Maaş'
+    };
+    function renderLockPolicies(){
+      const body=document.getElementById('lockPolicyRows'); if(!body) return;
+      const p=getLockPolicies(); body.innerHTML=Object.entries(LOCK_POLICY_LABELS).map(([key,label])=>`<tr><td class="strong">${label}</td><td><input class="form-input" type="number" min="0" max="3650" data-lock-key="${key}" value="${Number(p[key]??5)}"></td><td class="muted">${Number(p[key]??5)===0?'Kilit uygulanmaz':Number(p[key]??5)+' gün ve üzeri kayıtlar kilitlenir'}</td></tr>`).join('');
+    }
+    setTimeout(()=>{renderLockPolicies(); loadServiceRules(); loadApiSettings();
+    loadFormatSettings();},0);
+
+    function loadServiceRules(){
+      let r={maxActive:3,maxDaily:8,startMinutes:45,autoReturn:true,zoneRequired:true,skillRequired:true};
+      try{r={...r,...JSON.parse(localStorage.getItem('tcr3_service_rules')||'{}')}}catch(e){}
+      const set=(id,v)=>{const el=document.getElementById(id); if(el) el.type==='checkbox'?(el.checked=!!v):(el.value=v)};
+      set('set-service-max-active',r.maxActive); set('set-service-max-daily',r.maxDaily); set('set-service-start-minutes',r.startMinutes);
+      set('set-service-auto-return',r.autoReturn); set('set-service-zone-required',r.zoneRequired); set('set-service-skill-required',r.skillRequired);
+    }
+
+
+    function switchApiProvider(button){
+      document.querySelectorAll('.api-provider-tab').forEach(el=>el.classList.remove('active'));
+      document.querySelectorAll('.api-provider-panel').forEach(el=>el.classList.add('hidden'));
+      button.classList.add('active');
+      const panel=document.getElementById(button.dataset.apiPanel); if(panel) panel.classList.remove('hidden');
+    }
+    function toggleApiSecret(id){const input=document.getElementById(id);if(input)input.type=input.type==='password'?'text':'password';}
+    function loadApiSettings(){
+      document.querySelectorAll('[data-api-setting]').forEach(el=>{const saved=localStorage.getItem(el.dataset.apiSetting);if(saved!==null)el.value=saved;});
+    }
+    function saveApiSettings(){
+      document.querySelectorAll('[data-api-setting]').forEach(el=>{const value=String(el.value||'').trim();if(value)localStorage.setItem(el.dataset.apiSetting,value);else localStorage.removeItem(el.dataset.apiSetting);});
+    }
+    function testApiField(id,name){const input=document.getElementById(id);if(!input?.value.trim()){toast(name+' API anahtarı giriniz','error');return;}toast(name+' API ayarı kaydedilmeye hazır','success');}
+    function clearGoogleWeatherCache(){
+      localStorage.removeItem('tcr3web_header_weather_profile_v2');
+      toast('Hava durumu önbelleği temizlendi','success');
+      if(typeof refreshHeaderWeather==='function') refreshHeaderWeather(true);
+    }
+
+    function previewToastSettings(){
+      const enabled=document.getElementById('set-toast-enabled')?.checked !== false;
+      const progress=document.getElementById('set-toast-progress')?.checked !== false;
+      const colored=document.getElementById('set-toast-colored-bg')?.checked !== false;
+      const icons=document.getElementById('set-toast-icons')?.checked !== false;
+      const max=Math.max(1,Math.min(5,Number(document.getElementById('set-toast-max')?.value||3)));
+      const position=document.getElementById('set-toast-position')?.value||'top-center';
+      const duration=Math.max(500,Math.min(15000,Number(document.getElementById('set-toast-duration')?.value||2500)));
+      if(!enabled){ alert('Toast bildirimleri kapalı. Önizleme için aktif seçeneğini işaretleyin.'); return; }
+      const previous=[APP_TOAST_ENABLED,APP_TOAST_PROGRESS_ENABLED,APP_TOAST_DURATION,APP_TOAST_COLORED_BG,APP_TOAST_ICONS_ENABLED,APP_TOAST_MAX,APP_TOAST_POSITION];
+      APP_TOAST_ENABLED=true; APP_TOAST_PROGRESS_ENABLED=progress; APP_TOAST_DURATION=duration; APP_TOAST_COLORED_BG=colored; APP_TOAST_ICONS_ENABLED=icons; APP_TOAST_MAX=max; APP_TOAST_POSITION=position;
+      document.getElementById('tcrToastContainer')?.remove();
+      toast('Toast bildirim ayarları önizlemesi.', 'success', {duration, force:true});
+      [APP_TOAST_ENABLED,APP_TOAST_PROGRESS_ENABLED,APP_TOAST_DURATION,APP_TOAST_COLORED_BG,APP_TOAST_ICONS_ENABLED,APP_TOAST_MAX,APP_TOAST_POSITION]=previous;
+    }
+
+    function loadFormatSettings(){
+      const map={
+        'set-date-format':APP_DATE_FORMAT,'set-time-format':APP_TIME_FORMAT,'set-week-start':APP_WEEK_START,
+        'set-number-decimals':String(APP_NUMBER_DECIMALS),'set-thousand-separator':APP_THOUSAND_SEPARATOR,
+        'set-decimal-separator':APP_DECIMAL_SEPARATOR,'set-currency-position':APP_CURRENCY_POSITION,
+        'set-percent-decimals':String(APP_PERCENT_DECIMALS)
+      };
+      Object.entries(map).forEach(([id,value])=>{const el=document.getElementById(id);if(el)el.value=value;});
+      document.querySelectorAll('#tab-bolge select').forEach(el=>el.addEventListener('change',previewFormatSettings));
+      previewFormatSettings();
+    }
+    function previewFormatSettings(){
+      const d=document.getElementById('set-date-format')?.value||APP_DATE_FORMAT;
+      const decimals=Number(document.getElementById('set-number-decimals')?.value??APP_NUMBER_DECIMALS);
+      const thousand=document.getElementById('set-thousand-separator')?.value??APP_THOUSAND_SEPARATOR;
+      const decimal=document.getElementById('set-decimal-separator')?.value??APP_DECIMAL_SEPARATOR;
+      const position=document.getElementById('set-currency-position')?.value||APP_CURRENCY_POSITION;
+      const pdec=Number(document.getElementById('set-percent-decimals')?.value??APP_PERCENT_DECIMALS);
+      const number=(1250000).toFixed(decimals).split('.');
+      const grouped=number[0].replace(/\B(?=(\d{3})+(?!\d))/g,thousand)+(decimals?decimal+number[1]:'');
+      const percent=(18).toFixed(pdec).replace('.',decimal)+'%';
+      const date=d==='YYYY-MM-DD'?'2026-12-31':d==='DD/MM/YYYY'?'31/12/2026':d==='MM/DD/YYYY'?'12/31/2026':'31.12.2026';
+      const money=position==='prefix'?'₺ '+grouped:grouped+' ₺';
+      const out=document.getElementById('format-preview');if(out)out.textContent=date+' · '+money+' · '+percent;
+    }
+
+    let companyMediaState={logo:'',stamp:''};
+    function setCompanyMediaPreview(type,dataUrl){
+      const box=document.getElementById(type==='logo'?'company-logo-preview':'company-stamp-preview'); if(!box)return;
+      if(dataUrl){box.innerHTML=`<img src="${dataUrl}" alt="${type==='logo'?'Firma logosu':'Firma kaşesi'}">`;box.classList.add('has-image');}
+      else{box.innerHTML=`<span>${type==='logo'?(ICONS.image||ICONS.file_text):(ICONS.file_check||ICONS.file_text)}</span><small>${type==='logo'?'Logo':'Kaşe'} seçilmedi</small>`;box.classList.remove('has-image');}
+    }
+    function previewCompanyMedia(input,type){
+      const file=input.files&&input.files[0]; if(!file)return;
+      if(file.size>2*1024*1024){toast('Dosya boyutu en fazla 2 MB olabilir','warning');input.value='';return;}
+      const reader=new FileReader(); reader.onload=()=>{companyMediaState[type]=String(reader.result||'');setCompanyMediaPreview(type,companyMediaState[type]);}; reader.readAsDataURL(file);
+    }
+    function clearCompanyMedia(type){companyMediaState[type]='';const input=document.getElementById(type==='logo'?'set-company-logo':'set-company-stamp');if(input)input.value='';setCompanyMediaPreview(type,'');}
+    function loadCompanySettings(){
+      let info=null; try{info=JSON.parse(localStorage.getItem('tcr3_company_info')||'null')}catch(e){}
+      if(!info) info={};
+      const set=(id,v)=>{const el=document.getElementById(id);if(el&&v!=null&&v!=='')el.value=v};
+      set('set-company-name',info.shortName||info.name); set('set-company-long-name',info.longName||info.name);
+      set('set-company-taxno',info.taxNo); set('set-company-taxoffice',info.taxOffice); set('set-company-mersis',info.mersisNo);
+      set('set-company-trade-registry',info.tradeRegistryNo); set('set-company-city',info.city); set('set-company-district',info.district);
+      set('set-company-phone',info.phone); set('set-company-email',info.email); set('set-company-web',info.web); set('set-company-address',info.address);
+      companyMediaState.logo=info.logo||''; companyMediaState.stamp=info.stamp||'';
+      setCompanyMediaPreview('logo',companyMediaState.logo); setCompanyMediaPreview('stamp',companyMediaState.stamp);
+    }
+    setTimeout(loadCompanySettings,0);
+
+    function loadEmailSettings(){
+      let cfg={}; try{cfg=JSON.parse(localStorage.getItem('tcr3_email_settings')||'{}')}catch(e){}
+      const values={
+        'set-email-provider':cfg.provider||'smtp','set-email-host':cfg.host||'',
+        'set-email-port':String(cfg.port||587),'set-email-encryption':cfg.encryption||'tls',
+        'set-email-username':cfg.username||'','set-email-password':cfg.password||'',
+        'set-email-from-address':cfg.fromAddress||'','set-email-from-name':cfg.fromName||'Tcr3WEB ERP',
+        'set-email-reply-to':cfg.replyTo||'','set-email-test-recipient':cfg.testRecipient||'info@tcr3web.com'
+      };
+      Object.entries(values).forEach(([id,value])=>{const el=document.getElementById(id);if(el)el.value=value;});
+      [['set-email-auth','auth',true],['set-email-active','active',true],['set-email-save-copy','saveCopy',false]].forEach(([id,key,def])=>{const el=document.getElementById(id);if(el)el.checked=cfg[key] ?? def;});
+    }
+    function getEmailSettings(){
+      return {
+        provider:document.getElementById('set-email-provider')?.value||'smtp', host:document.getElementById('set-email-host')?.value.trim()||'',
+        port:Number(document.getElementById('set-email-port')?.value||587), encryption:document.getElementById('set-email-encryption')?.value||'tls',
+        username:document.getElementById('set-email-username')?.value.trim()||'', password:document.getElementById('set-email-password')?.value||'',
+        fromAddress:document.getElementById('set-email-from-address')?.value.trim()||'', fromName:document.getElementById('set-email-from-name')?.value.trim()||'',
+        replyTo:document.getElementById('set-email-reply-to')?.value.trim()||'', auth:document.getElementById('set-email-auth')?.checked!==false,
+        active:document.getElementById('set-email-active')?.checked!==false, saveCopy:document.getElementById('set-email-save-copy')?.checked===true,
+        testRecipient:document.getElementById('set-email-test-recipient')?.value.trim()||''
+      };
+    }
+    function testEmailSettings(){const cfg=getEmailSettings();if(!cfg.host||!cfg.fromAddress){toast('SMTP sunucusu ve gönderen e-posta zorunludur','warning');return;}toast('E-posta bağlantı bilgileri doğrulandı (prototip)','success');}
+    function sendTestEmail(){const cfg=getEmailSettings();if(!cfg.testRecipient){toast('Test alıcı e-posta adresini giriniz','warning');return;}toast('Test e-postası gönderildi (prototip)','success');}
+    setTimeout(loadEmailSettings,0);
+
+    function saveSettings() {
+      const companyInfo={
+        name:document.getElementById('set-company-name')?.value.trim()||'Tcr3WEB',
+        shortName:document.getElementById('set-company-name')?.value.trim()||'Tcr3WEB',
+        longName:document.getElementById('set-company-long-name')?.value.trim()||document.getElementById('set-company-name')?.value.trim()||'Tcr3WEB',
+        taxNo:document.getElementById('set-company-taxno')?.value.trim()||'',
+        taxOffice:document.getElementById('set-company-taxoffice')?.value.trim()||'',
+        mersisNo:document.getElementById('set-company-mersis')?.value.trim()||'',
+        tradeRegistryNo:document.getElementById('set-company-trade-registry')?.value.trim()||'',
+        city:document.getElementById('set-company-city')?.value.trim()||'',
+        district:document.getElementById('set-company-district')?.value.trim()||'',
+        phone:document.getElementById('set-company-phone')?.value.trim()||'',
+        email:document.getElementById('set-company-email')?.value.trim()||'',
+        web:document.getElementById('set-company-web')?.value.trim()||'',
+        address:document.getElementById('set-company-address')?.value.trim()||'',
+        logo:companyMediaState.logo||'',
+        stamp:companyMediaState.stamp||''
+      };
+      localStorage.setItem('tcr3_company_info',JSON.stringify(companyInfo));
+      localStorage.setItem('tcr3_email_settings',JSON.stringify(getEmailSettings()));
+      const c = document.getElementById('set-currency').value;
+      const l = document.getElementById('set-lang').value;
+      localStorage.setItem('erp_currency', c);
+      localStorage.setItem('erp_lang', l);
+      const dateFormat=document.getElementById('set-date-format')?.value||'DD.MM.YYYY';
+      const timeFormat=document.getElementById('set-time-format')?.value||'24';
+      const weekStart=document.getElementById('set-week-start')?.value||'monday';
+      const numberDecimals=Math.max(0,Math.min(4,Number(document.getElementById('set-number-decimals')?.value||2)));
+      let thousandSeparator=document.getElementById('set-thousand-separator')?.value||'.';
+      let decimalSeparator=document.getElementById('set-decimal-separator')?.value||',';
+      if(thousandSeparator===decimalSeparator){ toast('Binlik ve ondalık ayraç farklı olmalıdır','warning'); return; }
+      const currencyPosition=document.getElementById('set-currency-position')?.value||'suffix';
+      const percentDecimals=Math.max(0,Math.min(4,Number(document.getElementById('set-percent-decimals')?.value||2)));
+      localStorage.setItem('erp_date_format',dateFormat); localStorage.setItem('erp_time_format',timeFormat);
+      localStorage.setItem('erp_week_start',weekStart); localStorage.setItem('erp_number_decimals',String(numberDecimals));
+      localStorage.setItem('erp_thousand_separator',thousandSeparator); localStorage.setItem('erp_decimal_separator',decimalSeparator);
+      localStorage.setItem('erp_currency_position',currencyPosition); localStorage.setItem('erp_percent_decimals',String(percentDecimals));
+      const loaderEnabledEl = document.getElementById('set-loader-enabled');
+      const loaderDurationEl = document.getElementById('set-loader-duration');
+      const loaderEnabled = loaderEnabledEl ? loaderEnabledEl.checked : true;
+      let loaderDuration = loaderDurationEl ? Number(loaderDurationEl.value || 650) : 650;
+      loaderDuration = Math.max(150, Math.min(5000, loaderDuration));
+      localStorage.setItem('erp_page_loader_enabled', loaderEnabled ? '1' : '0');
+      localStorage.setItem('erp_page_loader_duration', String(loaderDuration));
+      const toastEnabled = document.getElementById('set-toast-enabled')?.checked !== false;
+      const toastProgressEnabled = document.getElementById('set-toast-progress')?.checked !== false;
+      const toastColoredBg = document.getElementById('set-toast-colored-bg')?.checked !== false;
+      const toastIconsEnabled = document.getElementById('set-toast-icons')?.checked !== false;
+      const toastMax = Math.max(1, Math.min(5, Number(document.getElementById('set-toast-max')?.value || 3)));
+      const toastPosition = document.getElementById('set-toast-position')?.value || 'top-center';
+      let toastDuration = Number(document.getElementById('set-toast-duration')?.value || 2500);
+      toastDuration = Math.max(500, Math.min(15000, toastDuration));
+      localStorage.setItem('erp_toast_enabled', toastEnabled ? '1' : '0');
+      localStorage.setItem('erp_toast_duration', String(toastDuration));
+      localStorage.setItem('erp_toast_progress_enabled', toastProgressEnabled ? '1' : '0');
+      localStorage.setItem('erp_toast_colored_bg', toastColoredBg ? '1' : '0');
+      localStorage.setItem('erp_toast_icons_enabled', toastIconsEnabled ? '1' : '0');
+      localStorage.setItem('erp_toast_max', String(toastMax));
+      localStorage.setItem('erp_toast_position', toastPosition);
+      const lockPolicies={}; document.querySelectorAll('[data-lock-key]').forEach(i=>lockPolicies[i.dataset.lockKey]=Math.max(0,Number(i.value||0))); localStorage.setItem('tcr3_lock_policies',JSON.stringify(lockPolicies));
+      const serviceRules={maxActive:Math.max(1,Number(document.getElementById('set-service-max-active')?.value||3)),maxDaily:Math.max(1,Number(document.getElementById('set-service-max-daily')?.value||8)),startMinutes:Math.max(5,Number(document.getElementById('set-service-start-minutes')?.value||45)),autoReturn:!!document.getElementById('set-service-auto-return')?.checked,zoneRequired:!!document.getElementById('set-service-zone-required')?.checked,skillRequired:!!document.getElementById('set-service-skill-required')?.checked}; localStorage.setItem('tcr3_service_rules',JSON.stringify(serviceRules));
+      saveApiSettings();
+      localStorage.removeItem('tcr3web_header_weather_profile_v2');
+      APP_CURRENCY = c; APP_LANG = l;
+      APP_DATE_FORMAT=dateFormat; APP_TIME_FORMAT=timeFormat; APP_WEEK_START=weekStart;
+      APP_NUMBER_DECIMALS=numberDecimals; APP_THOUSAND_SEPARATOR=thousandSeparator; APP_DECIMAL_SEPARATOR=decimalSeparator;
+      APP_CURRENCY_POSITION=currencyPosition; APP_PERCENT_DECIMALS=percentDecimals;
+      APP_PAGE_LOADER_ENABLED = loaderEnabled;
+      APP_PAGE_LOADER_DURATION = loaderDuration;
+      APP_TOAST_ENABLED = toastEnabled;
+      APP_TOAST_DURATION = toastDuration;
+      APP_TOAST_PROGRESS_ENABLED = toastProgressEnabled;
+      APP_TOAST_COLORED_BG = toastColoredBg;
+      APP_TOAST_ICONS_ENABLED = toastIconsEnabled;
+      APP_TOAST_MAX = toastMax;
+      APP_TOAST_POSITION = toastPosition;
+      document.getElementById('tcrToastContainer')?.remove();
+      toast('Sistem ayarları güncellendi', 'success', {force:true});
+    }
+  </script>
+</body>
+</html>

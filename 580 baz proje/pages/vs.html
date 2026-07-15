@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#10243f" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-title" content="Tcr3WEB" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <link rel="manifest" href="../manifest.webmanifest?v=20260711-699" />
+  <link rel="icon" type="image/png" href="../assets/icons/favicon-64.png" />
+  <link rel="apple-touch-icon" href="../assets/icons/icon-180.png" />
+  <title>Tcr3WEB · Verilen Sipariş</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../assets/css/style.css?v=20260712-653" />
+  <link rel="stylesheet" href="../assets/css/responsive-master.css?v=20260713-591" />
+  <link rel="stylesheet" href="../assets/css/performance.css?v=20260711-700" />
+  <link rel="stylesheet" href="../assets/css/tcr-table.css?v=20260713-583" />
+  <link rel="stylesheet" href="../assets/css/kpi-standard.css?v=20260712-694" />
+  <link rel="stylesheet" href="../assets/css/text-readability.css?v=20260712-657" />
+</head>
+<body>
+  <div id="app" class="app"></div>
+  <script src="../assets/js/app.js?v=20260712-653"></script>
+  <script src="../assets/js/tcr-actions.js?v=20260713-600"></script>
+  <script src="../assets/js/master-init.js?v=20260713-583"></script>
+  <script src="../assets/js/tcr-table.js?v=20260713-587"></script>
+  <script>
+    bootPage('vs', () => {
+      const toplam = MOCK.vs.reduce((s,x)=>s+x.tutar,0);
+      const bekliyor = MOCK.vs.filter(x=>x.durum==='Bekliyor').length;
+      const onay = MOCK.vs.filter(x=>x.durum==='Onaylandı').length;
+      const teslim = MOCK.vs.filter(x=>x.durum==='Teslim Alındı').length;
+      return `
+      <div class="page-head">
+        <div>
+          <div class="breadcrumb"><a href="dashboard.html">Genel</a><span>›</span><span>Satın Alma</span><span>›</span><span>Verilen Sipariş</span></div>
+          <h1 class="page-title">${ICONS.send} Verilen Sipariş</h1>
+          <div class="page-sub">Tedarikçilere verilen satın alma siparişleri</div>
+        </div>
+        <div class="page-actions">
+          <button class="btn btn-ghost" onclick="toast('Dışa aktarıldı (prototip)')">${ICONS.download} Dışa Aktar</button>
+          <button class="btn btn-ghost" onclick="toast('Yazdırıldı (prototip)')">${ICONS.print} Yazdır</button>
+          <button class="btn btn-primary" onclick="location.href='vs-form.html'">${ICONS.plus} Yeni Sipariş</button>
+        </div>
+      </div>
+
+      <div class="tcr-ac-grid">
+        <div class="tcr-action-card tcr-ac-blue"><span class="tcr-ac-icon">${ICONS.send}</span><span class="tcr-ac-content"><span class="tcr-ac-title">Toplam Sipariş</span><span class="tcr-ac-desc">${MOCK.vs.length}</span></span></div>
+        <div class="tcr-action-card tcr-ac-red"><span class="tcr-ac-icon">${ICONS.trend_down}</span><span class="tcr-ac-content"><span class="tcr-ac-title">Toplam Tutar</span><span class="tcr-ac-desc">${fmtMoney(toplam)}</span></span></div>
+        <div class="tcr-action-card tcr-ac-orange"><span class="tcr-ac-icon">${ICONS.alert}</span><span class="tcr-ac-content"><span class="tcr-ac-title">Bekliyor / Onaylandı</span><span class="tcr-ac-desc">${bekliyor + onay}</span></span></div>
+        <div class="tcr-action-card tcr-ac-green"><span class="tcr-ac-icon">${ICONS.check}</span><span class="tcr-ac-content"><span class="tcr-ac-title">Teslim Alınan</span><span class="tcr-ac-desc">${teslim}</span></span></div>
+      </div>
+
+      <div class="card">
+        <div class="card-head">
+          <div class="card-title">Sipariş Listesi</div>
+          <div class="flex gap-2">
+            <span class="pill">${MOCK.vs.length} kayıt</span>
+          </div>
+        </div>
+        <div>
+          <div class="tabs" style="padding:0 var(--s-5);margin-bottom:0">
+            <button class="tab active" onclick="filterVS(this,'')">Tümü <span class="tab-count">${MOCK.vs.length}</span></button>
+            <button class="tab" onclick="filterVS(this,'Bekliyor')">Bekliyor <span class="tab-count">${bekliyor}</span></button>
+            <button class="tab" onclick="filterVS(this,'Onaylandı')">Onaylandı <span class="tab-count">${onay}</span></button>
+            <button class="tab" onclick="filterVS(this,'Teslim Alındı')">Teslim Alındı <span class="tab-count">${teslim}</span></button>
+            <button class="tab" onclick="filterVS(this,'İptal')">İptal <span class="tab-count">${MOCK.vs.filter(x=>x.durum==='İptal').length}</span></button>
+          </div>
+          <div class="toolbar" style="padding:var(--s-4) var(--s-5);border-top:1px solid var(--border-soft)">
+            <div class="toolbar-search">
+              <span class="toolbar-search-icon">${ICONS.search}</span>
+              <input type="text" placeholder="Sipariş no, tedarikçi ara..." oninput="searchVS(this.value)" />
+            </div>
+            <select class="filter-select" onchange="filterVSByDurum(this.value)">
+              <option value="">Tüm Durumlar</option>
+              <option>Bekliyor</option><option>Onaylandı</option><option>Teslim Alındı</option><option>İptal</option>
+            </select>
+            <div class="toolbar-spacer"></div>
+          </div>
+          <div class="table-wrap" style="border:none;border-radius:0">
+            <table class="data" id="vsTable">
+              <thead><tr>
+                <th>Sipariş No</th><th>Tedarikçi</th><th>Sipariş Tarihi</th><th>Termin</th>
+                <th>Ürün</th><th class="num">Tutar</th><th>Durum</th><th>İşlemler</th>
+              </tr></thead>
+              <tbody>
+                ${MOCK.vs.map(s => `<tr>
+                  <td class="strong mono">${s.no}</td>
+                  <td>${s.cari}</td>
+                  <td>${fmtDate(s.tarih)}</td>
+                  <td>${fmtDate(s.termin)}</td>
+                  <td class="text-center">${s.urunler}</td>
+                  <td class="num">${fmtMoney(s.tutar)}</td>
+                  <td><span class="badge ${s.durum==='Teslim Alındı'?'badge-success':s.durum==='Onaylandı'?'badge-info':s.durum==='Bekliyor'?'badge-warn':'badge-danger'}">${s.durum}</span></td>
+                  <td>
+                    <div class="flex gap-2">
+                      <button class="icon-btn" style="width:30px;height:30px" onclick="openModal('detayVSModal')" title="Detay">${ICONS.eye}</button>
+                      <button class="icon-btn" style="width:30px;height:30px" onclick="location.href='vs-form.html?id=${s.no}'" title="Düzenle">${ICONS.edit}</button>
+                      <button class="icon-btn" style="width:30px;height:30px" onclick="openListEvrak('vs','${s.no}','Sipariş Evrakları','${s.cari}')" title="Evrak Yönetimi">${ICONS.file_check}</button>
+                      <button class="icon-btn" style="width:30px;height:30px" onclick="toast('Teslim alındı olarak işaretlendi','success')" title="Teslim Al">${ICONS.check}</button>
+                      <button class="icon-btn" style="width:30px;height:30px;color:var(--c-danger-400)" onclick="toast('Sipariş iptal edildi','warn')" title="İptal">${ICONS.close}</button>
+                    </div>
+                  </td>
+                </tr>`).join('')}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      ${modalHtml('yeniVSModal', 'Yeni Verilen Sipariş', `
+        <div class="form-grid-2">
+          <div class="form-field full">
+            <label class="form-label">Tedarikçi</label>
+            <select class="form-input">
+              ${MOCK.cari.filter(c=>c.tip==='Tedarikçi').map(c=>`<option>${c.ad}</option>`).join('')}
+            </select>
+          </div>
+          <div class="form-field">
+            <label class="form-label">Sipariş Tarihi</label>
+            <input type="date" class="form-input" value="2026-07-04" />
+          </div>
+          <div class="form-field">
+            <label class="form-label">Termin Tarihi</label>
+            <input type="date" class="form-input" value="2026-07-22" />
+          </div>
+          <div class="form-field">
+            <label class="form-label">Belge No</label>
+            <input type="text" class="form-input" value="VS20261001" readonly />
+          </div>
+          <div class="form-field">
+            <label class="form-label">Durum</label>
+            <select class="form-input"><option>Bekliyor</option><option>Onaylandı</option></select>
+          </div>
+          <div class="form-field full">
+            <label class="form-label">Notlar</label>
+            <textarea class="form-input" placeholder="Sipariş notu..."></textarea>
+          </div>
+        </div>
+      `, `<button class="btn btn-ghost" onclick="closeModal('yeniVSModal')">İptal</button>
+          <button class="btn btn-primary" onclick="closeModal('yeniVSModal');toast('Sipariş kaydedildi','success')">Kaydet</button>`)}
+
+      ${modalHtml('detayVSModal', 'Sipariş Detayı', `
+        <div style="margin-bottom:var(--s-4)">
+          <div class="stat-row"><div class="stat-label">Sipariş No</div><div class="stat-value mono">VS20261000</div></div>
+          <div class="stat-row"><div class="stat-label">Tedarikçi</div><div class="stat-value">Yıldız Plastik A.Ş.</div></div>
+          <div class="stat-row"><div class="stat-label">Sipariş Tarihi</div><div class="stat-value">04.07.2026</div></div>
+          <div class="stat-row"><div class="stat-label">Termin</div><div class="stat-value">22.07.2026</div></div>
+          <div class="stat-row"><div class="stat-label">Tutar</div><div class="stat-value">58.000,00 ₺</div></div>
+          <div class="stat-row"><div class="stat-label">Durum</div><div class="stat-value"><span class="badge badge-warn">Bekliyor</span></div></div>
+        </div>
+        <table class="data">
+          <thead><tr><th>Ürün</th><th>Miktar</th><th>Birim Fiyat</th><th class="num">Tutar</th></tr></thead>
+          <tbody>
+            <tr><td>Plastik Ham Madde PP</td><td>3000 kg</td><td>12,50 ₺</td><td class="num">37.500,00 ₺</td></tr>
+            <tr><td>İş Eldiveni Mavi</td><td>60 çift</td><td>18,50 ₺</td><td class="num">1.110,00 ₺</td></tr>
+            <tr><td>Vida 6mm Paket</td><td>80 paket</td><td>24,90 ₺</td><td class="num">1.992,00 ₺</td></tr>
+          </tbody>
+        </table>
+      `, `<button class="btn btn-ghost" onclick="closeModal('detayVSModal')">Kapat</button>
+          <button class="btn btn-accent" onclick="closeModal('detayVSModal');toast('Teslim alındı olarak işaretlendi','success')">${ICONS.check} Teslim Alındı</button>`)}
+
+
+      ${modalHtml('listeEvrakModal', 'Evrak Yönetimi', `
+        <div class="evrak-manager">
+          <div class="evrak-manager-head">
+            <div class="evrak-entity-icon cari">${ICONS.file_check}</div>
+            <div>
+              <div id="liste-evrak-title" class="evrak-entity-title">Evrak Yönetimi</div>
+              <div id="liste-evrak-sub" class="evrak-entity-sub">Ana kayıt evrakları</div>
+            </div>
+            <div class="evrak-head-spacer"></div>
+            <span class="badge badge-info">Ana Kayıt Evrakları</span>
+          </div>
+          <div class="evrak-manager-grid">
+            <label class="evrak-drop-card">
+              <input type="file" multiple accept="image/*,.pdf,.doc,.docx,.xls,.xlsx" style="display:none" onchange="handleListEvrakUpload(this)">
+              <span class="evrak-drop-icon">${ICONS.download}</span>
+              <b>Evrak Yükle</b>
+              <small>Resim, PDF, Word veya Excel dosyası seçin.</small>
+            </label>
+            <div class="evrak-list-card">
+              <div class="evrak-list-head">
+                <div>
+                  <b>Ekli Evraklar</b>
+                  <small>Seçili ana kayda bağlı dosyalar</small>
+                </div>
+                <input class="form-input evrak-search" placeholder="Evrak ara..." oninput="filterEvrakList(this,'liste-evrak-list')" />
+              </div>
+              <div class="ekler-list evrak-list-modern" id="liste-evrak-list"><div class="ekler-empty">Evrak yükleniyor…</div></div>
+            </div>
+          </div>
+        </div>
+      `, `<span class="modal-footer-info">Evraklar seçili ana kayda bağlanır.<span class="ek-selected-info" data-ekler-selected-count="liste-evrak-list">Seçili evrak yok</span></span><button class="btn btn-ghost" onclick="eklerDownloadSelected(_listEvrakType,_listEvrakId,'liste-evrak-list')">${ICONS.download} İndir</button><button class="btn btn-success" onclick="eklerWhatsappSelected(_listEvrakType,_listEvrakId,'liste-evrak-list')">${ICONS.whatsapp} WhatsApp Gönder</button><button class="btn btn-danger" onclick="closeModal('listeEvrakModal')">Kapat</button>`, 'xl')}
+      `;
+    });
+
+    function filterVS(btn, durum) {
+      btn.closest('.tabs').querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+      btn.classList.add('active');
+      document.querySelectorAll('#vsTable tbody tr').forEach(r => {
+        const d = r.querySelector('.badge')?.textContent||'';
+        r.style.display = (!durum || d===durum) ? '' : 'none';
+      });
+    }
+    function searchVS(q) {
+      q = q.toLowerCase();
+      document.querySelectorAll('#vsTable tbody tr').forEach(r => {
+        r.style.display = r.textContent.toLowerCase().includes(q) ? '' : 'none';
+      });
+    }
+    function filterVSByDurum(v) {
+      document.querySelectorAll('#vsTable tbody tr').forEach(r => {
+        const d = r.querySelector('.badge')?.textContent||'';
+        r.style.display = (!v||d===v)?'':'none';
+      });
+    }
+
+    let _listEvrakType = 'genel';
+    let _listEvrakId = 'YENI';
+    function openListEvrak(type, id, title, sub) {
+      _listEvrakType = type;
+      _listEvrakId = id;
+      openModal('listeEvrakModal');
+      const titleEl = document.getElementById('liste-evrak-title');
+      const subEl = document.getElementById('liste-evrak-sub');
+      if (titleEl) titleEl.textContent = `${title} · ${id}`;
+      if (subEl) subEl.textContent = sub || 'Ana kayıt evrakları';
+      initEkler(type, id, 'liste-evrak-list');
+    }
+    async function handleListEvrakUpload(input) {
+      await eklerUpload(input, _listEvrakType, _listEvrakId);
+      setTimeout(() => initEkler(_listEvrakType, _listEvrakId, 'liste-evrak-list'), 150);
+    }
+
+  </script>
+</body>
+</html>

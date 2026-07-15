@@ -1,0 +1,58 @@
+/* Tcr3WEB ERP - Global readable text standard */
+:root{
+  --tcr-text-main:#111827;
+  --tcr-text-soft:#1f2937;
+  --tcr-text-helper:#374151;
+}
+body,
+.form-control,
+.form-select,
+.form-input,
+input,
+select,
+textarea{
+  color:var(--tcr-text-main);
+  font-family:Inter,system-ui,-apple-system,"Segoe UI",sans-serif;
+}
+label,
+.form-label,
+.control-label,
+.input-label,
+.field-label,
+.form-check-label,
+.form-switch label,
+.checkbox-label,
+.radio-label{
+  color:var(--tcr-text-soft)!important;
+  font-weight:600!important;
+}
+.text-muted,
+.text-secondary,
+.text-soft,
+.page-sub,
+.card-sub,
+.card-desc,
+.help-text,
+.form-text,
+.field-help,
+small.muted,
+small.text-muted,
+small.text-secondary,
+.breadcrumb,
+.breadcrumb a,
+.table-info,
+.table-status,
+.modal-subtitle{
+  color:var(--tcr-text-helper)!important;
+  font-weight:500;
+}
+input::placeholder,
+textarea::placeholder{
+  color:#4b5563!important;
+  opacity:1;
+}
+/* Preserve semantic/status colors */
+.text-success,.text-danger,.text-warning,.text-info,.badge,.alert,
+.status-success,.status-danger,.status-warning,.status-info{
+  font-weight:600;
+}

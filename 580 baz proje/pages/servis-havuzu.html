@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Tcr3WEB · Servis Havuzu</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../assets/css/style.css?v=20260712-653" />
+  <link rel="stylesheet" href="../assets/css/responsive-master.css?v=20260713-591" />
+  <link rel="stylesheet" href="../assets/css/performance.css?v=20260711-700" />
+  <link rel="stylesheet" href="../assets/css/tcr-table.css?v=20260713-583" />
+  <link rel="stylesheet" href="../assets/css/kpi-standard.css?v=20260712-694" />
+  <link rel="stylesheet" href="../assets/css/text-readability.css?v=20260712-657" />
+</head>
+<body>
+  <div id="app" class="app"></div>
+  <script src="../assets/js/app.js?v=20260712-653"></script>
+  <script src="../assets/js/tcr-actions.js?v=20260713-600"></script>
+  <script src="../assets/js/master-init.js?v=20260713-583"></script>
+  <script src="../assets/js/tcr-table.js?v=20260713-587"></script>
+  <script>
+    const servicePool = [
+      {no:'SRV202607080014', time:'08:45', zone:'Merkez', cari:'ABC Ltd.', phone:'0532 000 11 22', address:'Organize Sanayi 3. Cadde', device:'Endüstriyel Fırın · SN-24591', fault:'Ateşleme arızası', priority:'Kritik', warranty:'Garanti Var', distance:'4.2 km', eta:'12 dk', status:'Açık', tone:'danger', skill:'Elektrik', parts:'Ateşleme kartı önerilir'},
+      {no:'SRV202607080015', time:'09:20', zone:'Kayapınar', cari:'Kuzey Market', phone:'0542 100 33 44', address:'Diclekent Bulvarı', device:'Soğutucu Reyon · SN-11002', fault:'Kompresör soğutmuyor', priority:'Acil', warranty:'Ücretli', distance:'6.8 km', eta:'18 dk', status:'Açık', tone:'warn', skill:'Soğutma', parts:'Kompresör rölesi'},
+      {no:'SRV202607080016', time:'10:10', zone:'Bağlar', cari:'Nova Gıda', phone:'0533 221 44 55', address:'Bağcılar Mah.', device:'Paketleme Makinesi · SN-88820', fault:'Sensör kalibrasyon', priority:'Normal', warranty:'Bakım Sözleşmesi', distance:'9.1 km', eta:'25 dk', status:'Açık', tone:'info', skill:'Mekanik', parts:'Sarf yok'},
+      {no:'SRV202607080017', time:'11:30', zone:'Yenişehir', cari:'Delta Otel', phone:'0530 555 62 62', address:'Ofis Semti', device:'VRF Klima · SN-71005', fault:'Periyodik bakım', priority:'Planlı', warranty:'Garanti Var', distance:'2.6 km', eta:'9 dk', status:'Açık', tone:'success', skill:'Klima', parts:'Filtre seti'},
+      {no:'SRV202607080018', time:'13:00', zone:'Merkez', cari:'Yıldız Fırın', phone:'0539 764 12 02', address:'Sanayi Sitesi', device:'Hamur Yoğurma · SN-54011', fault:'Motor sesi yüksek', priority:'Normal', warranty:'Ücretli', distance:'5.4 km', eta:'16 dk', status:'Açık', tone:'info', skill:'Mekanik', parts:'Rulman kontrol'},
+      {no:'SRV202607080019', time:'14:40', zone:'Sur', cari:'Mezopotamya Cafe', phone:'0544 111 89 00', address:'Gazi Cad.', device:'Kahve Makinesi · SN-03120', fault:'Su almıyor', priority:'Acil', warranty:'Bakım Sözleşmesi', distance:'3.5 km', eta:'13 dk', status:'Atandı', tone:'muted', skill:'Elektrik', parts:'Pompa kontrol'}
+    ];
+
+    bootPage('servis-havuzu', () => `
+      <div class="page-head service-pool-head">
+        <div>
+          <div class="breadcrumb"><a href="dashboard.html">Servis</a><span>›</span><span>Servis Havuzu</span></div>
+          <h1 class="page-title">Açık Servis Havuzu</h1>
+          <div class="page-sub">Saha ekibi açık servisleri telefondan görür, uygun işi <b>Üzerime Al</b> diyerek müdahaleye başlar.</div>
+        </div>
+        <div class="page-actions service-top-actions">
+          <button class="btn btn-outline-primary btn-action-view" onclick="showActionModal('info','Yetki Kuralı','Personel sadece yetkili olduğu bölge, beceri ve açık durumdaki servisleri görür.')">${ICONS.info}<span>Yetki Kuralı</span></button>
+          <button class="btn btn-outline-success btn-action-approve" onclick="location.href='servis-talep-form.html'">${ICONS.plus}<span>Yeni Talep</span></button>
+        </div>
+      </div>
+
+      <div class="tcr-ac-grid mb-5">
+        ${roleKpi('users','Açık Havuz','<span id="poolOpenCount">5</span>','atanmamış servis','warn')}
+        ${roleKpi('user-id','Üzerimdeki İş','<span id="poolActiveCount">2</span> / <span id="poolActiveLimit">3</span>','aktif servis limiti','accent')}
+        ${roleKpi('alert','Kritik / Acil','2','öncelikli müdahale','danger')}
+        ${roleKpi('clock','Kalan Kapasite','<span id="poolRemainingCount">1</span>','yeni servis alınabilir','success')}
+      </div>
+
+      <div class="card service-pool-filter mb-5">
+        <div class="filter-grid-pro">
+          <div class="form-group"><label class="form-label">Hızlı Arama</label><div class="input-icon">${ICONS.search}<input class="form-input" id="poolSearch" placeholder="Cari, cihaz, servis no, bölge..." oninput="filterPool()"></div></div>
+          <div class="form-group"><label class="form-label">Bölge</label><select class="form-input" id="poolZone" onchange="filterPool()"><option value="">Tümü</option><option>Merkez</option><option>Kayapınar</option><option>Bağlar</option><option>Yenişehir</option><option>Sur</option></select></div>
+          <div class="form-group"><label class="form-label">Öncelik</label><select class="form-input" id="poolPriority" onchange="filterPool()"><option value="">Tümü</option><option>Kritik</option><option>Acil</option><option>Normal</option><option>Planlı</option></select></div>
+          <div class="form-group"><label class="form-label">Durum</label><select class="form-input" id="poolStatus" onchange="filterPool()"><option>Açık</option><option>Atandı</option><option>İşlemde</option><option>Tümü</option></select></div>
+        </div>
+      </div>
+
+      <div class="service-pool-layout">
+        <section class="card service-panel service-pool-list-card">
+          <div class="card-head service-card-head">
+            <div><div class="card-title">Açık Servisler</div><div class="text-mute small">Her usta yalnızca tanımlı aktif servis limitine kadar iş alabilir. Alınan servis anında kilitlenir.</div></div>
+            <div class="segmented-tabs"><button class="active">Havuz</button><button>Yakınımdaki</button><button>Kritik</button><button>Atanmış</button></div>
+          </div>
+          <div class="card-body service-pool-list" id="poolList"></div>
+        </section>
+
+        <aside class="service-pool-side">
+          <section class="card service-panel">
+            <div class="card-head service-card-head"><div class="card-title">Saha Akışı</div><span class="pill">Mobil</span></div>
+            <div class="card-body service-mobile-flow">
+              <div class="active"><b>1</b><span>Açık servisi seç</span><small>Servis havuzundan uygun işi üzerine al.</small></div>
+              <div><b>2</b><span>Yola çık</span><small>Konum ve ETA bilgisi başlar.</small></div>
+              <div><b>3</b><span>Servise başla</span><small>Fotoğraf, not, parça ve işçilik girilir.</small></div>
+              <div><b>4</b><span>Tahsilat / POS</span><small>Nakit, havale veya sanal POS alınır.</small></div>
+              <div><b>5</b><span>İmza ve kapat</span><small>Müşteri imzası ile servis tamamlanır.</small></div>
+            </div>
+          </section>
+
+          <section class="card service-panel mt-4">
+            <div class="card-head service-card-head"><div class="card-title">Benim Servislerim</div><span class="pill" id="myServicePill">2 / 3 İş</span></div>
+            <div class="card-body my-service-list">
+              <div><strong>SRV202607080011</strong><span>XYZ A.Ş. · yolda</span><em>ETA 8 dk</em></div>
+              <div><strong>SRV202607080012</strong><span>Mavi Market · işlemde</span><em>Parça girildi</em></div>
+            </div>
+          </section>
+        </aside>
+      </div>
+    `);
+
+    const SERVICE_RULE_DEFAULTS = {maxActive:3,maxDaily:8,startMinutes:45,autoReturn:true,zoneRequired:true,skillRequired:true};
+    function getServiceRules(){
+      try{return {...SERVICE_RULE_DEFAULTS,...JSON.parse(localStorage.getItem('tcr3_service_rules')||'{}')}}catch(e){return {...SERVICE_RULE_DEFAULTS}}
+    }
+    function getServiceState(){
+      try{return {...{active:2,dailyAccepted:2,lastClaimAt:0},...JSON.parse(localStorage.getItem('tcr3_service_state')||'{}')}}catch(e){return {active:2,dailyAccepted:2,lastClaimAt:0}}
+    }
+    function saveServiceState(v){localStorage.setItem('tcr3_service_state',JSON.stringify(v));}
+
+    renderPool();
+
+    function renderPool(){
+      const root = document.getElementById('poolList');
+      if(!root) return;
+      root.innerHTML = servicePool.map(renderPoolCard).join('');
+      refreshServiceCapacity();
+      filterPool();
+    }
+
+    function renderPoolCard(s){
+      const open = s.status === 'Açık';
+      return `<article class="service-pool-card ${s.tone} ${open ? '' : 'locked'}" data-search="${(s.no+' '+s.zone+' '+s.cari+' '+s.device+' '+s.fault+' '+s.priority+' '+s.status).toLowerCase()}" data-zone="${s.zone}" data-priority="${s.priority}" data-status="${s.status}">
+        <div class="pool-time"><strong>${s.time}</strong><span>${s.distance}</span><small>${s.eta}</small></div>
+        <div class="pool-main">
+          <div class="pool-title"><strong>${s.cari}</strong><span>${s.no}</span></div>
+          <div class="pool-device">${s.device}</div>
+          <div class="pool-fault">${s.fault}</div>
+          <div class="pool-address">${s.zone} · ${s.address} · ${s.phone}</div>
+        </div>
+        <div class="pool-tags">
+          <span class="status ${s.priority==='Kritik' ? 'danger' : s.priority==='Acil' ? 'warn' : s.priority==='Planlı' ? 'success' : 'info'}">${s.priority}</span>
+          <span class="status ${s.warranty.includes('Garanti') ? 'success' : s.warranty.includes('Bakım') ? 'info' : 'danger'}">${s.warranty}</span>
+          <span class="status">${s.skill}</span>
+          <span class="status ${open ? 'warn' : ''}">${s.status}</span>
+        </div>
+        <div class="pool-extra">
+          <span><b>Parça:</b> ${s.parts}</span>
+          <span><b>Kural:</b> Bölge + beceri uygunluğu kontrol edilir</span>
+        </div>
+        <div class="pool-actions">
+          <button class="btn btn-outline-primary btn-sm btn-icon-action" title="Servis detayını görüntüle" onclick="openPoolDetail('${s.no}')">${ICONS.eye}<span>Detay</span></button>
+          <button class="btn btn-outline-info btn-sm btn-icon-action" title="Servis konumuna rota başlat" onclick="startRoute('${s.no}')">${ICONS.map}<span>Git</span></button>
+          <button class="btn btn-outline-success btn-sm btn-icon-action claim-service-btn" ${open ? '' : 'disabled'} title="Aktif servis limitiniz uygunsa bu servisi üzerinize alın" onclick="claimService('${s.no}')">${ICONS.check}<span>Üzerime Al</span></button>
+        </div>
+      </article>`;
+    }
+
+    function filterPool(){
+      const q = (document.getElementById('poolSearch')?.value || '').toLowerCase().trim();
+      const z = document.getElementById('poolZone')?.value || '';
+      const p = document.getElementById('poolPriority')?.value || '';
+      const stVal = document.getElementById('poolStatus')?.value || 'Açık';
+      document.querySelectorAll('.service-pool-card').forEach(card => {
+        const okQ = !q || card.dataset.search.includes(q);
+        const okZ = !z || card.dataset.zone === z;
+        const okP = !p || card.dataset.priority === p;
+        const okS = stVal === 'Tümü' || card.dataset.status === stVal;
+        card.style.display = okQ && okZ && okP && okS ? '' : 'none';
+      });
+    }
+
+    function claimService(no){
+      showActionModal('confirm','Servisi Üzerime Al', no + ' numaralı servis size atanacak. Diğer saha personellerinde kilitli görünecek.', function(){
+        const item = servicePool.find(x => x.no === no);
+        if(item) item.status = 'İşlemde';
+        const SERVICE_RULE_DEFAULTS = {maxActive:3,maxDaily:8,startMinutes:45,autoReturn:true,zoneRequired:true,skillRequired:true};
+    function getServiceRules(){
+      try{return {...SERVICE_RULE_DEFAULTS,...JSON.parse(localStorage.getItem('tcr3_service_rules')||'{}')}}catch(e){return {...SERVICE_RULE_DEFAULTS}}
+    }
+    function getServiceState(){
+      try{return {...{active:2,dailyAccepted:2,lastClaimAt:0},...JSON.parse(localStorage.getItem('tcr3_service_state')||'{}')}}catch(e){return {active:2,dailyAccepted:2,lastClaimAt:0}}
+    }
+    function saveServiceState(v){localStorage.setItem('tcr3_service_state',JSON.stringify(v));}
+
+    renderPool();
+        showActionModal('success','Servis Alındı', no + ' artık sizin üzerinizde. Yola çık veya servise başla adımına geçebilirsiniz.');
+      });
+    }
+    function openPoolDetail(no){ showActionModal('info','Servis Detayı', no + ' için müşteri, cihaz, garanti, açık arıza, evrak ve geçmiş servis bilgileri açıldı.'); }
+    function startRoute(no){ showActionModal('info','Rota Başlatıldı', no + ' için harita/navigasyon ve ETA bilgisi açıldı.'); }
+  </script>
+</body>
+</html>

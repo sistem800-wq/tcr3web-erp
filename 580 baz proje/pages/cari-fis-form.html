@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#10243f" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-title" content="Tcr3WEB" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <link rel="manifest" href="../manifest.webmanifest?v=20260711-699" />
+  <link rel="icon" type="image/png" href="../assets/icons/favicon-64.png" />
+  <link rel="apple-touch-icon" href="../assets/icons/icon-180.png" />
+  <title>Tcr3WEB · Cari Fiş Formu</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../assets/css/style.css?v=20260712-653" />
+  <link rel="stylesheet" href="../assets/css/responsive-master.css?v=20260713-591" />
+  <link rel="stylesheet" href="../assets/css/performance.css?v=20260711-700" />
+  <link rel="stylesheet" href="../assets/css/tcr-table.css?v=20260713-583" />
+  <style>
+    .fis-line-actions{display:flex;align-items:center;gap:var(--s-2);flex-wrap:wrap;margin-bottom:var(--s-3)}
+    .fis-top-compact{margin-bottom:var(--s-4)}
+    .fis-top-compact .card-body{padding:var(--s-4)}
+    .fis-top-grid{display:grid;grid-template-columns:220px 150px 150px 1fr;gap:var(--s-3);align-items:end}
+    .fis-top-grid .form-field{margin:0}
+    .fis-top-grid .form-label{font-size:12px;margin-bottom:5px}
+    .fis-top-grid .form-input{height:38px;min-height:38px;line-height:38px;padding:0 12px;box-sizing:border-box}
+    .fis-top-grid select.form-input{appearance:auto;-webkit-appearance:auto;line-height:normal;padding:0 34px 0 12px;background-color:#fff;border:1px solid var(--border);border-radius:12px}
+    .fis-top-grid select.form-input:focus{outline:none;border-color:var(--c-primary-500);box-shadow:0 0 0 3px rgba(29,78,216,.10)}
+    .fis-section-title{font-size:16px;font-weight:800;margin:0}
+    .fis-kalem-table th,.fis-kalem-table td{vertical-align:middle;white-space:nowrap}
+    .fis-kalem-table tbody tr:nth-child(even){background:rgba(15,23,42,.025)}
+    .fis-kalem-table tbody tr:nth-child(odd){background:rgba(255,255,255,.72)}
+    .fis-kalem-table .cari-cell{min-width:260px;white-space:normal}
+    .fis-kalem-table .money-input{width:130px;text-align:right;font-weight:700}
+    .fis-kalem-table .desc-input{min-width:220px}
+    .fis-summary-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:var(--s-3);margin-top:var(--s-4)}
+    .fis-summary-box{border:1px solid var(--border);border-radius:var(--r-lg);background:var(--card);padding:var(--s-4);box-shadow:var(--sh-sm)}
+    .fis-summary-box span{display:block;font-size:12px;color:var(--text-mute);margin-bottom:4px}
+    .fis-summary-box strong{font-size:20px;color:var(--text);font-weight:800}
+    .fis-summary-box.danger strong{color:var(--c-danger-500)}
+    .fis-summary-box.success strong{color:var(--c-accent-600)}
+    @media(max-width:900px){.fis-top-grid{grid-template-columns:1fr 1fr}.fis-summary-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.fis-kalem-table .money-input{width:110px}}
+    @media(max-width:640px){.fis-top-grid{grid-template-columns:1fr}.fis-summary-grid{grid-template-columns:1fr}.fis-line-actions .btn{width:100%;justify-content:center}}
+  </style>
+  <link rel="stylesheet" href="../assets/css/text-readability.css?v=20260712-657" />
+  <link rel="stylesheet" href="../assets/css/cari-amount-status.css?v=20260712-621" />
+</head>
+<body>
+  <div id="app" class="app"></div>
+  <script src="../assets/js/app.js?v=20260712-653"></script>
+  <script src="../assets/js/tcr-actions.js?v=20260713-600"></script>
+  <script src="../assets/js/master-init.js?v=20260713-583"></script>
+  <script src="../assets/js/tcr-table.js?v=20260713-587"></script>
+  <script>
+    const params = new URLSearchParams(location.search);
+    const tip = params.get('tip') || 'acilis';
+    const id = params.get('id');
+    const tipMap = { acilis:'Açılış Fişi', devir:'Devir Fişi', virman:'Virman Fişi' };
+    const tipPrefix = { acilis:'AFIS', devir:'DFIS', virman:'VFIS' };
+    const demoUserId = '10';
+    let cariFisRows = [
+      { id:'CARI001', cari:'Marmara Tekstil A.Ş.', eskiBakiye:125000, borc:125000, alacak:0, aciklama:'Açılış borç bakiyesi' },
+      { id:'CARI002', cari:'Yıldız Plastik A.Ş.', eskiBakiye:-42600, borc:0, alacak:42600, aciklama:'Açılış alacak bakiyesi' },
+    ];
+
+    function makeFisNo(){
+      const d = new Date();
+      const ymd = d.getFullYear()+String(d.getMonth()+1).padStart(2,'0')+String(d.getDate()).padStart(2,'0');
+      return (tipPrefix[tip] || 'CFIS') + ymd + demoUserId + '000001';
+    }
+    function normalizeNum(v){ return Number(String(v ?? '0').replace(/\./g,'').replace(',','.')) || 0; }
+    function cariBakiyeText(n){
+      n = Number(n||0);
+      if(n > 0) return `<span style="color:var(--c-accent-600);font-weight:800">${fmtMoney(Math.abs(n))}</span> <small class="muted">Alacaklı</small>`;
+      if(n < 0) return `<span style="color:var(--c-danger-500);font-weight:800">${fmtMoney(Math.abs(n))}</span> <small class="muted">Borçlu</small>`;
+      return `<span style="font-weight:800">${fmtMoney(0)}</span> <small class="muted">Sıfır</small>`;
+    }
+
+    bootPage('cari-fisleri', () => `
+      <div class="page-head">
+        <div>
+          <div class="breadcrumb">
+            <a href="dashboard.html">Genel</a><span>›</span>
+            <a href="cari-fisleri.html">Cari Fişleri</a><span>›</span>
+            <span>${id ? 'Düzenle' : 'Yeni Fiş'}</span>
+          </div>
+          <h1 class="page-title">${ICONS['file-text']} ${tipMap[tip] || 'Cari Fişi'}</h1>
+        </div>
+        <div class="page-actions">
+          <button class="btn btn-ghost" onclick="location.href='cari-fisleri.html'">Vazgeç</button>
+          <button class="btn btn-success" onclick="toast('Cari fiş kaydedildi','success')">${ICONS.check} Kaydet</button>
+        </div>
+      </div>
+
+      <div class="card fis-top-compact">
+        <div class="card-body">
+          <div class="fis-top-grid">
+            <div class="form-field"><label class="form-label">Fiş No</label><input class="form-input mono" id="fis-no" value="${id || makeFisNo()}" readonly /></div>
+            <div class="form-field"><label class="form-label">Tarih</label><input class="form-input" type="date" value="2026-07-06" /></div>
+            <div class="form-field"><label class="form-label">Durum</label><select class="form-input fis-status-select"><option>Taslak</option><option>Bekliyor</option><option>Onaylandı</option></select></div>
+            <div class="form-field"><label class="form-label">Açıklama</label><input class="form-input" placeholder="Fiş açıklaması" value="${tipMap[tip]}" /></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <h3 class="fis-section-title">Cari Hesap Kalemleri</h3>
+        </div>
+        <div class="card-body">
+          <div class="fis-line-actions">
+            <button class="btn btn-primary" type="button" onclick="openCariFisPicker()">${ICONS.search} Cari Seç</button>
+            <button class="btn btn-light" type="button" onclick="addEmptyCariFisRow()">${ICONS.plus} Boş Satır</button>
+            <button class="btn btn-ghost" type="button" onclick="clearSelectedCariFisRows()">${ICONS.trash} Seçilenleri Sil</button>
+          </div>
+
+          <div class="table-wrap">
+            <table class="data fis-kalem-table" id="cariFisKalemTable">
+              <thead><tr>
+                <th style="width:34px"><input type="checkbox" onchange="toggleAllCariFisRows(this.checked)"></th>
+                <th>Cari Hesap</th>
+                <th class="num">Mevcut Bakiye</th>
+                <th class="num">Borç</th>
+                <th class="num">Alacak</th>
+                <th>Açıklama</th>
+                <th style="width:42px"></th>
+              </tr></thead>
+              <tbody id="cariFisKalemBody"></tbody>
+            </table>
+          </div>
+
+          <div class="fis-summary-grid">
+            <div class="fis-summary-box danger"><span>Toplam Borç</span><strong id="sum-borc">0,00 ₺</strong></div>
+            <div class="fis-summary-box success"><span>Toplam Alacak</span><strong id="sum-alacak">0,00 ₺</strong></div>
+            <div class="fis-summary-box"><span>Fark</span><strong id="sum-fark">0,00 ₺</strong></div>
+            <div class="fis-summary-box"><span>Cari Sayısı</span><strong id="sum-cari-sayisi">0</strong></div>
+          </div>
+        </div>
+      </div>
+    `);
+
+    setTimeout(renderCariFisRows, 0);
+
+    function openCariFisPicker(){
+      openPickerFor('cari', 'fis-temp-cari', 'fis-temp-cari-id', (id, ad) => {
+        const rec = (MOCK.cari || []).find(c => (c.kod || String(c.id)) === id);
+        if(cariFisRows.some(r => r.id === id)){
+          toast('Bu cari fişte zaten var. Mükerrer kayıt eklenmedi.','warn');
+          setPickerFooterMessage(`<span style="color:var(--c-danger-500)">${ad}</span> zaten eklendi`);
+          return false;
+        }
+        cariFisRows.push({ id, cari:ad, eskiBakiye: rec ? Number(rec.bakiye||0) : 0, borc:0, alacak:0, aciklama: tipMap[tip] + ' hareketi' });
+        renderCariFisRows();
+        setPickerFooterMessage(`<span class="ok">${ad}</span> eklendi`);
+        toast('Cari fiş kalemine eklendi','success');
+        return true;
+      }, { keepOpen: true });
+    }
+    function addEmptyCariFisRow(){
+      cariFisRows.push({ id:'', cari:'', eskiBakiye:0, borc:0, alacak:0, aciklama:'' });
+      renderCariFisRows();
+    }
+    function renderCariFisRows(){
+      const body = document.getElementById('cariFisKalemBody');
+      if(!body) return;
+      body.innerHTML = cariFisRows.map((r,i)=>`
+        <tr>
+          <td><input type="checkbox" class="fis-row-check" data-i="${i}"></td>
+          <td class="cari-cell">
+            <div style="display:flex;align-items:center;gap:8px">
+              <input class="form-input" id="fis-cari-${i}" value="${r.cari||''}" placeholder="Cari seçiniz" readonly style="font-weight:700">
+              <button class="icon-btn" type="button" title="Cari Seç" onclick="selectCariForFisRow(${i})">${ICONS.search}</button>
+            </div>
+            <input type="hidden" id="fis-cari-id-${i}" value="${r.id||''}">
+          </td>
+          <td class="num">${cariBakiyeText(r.eskiBakiye)}</td>
+          <td><input class="form-input money-input" type="number" min="0" step="0.01" value="${Number(r.borc||0).toFixed(2)}" oninput="updateCariFisAmount(${i},'borc',this.value)"></td>
+          <td><input class="form-input money-input" type="number" min="0" step="0.01" value="${Number(r.alacak||0).toFixed(2)}" oninput="updateCariFisAmount(${i},'alacak',this.value)"></td>
+          <td><input class="form-input desc-input" value="${r.aciklama||''}" oninput="cariFisRows[${i}].aciklama=this.value" placeholder="Satır açıklaması"></td>
+          <td><button class="icon-btn" type="button" title="Sil" onclick="removeCariFisRow(${i})">${ICONS.trash}</button></td>
+        </tr>`).join('');
+      updateCariFisSummary();
+    }
+    function selectCariForFisRow(i){
+      openPickerFor('cari', `fis-cari-${i}`, `fis-cari-id-${i}`, (id, ad) => {
+        const rec = (MOCK.cari || []).find(c => (c.kod || String(c.id)) === id);
+        if(cariFisRows.some((r,idx) => idx !== i && r.id === id)){
+          toast('Bu cari fişte zaten var. Mükerrer kayıt seçilmedi.','warn');
+          setPickerFooterMessage(`<span style="color:var(--c-danger-500)">${ad}</span> zaten eklendi`);
+          return false;
+        }
+        cariFisRows[i].id = id;
+        cariFisRows[i].cari = ad;
+        cariFisRows[i].eskiBakiye = rec ? Number(rec.bakiye||0) : 0;
+        renderCariFisRows();
+        setPickerFooterMessage(`<span class="ok">${ad}</span> eklendi`);
+        return true;
+      }, { keepOpen: true });
+    }
+    function updateCariFisAmount(i, field, val){
+      cariFisRows[i][field] = normalizeNum(val);
+      updateCariFisSummary();
+    }
+    function removeCariFisRow(i){
+      if(!confirm('Cari fiş kalemi silinsin mi?')) return;
+      cariFisRows.splice(i,1);
+      renderCariFisRows();
+    }
+    function toggleAllCariFisRows(checked){
+      document.querySelectorAll('.fis-row-check').forEach(c => c.checked = checked);
+    }
+    function clearSelectedCariFisRows(){
+      const idxs = [...document.querySelectorAll('.fis-row-check:checked')].map(c => Number(c.dataset.i)).sort((a,b)=>b-a);
+      if(!idxs.length) return toast('Silmek için kalem seçiniz','warn');
+      if(!confirm(idxs.length + ' cari fiş kalemi silinsin mi?')) return;
+      idxs.forEach(i => cariFisRows.splice(i,1));
+      renderCariFisRows();
+    }
+    function updateCariFisSummary(){
+      const borc = cariFisRows.reduce((s,r)=>s+Number(r.borc||0),0);
+      const alacak = cariFisRows.reduce((s,r)=>s+Number(r.alacak||0),0);
+      const fark = borc - alacak;
+      const elB = document.getElementById('sum-borc');
+      const elA = document.getElementById('sum-alacak');
+      const elF = document.getElementById('sum-fark');
+      const elC = document.getElementById('sum-cari-sayisi');
+      if(elB) elB.textContent = fmtMoney(borc);
+      if(elA) elA.textContent = fmtMoney(alacak);
+      if(elF){
+        elF.textContent = fmtMoney(Math.abs(fark));
+        elF.style.color = fark === 0 ? 'var(--c-accent-600)' : 'var(--c-danger-500)';
+      }
+      if(elC) elC.textContent = cariFisRows.filter(r=>r.id || r.cari).length;
+    }
+  </script>
+</body>
+</html>

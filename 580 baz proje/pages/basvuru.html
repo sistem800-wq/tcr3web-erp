@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#10243f" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-title" content="Tcr3WEB" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <link rel="manifest" href="../manifest.webmanifest?v=20260711-699" />
+  <link rel="icon" type="image/png" href="../assets/icons/favicon-64.png" />
+  <link rel="apple-touch-icon" href="../assets/icons/icon-180.png" />
+  <title>Tcr3WEB · İş Başvuruları</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../assets/css/style.css?v=20260712-653" />
+  <link rel="stylesheet" href="../assets/css/responsive-master.css?v=20260713-591" />
+  <link rel="stylesheet" href="../assets/css/performance.css?v=20260711-700" />
+  <link rel="stylesheet" href="../assets/css/tcr-table.css?v=20260713-583" />
+  <link rel="stylesheet" href="../assets/css/kpi-standard.css?v=20260712-694" />
+  <link rel="stylesheet" href="../assets/css/text-readability.css?v=20260712-657" />
+</head>
+<body>
+  <div id="app" class="app"></div>
+  <script src="../assets/js/app.js?v=20260712-653"></script>
+  <script src="../assets/js/tcr-actions.js?v=20260713-600"></script>
+  <script src="../assets/js/master-init.js?v=20260713-583"></script>
+  <script src="../assets/js/tcr-table.js?v=20260713-587"></script>
+  <script>
+    bootPage('basvuru', () => {
+      const yeni = MOCK.basvuru.filter(b => b.durum === 'Yeni').length;
+      const gorusme = MOCK.basvuru.filter(b => b.durum === 'Görüşmede').length;
+      const kabul = MOCK.basvuru.filter(b => b.durum === 'Kabul').length;
+      const red = MOCK.basvuru.filter(b => b.durum === 'Red').length;
+
+      return `
+      <div class="page-head">
+        <div>
+          <div class="breadcrumb">
+            <a href="dashboard.html">Genel</a><span>›</span>
+            <a href="basvuru.html">İnsan Kaynakları</a><span>›</span>
+            <span>İş Başvuruları</span>
+          </div>
+          <h1 class="page-title">İş Başvuruları</h1>
+          <div class="page-sub">Aday havuzu, mülakat süreci ve işe alım takibi</div>
+        </div>
+        <div class="page-actions">
+          <button class="btn btn-ghost" onclick="toast('Aday havuzu indirildi (prototip)')">${ICONS.download} Dışa Aktar</button>
+          <button class="btn btn-primary" onclick="openModal('basvuruModal')">${ICONS.plus} Yeni Başvuru</button>
+        </div>
+      </div>
+
+      <div class="tcr-ac-grid">
+        <div class="tcr-action-card tcr-ac-blue"><span class="tcr-ac-icon">${ICONS.user_plus}</span><span class="tcr-ac-content"><span class="tcr-ac-title">Toplam Başvuru</span><span class="tcr-ac-desc">${MOCK.basvuru.length}</span></span></div>
+        <div class="tcr-action-card tcr-ac-orange"><span class="tcr-ac-icon">${ICONS.file_text}</span><span class="tcr-ac-content"><span class="tcr-ac-title">Yeni</span><span class="tcr-ac-desc">${yeni}</span></span></div>
+        <div class="tcr-action-card tcr-ac-blue"><span class="tcr-ac-icon">${ICONS.users}</span><span class="tcr-ac-content"><span class="tcr-ac-title">Görüşmede</span><span class="tcr-ac-desc">${gorusme}</span></span></div>
+        <div class="tcr-action-card tcr-ac-green"><span class="tcr-ac-icon">${ICONS.check}</span><span class="tcr-ac-content"><span class="tcr-ac-title">Kabul Edilen</span><span class="tcr-ac-desc">${kabul}</span></span></div>
+      </div>
+
+      <div class="tabs">
+        <div class="tab active" onclick="switchBvTab(this,'tab-tum')">Tümü <span class="tab-count">${MOCK.basvuru.length}</span></div>
+        <div class="tab" onclick="switchBvTab(this,'tab-yeni')">Yeni <span class="tab-count">${yeni}</span></div>
+        <div class="tab" onclick="switchBvTab(this,'tab-gorusme')">Görüşmede <span class="tab-count">${gorusme}</span></div>
+        <div class="tab" onclick="switchBvTab(this,'tab-kabul')">Kabul <span class="tab-count">${kabul}</span></div>
+        <div class="tab" onclick="switchBvTab(this,'tab-red')">Red <span class="tab-count">${red}</span></div>
+      </div>
+
+      <div id="tab-tum">
+        <div class="card"><div class="card-body" style="padding:0">
+          <div class="toolbar" style="padding:var(--s-4)">
+            <div class="toolbar-search"><span class="toolbar-search-icon">${ICONS.search}</span><input type="text" placeholder="Aday adı veya pozisyon ara..." /></div>
+            <select class="filter-select"><option>Tüm Pozisyonlar</option><option>Satış Temsilcisi</option><option>Muhasebe Uzmanı</option><option>Depo Sorumlusu</option><option>İK Uzmanı</option></select>
+            <div class="toolbar-spacer"></div>
+          </div>
+          <table class="data">
+            <thead><tr><th>Aday</th><th>Pozisyon</th><th>Deneyim</th><th>Başvuru</th><th>İletişim</th><th>Durum</th><th></th></tr></thead>
+            <tbody>
+              ${MOCK.basvuru.map(b => {
+                const initials = b.ad.split(' ').map(x=>x[0]).join('').slice(0,2);
+                return `
+                <tr>
+                  <td class="flex items-center gap-3"><div class="avatar avatar-sm" style="background:linear-gradient(135deg,#168a55,#085636)">${initials}</div><div><div class="strong">${b.ad}</div><div class="text-mute" style="font-size:11px">${b.deneyim} yıl deneyim</div></div></td>
+                  <td><span class="pill">${b.pozisyon}</span></td>
+                  <td class="muted">${b.deneyim} yıl</td>
+                  <td class="muted">${fmtDate(b.tarih)}</td>
+                  <td class="muted"><div>${b.telefon}</div><div style="font-size:11px">${b.email}</div></td>
+                  <td><span class="badge ${b.durum==='Kabul'?'badge-success':b.durum==='Red'?'badge-danger':b.durum==='Görüşmede'?'badge-info':'badge-warn'}">${b.durum}</span></td>
+                  <td><div class="flex gap-2"><button class="icon-btn" style="width:30px;height:30px" onclick="openModal('detayModal')" title="Detay">${ICONS.eye}</button><button class="icon-btn" style="width:30px;height:30px" onclick="openModal('basvuruModal')" title="Düzenle">${ICONS.edit}</button></div></td>
+                </tr>`;
+              }).join('')}
+            </tbody>
+          </table>
+        </div></div>
+      </div>
+
+      <div id="tab-yeni" class="hidden">
+        <div class="card"><div class="card-body" style="padding:0">
+          <table class="data">
+            <thead><tr><th>Aday</th><th>Pozisyon</th><th>Deneyim</th><th>Başvuru</th><th>Durum</th></tr></thead>
+            <tbody>
+              ${MOCK.basvuru.filter(b=>b.durum==='Yeni').map(b => `<tr><td class="strong">${b.ad}</td><td>${b.pozisyon}</td><td class="muted">${b.deneyim} yıl</td><td class="muted">${fmtDate(b.tarih)}</td><td><span class="badge badge-warn">Yeni</span></td></tr>`).join('')}
+            </tbody>
+          </table>
+        </div></div>
+      </div>
+
+      <div id="tab-gorusme" class="hidden">
+        <div class="card"><div class="card-body" style="padding:0">
+          <table class="data">
+            <thead><tr><th>Aday</th><th>Pozisyon</th><th>Not</th><th>Durum</th></tr></thead>
+            <tbody>
+              ${MOCK.basvuru.filter(b=>b.durum==='Görüşmede').map(b => `<tr><td class="strong">${b.ad}</td><td>${b.pozisyon}</td><td class="muted">${b.not||'-'}</td><td><span class="badge badge-info">Görüşmede</span></td></tr>`).join('')}
+            </tbody>
+          </table>
+        </div></div>
+      </div>
+
+      <div id="tab-kabul" class="hidden">
+        <div class="card"><div class="card-body" style="padding:0">
+          <table class="data">
+            <thead><tr><th>Aday</th><th>Pozisyon</th><th>Not</th><th>Durum</th></tr></thead>
+            <tbody>
+              ${MOCK.basvuru.filter(b=>b.durum==='Kabul').map(b => `<tr><td class="strong">${b.ad}</td><td>${b.pozisyon}</td><td class="muted">${b.not||'-'}</td><td><span class="badge badge-success">Kabul</span></td></tr>`).join('')}
+            </tbody>
+          </table>
+        </div></div>
+      </div>
+
+      <div id="tab-red" class="hidden">
+        <div class="card"><div class="card-body" style="padding:0">
+          <table class="data">
+            <thead><tr><th>Aday</th><th>Pozisyon</th><th>Not</th><th>Durum</th></tr></thead>
+            <tbody>
+              ${MOCK.basvuru.filter(b=>b.durum==='Red').map(b => `<tr><td class="strong">${b.ad}</td><td>${b.pozisyon}</td><td class="muted">${b.not||'-'}</td><td><span class="badge badge-danger">Red</span></td></tr>`).join('')}
+            </tbody>
+          </table>
+        </div></div>
+      </div>
+
+      ${modalHtml('basvuruModal', 'Yeni İş Başvurusu', `
+        <div class="form-grid-2">
+          <div class="form-field"><label class="form-label">Aday Ad Soyad</label><input class="form-input" placeholder="Ad Soyad" /></div>
+          <div class="form-field"><label class="form-label">Başvuru Pozisyonu</label><select class="form-input"><option>Satış Temsilcisi</option><option>Muhasebe Uzmanı</option><option>Depo Sorumlusu</option><option>İK Uzmanı</option><option>Operatör</option></select></div>
+          <div class="form-field"><label class="form-label">Telefon</label><input class="form-input" placeholder="05xx xxx xx xx" /></div>
+          <div class="form-field"><label class="form-label">E-posta</label><input class="form-input" placeholder="ad@email.com" /></div>
+          <div class="form-field"><label class="form-label">Deneyim (Yıl)</label><input class="form-input" type="number" value="0" /></div>
+          <div class="form-field"><label class="form-label">Başvuru Tarihi</label><input class="form-input" type="date" value="2026-07-04" /></div>
+          <div class="form-field full"><label class="form-label">Ön Yazı / Not</label><textarea class="form-input" placeholder="Adayın ön yazısı veya değerlendirme notu"></textarea></div>
+        </div>
+      `, `<button class="btn btn-ghost" onclick="closeModal('basvuruModal')">İptal</button><button class="btn btn-primary" onclick="closeModal('basvuruModal');toast('Başvuru kaydedildi','success')">${ICONS.check} Kaydet</button>`, 'lg')}
+
+      ${modalHtml('detayModal', 'Aday Detayı · Kerim Aslan', `
+        <div class="flex items-center gap-4 mb-5">
+          <div class="avatar avatar-lg" style="background:linear-gradient(135deg,#168a55,#085636)">KA</div>
+          <div>
+            <h3 style="font-size:18px;color:var(--c-primary-800)">Kerim Aslan</h3>
+            <div class="text-soft" style="font-size:13px">Satış Temsilcisi · 5 yıl deneyim</div>
+            <div class="flex gap-2 mt-2"><span class="badge badge-info">Görüşmede</span></div>
+          </div>
+        </div>
+        <div class="grid-2">
+          <div class="card" style="box-shadow:none"><div class="card-body" style="padding:var(--s-4)">
+            <div class="text-soft mb-3" style="font-size:12px;font-weight:600">İletişim</div>
+            <div class="stat-row"><span class="stat-label">Telefon</span><span class="stat-value mono">0533 111 22 33</span></div>
+            <div class="stat-row"><span class="stat-label">E-posta</span><span class="stat-value">kerim@email.com</span></div>
+            <div class="stat-row"><span class="stat-label">Başvuru</span><span class="stat-value">01.07.2026</span></div>
+          </div></div>
+          <div class="card" style="box-shadow:none"><div class="card-body" style="padding:var(--s-4)">
+            <div class="text-soft mb-3" style="font-size:12px;font-weight:600">Süreç</div>
+            <div class="stat-row"><span class="stat-label">Durum</span><span class="stat-value">Görüşmede</span></div>
+            <div class="stat-row"><span class="stat-label">Mülakat</span><span class="stat-value">8 Temmuz planlandı</span></div>
+            <div class="stat-row"><span class="stat-label">Not</span><span class="stat-value">Mülakat 8 Temmuz planlandı</span></div>
+          </div></div>
+        </div>
+        <div class="mt-4">
+          <div class="text-soft mb-3" style="font-size:12px;font-weight:600">Süreç Geçmişi</div>
+          <div class="timeline">
+            <div class="timeline-item"><div class="timeline-dot accent"></div><div class="timeline-time">01.07.2026</div><div class="timeline-title">Başvuru alındı</div><div class="timeline-desc">Online form üzerinden</div></div>
+            <div class="timeline-item"><div class="timeline-dot warn"></div><div class="timeline-time">02.07.2026</div><div class="timeline-title">Özgeçmiş incelendi</div><div class="timeline-desc">İK uzmanı tarafından</div></div>
+            <div class="timeline-item"><div class="timeline-dot"></div><div class="timeline-time">03.07.2026</div><div class="timeline-title">Görüşmeye çağrıldı</div><div class="timeline-desc">8 Temmuz mülakat</div></div>
+          </div>
+        </div>
+      `, `<button class="btn btn-ghost" onclick="closeModal('detayModal')">Kapat</button><button class="btn btn-danger" onclick="closeModal('detayModal');toast('Aday reddedildi','danger')">Reddet</button><button class="btn btn-accent" onclick="closeModal('detayModal');toast('Aday kabul edildi','success')">Kabul Et</button>`, 'lg')}
+      `;
+    });
+
+    function switchBvTab(el, id) {
+      document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+      el.classList.add('active');
+      ['tab-tum','tab-yeni','tab-gorusme','tab-kabul','tab-red'].forEach(t => document.getElementById(t).classList.add('hidden'));
+      document.getElementById(id).classList.remove('hidden');
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Tcr3WEB · Action Button Standardı</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../assets/css/style.css?v=20260712-670" />
+  <link rel="stylesheet" href="../assets/css/responsive-master.css?v=20260713-591" />
+  <link rel="stylesheet" href="../assets/css/performance.css?v=20260712-670" />
+  <link rel="stylesheet" href="../assets/css/tcr-table.css?v=20260713-583" />
+  <link rel="stylesheet" href="../assets/css/action-button-standard.css?v=20260712-669" />
+  <link rel="stylesheet" href="../assets/css/text-readability.css?v=20260712-657" />
+</head>
+<body>
+<div id="app" class="app"></div>
+<script src="../assets/js/app.js?v=20260712-670"></script>
+<script src="../assets/js/master-init.js?v=20260713-583"></script>
+<script>
+bootPage('settings', () => `
+  <div class="page-head">
+    <div>
+      <div class="breadcrumb"><a href="dashboard.html">Genel</a><span>›</span><span>Buton Standardı</span></div>
+      <h1 class="page-title">Action Button Standardı</h1>
+      <div class="page-sub">Sayfa, form ve tablo işlemleri için ortak renk ve kullanım örneği</div>
+    </div>
+    <div class="page-actions action-row">
+      <button class="tcr-btn tcr-btn-secondary">${ICONS.print} Yazdır</button>
+      <button class="tcr-btn tcr-btn-primary">${ICONS.download} Dışa Aktar</button>
+      <button class="tcr-btn tcr-btn-success tcr-btn-solid">${ICONS.plus} Yeni Kayıt</button>
+    </div>
+  </div>
+
+  <div class="action-demo-grid">
+    <section class="action-demo-card">
+      <div class="action-demo-card-head"><h2>Sayfa Üstü Aksiyonlar</h2><span class="standard-chip">Outline → hover durum rengi</span></div>
+      <div class="action-demo-card-body">
+        <div class="action-row">
+          <button class="tcr-btn tcr-btn-success">${ICONS.check} Onayla</button>
+          <button class="tcr-btn tcr-btn-warning">${ICONS.file_text} Taslak</button>
+          <button class="tcr-btn tcr-btn-primary">${ICONS.send} Gönder</button>
+          <button class="tcr-btn tcr-btn-primary">${ICONS.mail} E-Posta</button>
+          <button class="tcr-btn tcr-btn-success">${ICONS.whatsapp} WhatsApp</button>
+          <button class="tcr-btn tcr-btn-danger">${ICONS.close} İptal</button>
+        </div>
+        <div class="action-note">Normal durumda beyaz zemin ve durum rengi çerçeve; üzerine gelince butonun tamamı kendi rengiyle dolar.</div>
+      </div>
+    </section>
+
+    <section class="action-demo-card">
+      <div class="action-demo-card-head"><h2>Form Aksiyonları</h2><span class="standard-chip">Kaydet sağda</span></div>
+      <div class="action-demo-card-body">
+        <div class="demo-form">
+          <div class="demo-field"><label>Cari Kodu</label><input value="CR0001" /></div>
+          <div class="demo-field"><label>Cari Tipi</label><select><option>Müşteri</option></select></div>
+          <div class="demo-field full"><label>Ünvan</label><input value="Marmara Tekstil A.Ş." /></div>
+          <div class="demo-field"><label>E-Posta</label><input value="bilgi@firma.com" /></div>
+          <div class="demo-field"><label>Telefon</label><input value="0532 000 00 00" /></div>
+        </div>
+        <div class="demo-form-footer">
+          <button class="tcr-btn tcr-btn-danger">${ICONS.close} Vazgeç</button>
+          <button class="tcr-btn tcr-btn-warning">${ICONS.file_text} Taslak Kaydet</button>
+          <button class="tcr-btn tcr-btn-success tcr-btn-solid">${ICONS.check} Kaydet</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="action-demo-card">
+      <div class="action-demo-card-head"><h2>Tablo İşlem Butonları</h2><span class="standard-chip">Hover her zaman mavi</span></div>
+      <div class="action-demo-card-body">
+        <div class="table-wrap" style="border:none">
+          <table class="demo-table">
+            <thead><tr><th>Kod</th><th>Ünvan</th><th>Durum</th><th style="text-align:right">İşlemler</th></tr></thead>
+            <tbody>
+              <tr><td><strong>CR0001</strong></td><td>Marmara Tekstil A.Ş.</td><td><span class="badge badge-success">Aktif</span></td><td><div class="demo-table-actions"><button class="tcr-table-action" title="Görüntüle">${ICONS.eye}</button><button class="tcr-table-action" title="Düzenle">${ICONS.edit}</button><button class="tcr-table-action" title="E-Posta">${ICONS.mail}</button><button class="tcr-table-action" title="Sil">${ICONS.trash}</button></div></td></tr>
+              <tr><td><strong>CR0002</strong></td><td>Akdeniz Yapı Ltd.</td><td><span class="badge badge-warn">Bekliyor</span></td><td><div class="demo-table-actions"><button class="tcr-table-action" title="Görüntüle">${ICONS.eye}</button><button class="tcr-table-action" title="Düzenle">${ICONS.edit}</button><button class="tcr-table-action" title="E-Posta">${ICONS.mail}</button><button class="tcr-table-action" title="Sil">${ICONS.trash}</button></div></td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="action-note">Tablo içindeki bütün ikon butonları normalde mavi outline, hover olduğunda mavi dolgu ve beyaz ikon kullanır.</div>
+      </div>
+    </section>
+  </div>
+`);
+</script>
+</body>
+</html>

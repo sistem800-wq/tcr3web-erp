@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#10243f" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-title" content="Tcr3WEB" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <link rel="manifest" href="../manifest.webmanifest?v=20260711-699" />
+  <link rel="icon" type="image/png" href="../assets/icons/favicon-64.png" />
+  <link rel="apple-touch-icon" href="../assets/icons/icon-180.png" />
+  <title>Tcr3WEB · Avans İşlemleri</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../assets/css/style.css?v=20260712-653" />
+  <link rel="stylesheet" href="../assets/css/responsive-master.css?v=20260713-591" />
+  <link rel="stylesheet" href="../assets/css/performance.css?v=20260711-700" />
+  <link rel="stylesheet" href="../assets/css/tcr-table.css?v=20260713-583" />
+  <link rel="stylesheet" href="../assets/css/kpi-standard.css?v=20260712-694" />
+  <link rel="stylesheet" href="../assets/css/text-readability.css?v=20260712-657" />
+</head>
+<body>
+  <div id="app" class="app"></div>
+  <script src="../assets/js/app.js?v=20260712-653"></script>
+  <script src="../assets/js/tcr-actions.js?v=20260713-600"></script>
+  <script src="../assets/js/master-init.js?v=20260713-583"></script>
+  <script src="../assets/js/tcr-table.js?v=20260713-587"></script>
+  <script>
+    bootPage('avans', () => {
+      const acik = MOCK.avans.filter(a => a.durum === 'Açık').reduce((s,a) => s + a.tutar, 0);
+      const onay = MOCK.avans.filter(a => a.durum === 'Onay Bekliyor').reduce((s,a) => s + a.tutar, 0);
+      const kapali = MOCK.avans.filter(a => a.durum === 'Kapalı').reduce((s,a) => s + a.tutar, 0);
+      const toplam = MOCK.avans.reduce((s,a) => s + a.tutar, 0);
+
+      return `
+      <div class="page-head">
+        <div>
+          <div class="breadcrumb">
+            <a href="dashboard.html">Genel</a><span>›</span>
+            <a href="avans.html">İnsan Kaynakları</a><span>›</span>
+            <span>Avans İşlemleri</span>
+          </div>
+          <h1 class="page-title">Avans İşlemleri</h1>
+          <div class="page-sub">Personel avans talepleri, onay, ödeme ve maaştan düşüm</div>
+        </div>
+        <div class="page-actions">
+          <button class="btn btn-ghost" onclick="toast('Rapor indirildi (prototip)')">${ICONS.download} Rapor</button>
+          <button class="btn btn-primary" onclick="openModal('avansModal')">${ICONS.plus} Yeni Avans Talebi</button>
+        </div>
+      </div>
+
+      <div class="tcr-ac-grid">
+        <div class="tcr-action-card tcr-ac-blue"><span class="tcr-ac-icon">${ICONS.hand_coins}</span><span class="tcr-ac-content"><span class="tcr-ac-title">Toplam Avans</span><span class="tcr-ac-desc">${fmtMoney(toplam)}</span></span></div>
+        <div class="tcr-action-card tcr-ac-orange"><span class="tcr-ac-icon">${ICONS.alert}</span><span class="tcr-ac-content"><span class="tcr-ac-title">Onay Bekleyen</span><span class="tcr-ac-desc">${fmtMoney(onay)}</span></span></div>
+        <div class="tcr-action-card tcr-ac-red"><span class="tcr-ac-icon">${ICONS.cash}</span><span class="tcr-ac-content"><span class="tcr-ac-title">Açık Avans</span><span class="tcr-ac-desc">${fmtMoney(acik)}</span></span></div>
+        <div class="tcr-action-card tcr-ac-green"><span class="tcr-ac-icon">${ICONS.check}</span><span class="tcr-ac-content"><span class="tcr-ac-title">Kapatılan</span><span class="tcr-ac-desc">${fmtMoney(kapali)}</span></span></div>
+      </div>
+
+      <div class="tabs">
+        <div class="tab active" onclick="switchAvTab(this,'tab-tum')">Tümü <span class="tab-count">${MOCK.avans.length}</span></div>
+        <div class="tab" onclick="switchAvTab(this,'tab-onay')">Onay Bekleyen <span class="tab-count">${MOCK.avans.filter(a=>a.durum==='Onay Bekliyor').length}</span></div>
+        <div class="tab" onclick="switchAvTab(this,'tab-acik')">Açık <span class="tab-count">${MOCK.avans.filter(a=>a.durum==='Açık').length}</span></div>
+        <div class="tab" onclick="switchAvTab(this,'tab-kapali')">Kapalı <span class="tab-count">${MOCK.avans.filter(a=>a.durum==='Kapalı').length}</span></div>
+      </div>
+
+      <div id="tab-tum">
+        <div class="card"><div class="card-body" style="padding:0">
+          <div class="toolbar" style="padding:var(--s-4)">
+            <div class="toolbar-search"><span class="toolbar-search-icon">${ICONS.search}</span><input type="text" placeholder="Personel ara..." /></div>
+            <div class="toolbar-spacer"></div>
+          </div>
+          <table class="data">
+            <thead><tr><th>Personel</th><th class="num">Tutar</th><th>Tarih</th><th>Ödeme</th><th>Düşüm</th><th>Açıklama</th><th>Durum</th><th></th></tr></thead>
+            <tbody>
+              ${MOCK.avans.map(a => `
+                <tr>
+                  <td class="strong">${a.personel}</td>
+                  <td class="num strong">${fmtMoney(a.tutar)}</td>
+                  <td class="muted">${fmtDate(a.tarih)}</td>
+                  <td><span class="pill">${a.odeme}</span></td>
+                  <td class="muted">${a.dusum}</td>
+                  <td class="muted">${a.aciklama||'-'}</td>
+                  <td><span class="badge ${a.durum==='Kapalı'?'badge-success':a.durum==='Açık'?'badge-info':'badge-warn'}">${a.durum}</span></td>
+                  <td><div class="flex gap-2">
+                    ${a.durum==='Onay Bekliyor' ? `<button class="btn btn-accent btn-sm" onclick="toast('Avans onaylandı','success')">${ICONS.check} Onayla</button><button class="btn btn-ghost btn-sm" onclick="toast('Reddedildi','danger')">Red</button>` : `<button class="icon-btn" style="width:30px;height:30px" onclick="openModal('avansModal')" title="Düzenle">${ICONS.edit}</button>`}
+                  </div></td>
+                </tr>
+              `).join('')}
+            </tbody>
+          </table>
+        </div></div>
+      </div>
+
+      <div id="tab-onay" class="hidden">
+        <div class="card"><div class="card-body" style="padding:0">
+          <table class="data">
+            <thead><tr><th>Personel</th><th class="num">Tutar</th><th>Tarih</th><th>Açıklama</th><th></th></tr></thead>
+            <tbody>
+              ${MOCK.avans.filter(a=>a.durum==='Onay Bekliyor').map(a => `
+                <tr><td class="strong">${a.personel}</td><td class="num strong">${fmtMoney(a.tutar)}</td><td class="muted">${fmtDate(a.tarih)}</td><td class="muted">${a.aciklama||'-'}</td><td><div class="flex gap-2"><button class="btn btn-accent btn-sm" onclick="toast('Onaylandı','success')">${ICONS.check} Onayla</button><button class="btn btn-ghost btn-sm" onclick="toast('Reddedildi','danger')">Red</button></div></td></tr>
+              `).join('')}
+            </tbody>
+          </table>
+        </div></div>
+      </div>
+
+      <div id="tab-acik" class="hidden">
+        <div class="card"><div class="card-body" style="padding:0">
+          <table class="data">
+            <thead><tr><th>Personel</th><th class="num">Tutar</th><th>Tarih</th><th>Ödeme</th><th>Düşüm</th></tr></thead>
+            <tbody>
+              ${MOCK.avans.filter(a=>a.durum==='Açık').map(a => `<tr><td class="strong">${a.personel}</td><td class="num strong">${fmtMoney(a.tutar)}</td><td class="muted">${fmtDate(a.tarih)}</td><td><span class="pill">${a.odeme}</span></td><td class="muted">${a.dusum}</td></tr>`).join('')}
+            </tbody>
+          </table>
+        </div></div>
+      </div>
+
+      <div id="tab-kapali" class="hidden">
+        <div class="card"><div class="card-body" style="padding:0">
+          <table class="data">
+            <thead><tr><th>Personel</th><th class="num">Tutar</th><th>Tarih</th><th>Ödeme</th><th>Düşüm</th></tr></thead>
+            <tbody>
+              ${MOCK.avans.filter(a=>a.durum==='Kapalı').map(a => `<tr><td class="strong">${a.personel}</td><td class="num strong">${fmtMoney(a.tutar)}</td><td class="muted">${fmtDate(a.tarih)}</td><td><span class="pill">${a.odeme}</span></td><td class="muted">${a.dusum}</td></tr>`).join('')}
+            </tbody>
+          </table>
+        </div></div>
+      </div>
+
+      ${modalHtml('avansModal', 'Yeni Avans Talebi', `
+        <div class="form-grid-2">
+          <div class="form-field full"><label class="form-label">Personel</label><select class="form-input">${MOCK.personel.map(p=>`<option>${p.ad}</option>`).join('')}</select></div>
+          <div class="form-field"><label class="form-label">Tutar</label><input class="form-input" type="number" value="0.00" /></div>
+          <div class="form-field"><label class="form-label">Tarih</label><input class="form-input" type="date" value="2026-07-04" /></div>
+          <div class="form-field"><label class="form-label">Ödeme Yöntemi</label><select class="form-input"><option>Kasa</option><option>Banka</option></select></div>
+          <div class="form-field"><label class="form-label">Düşüm Dönemi</label><select class="form-input"><option>Bu ay maaşından</option><option>Gelecek ay maaşından</option><option>Taksit (3 ay)</option></select></div>
+          <div class="form-field full"><label class="form-label">Açıklama</label><textarea class="form-input" placeholder="Avans nedeni"></textarea></div>
+        </div>
+      `, `<button class="btn btn-ghost" onclick="closeModal('avansModal')">İptal</button><button class="btn btn-primary" onclick="closeModal('avansModal');toast('Avans talebi gönderildi','success')">${ICONS.check} Gönder</button>`)}
+      `;
+    });
+
+    function switchAvTab(el, id) {
+      document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+      el.classList.add('active');
+      ['tab-tum','tab-onay','tab-acik','tab-kapali'].forEach(t => document.getElementById(t).classList.add('hidden'));
+      document.getElementById(id).classList.remove('hidden');
+    }
+  </script>
+</body>
+</html>

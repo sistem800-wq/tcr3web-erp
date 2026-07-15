@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Tcr3WEB · Yeni Servis Talebi</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../assets/css/style.css?v=20260712-653" />
+  <link rel="stylesheet" href="../assets/css/responsive-master.css?v=20260713-591" />
+  <link rel="stylesheet" href="../assets/css/performance.css?v=20260711-700" />
+  <link rel="stylesheet" href="../assets/css/tcr-table.css?v=20260713-583" />
+  <link rel="stylesheet" href="../assets/css/text-readability.css?v=20260712-657" />
+</head>
+<body>
+  <div id="app" class="app"></div>
+  <script src="../assets/js/app.js?v=20260712-653"></script>
+  <script src="../assets/js/tcr-actions.js?v=20260713-600"></script>
+  <script src="../assets/js/master-init.js?v=20260713-583"></script>
+  <script src="../assets/js/tcr-table.js?v=20260713-587"></script>
+
+  <script>
+    const demoEdit = new URLSearchParams(location.search).get('no');
+    bootPage('servis-talep', () => `
+      <div class="page-head service-request-head">
+        <div>
+          <div class="breadcrumb"><a href="dashboard.html">Genel</a><span>›</span><a href="servis.html">Servis</a><span>›</span><a href="servis-talep.html">Servis Talepleri</a><span>›</span><span>${demoEdit ? 'Talep Düzenle' : 'Yeni Servis Talebi'}</span></div>
+          <h1 class="page-title">${demoEdit ? 'Servis Talebi Düzenle · ' + demoEdit : 'Yeni Servis Talebi'}</h1>
+          <div class="page-sub">Müşteri, cihaz, arıza, öncelik, garanti, randevu ve evrak bilgilerini tek ekranda oluşturun.</div>
+        </div>
+        <div class="page-actions">
+          <button class="btn btn-outline-danger" onclick="location.href='servis-talep.html'">${ICONS.x} Vazgeç</button>
+          <button class="btn btn-success" onclick="saveServiceRequest()">${ICONS.check} Kaydet</button>
+        </div>
+      </div>
+
+      <div class="service-form-layout">
+        <main class="service-form-main">
+          <section class="card service-form-card">
+            <div class="card-head service-card-head"><div><div class="card-title">Talep Bilgileri</div><div class="text-mute small">Çağrı merkezi kayıt standardı</div></div><span class="pill">${demoEdit ? 'Düzenleme' : 'Yeni'}</span></div>
+            <div class="card-body">
+              <div class="form-grid service-form-grid">
+                <div class="form-group"><label class="form-label">Talep No</label><input class="form-input mono" value="${demoEdit || 'STL202607080005'}" readonly></div>
+                <div class="form-group"><label class="form-label">Talep Tarihi</label><input type="datetime-local" class="form-input" value="2026-07-08T15:30"></div>
+                <div class="form-group"><label class="form-label">Öncelik</label><select class="form-input"><option>Normal</option><option selected>Acil</option><option>Kritik</option><option>Planlı</option></select></div>
+                <div class="form-group"><label class="form-label">Durum</label><select class="form-input"><option selected>Yeni Talep</option><option>Randevu Bekliyor</option><option>İş Emrine Döndü</option><option>Tamamlandı</option></select></div>
+              </div>
+            </div>
+          </section>
+
+          <section class="card service-form-card">
+            <div class="card-head service-card-head"><div class="card-title">Müşteri ve İletişim</div><button class="btn btn-outline-primary btn-sm" onclick="openCustomerSelect()">${ICONS.search} Cari Seç</button></div>
+            <div class="card-body">
+              <div class="form-grid service-form-grid">
+                <div class="form-group span-2"><label class="form-label">Cari / Müşteri</label><div class="select-input" onclick="openCustomerSelect()"><input class="form-input" value="ABC Ltd." readonly><button>${ICONS.search}</button></div></div>
+                <div class="form-group"><label class="form-label">İlgili Kişi</label><input class="form-input" value="Murat Kaya"></div>
+                <div class="form-group"><label class="form-label">Telefon</label><input class="form-input" value="0532 000 11 22"></div>
+                <div class="form-group span-2"><label class="form-label">Servis Adresi</label><input class="form-input" value="Organize Sanayi Bölgesi 3. Cadde No: 18"></div>
+                <div class="form-group"><label class="form-label">İl / İlçe</label><input class="form-input" value="Diyarbakır / Kayapınar"></div>
+                <div class="form-group"><label class="form-label">Konum</label><input class="form-input" value="37.9250, 40.2100"></div>
+              </div>
+            </div>
+          </section>
+
+          <section class="card service-form-card">
+            <div class="card-head service-card-head"><div class="card-title">Cihaz / Makine Bilgisi</div><button class="btn btn-outline-purple btn-sm" onclick="openDeviceSelect()">${ICONS.box} Cihaz Seç</button></div>
+            <div class="card-body">
+              <div class="form-grid service-form-grid">
+                <div class="form-group"><label class="form-label">Marka</label><input class="form-input" value="TCR Industrial"></div>
+                <div class="form-group"><label class="form-label">Model</label><input class="form-input" value="FIRIN-20L"></div>
+                <div class="form-group"><label class="form-label">Seri No</label><input class="form-input mono" value="SN-24591"></div>
+                <div class="form-group"><label class="form-label">Kurulum Tarihi</label><input type="date" class="form-input" value="2025-01-15"></div>
+                <div class="form-group"><label class="form-label">Garanti Başlangıç</label><input type="date" class="form-input" value="2025-01-15"></div>
+                <div class="form-group"><label class="form-label">Garanti Bitiş</label><input type="date" class="form-input" value="2026-12-31"></div>
+              </div>
+              <div class="warranty-inline success mt-3"><strong>Garanti Var</strong><span>Bu cihaz garanti kapsamında. Servis fişi ücretlendirme yapılmadan açılabilir.</span></div>
+            </div>
+          </section>
+
+          <section class="card service-form-card">
+            <div class="card-head service-card-head"><div class="card-title">Arıza ve Ön İnceleme</div></div>
+            <div class="card-body">
+              <div class="form-grid service-form-grid">
+                <div class="form-group"><label class="form-label">Arıza Türü</label><select class="form-input"><option selected>Ateşleme arızası</option><option>Periyodik bakım</option><option>Parça değişimi</option><option>Kalibrasyon</option></select></div>
+                <div class="form-group"><label class="form-label">Servis Tipi</label><select class="form-input"><option selected>Saha Servisi</option><option>Merkez Servis</option><option>Uzaktan Destek</option></select></div>
+                <div class="form-group span-2"><label class="form-label">Müşteri Açıklaması</label><textarea class="form-input" rows="3" placeholder="Müşteri şikayeti...">Cihaz çalışırken ateşleme yapmıyor, üretim hattı bekliyor.</textarea></div>
+                <div class="form-group span-2"><label class="form-label">Teknik Ön Not</label><textarea class="form-input" rows="3" placeholder="Ön değerlendirme...">Ateşleme kartı ve sensör kontrolü önerilir. Araç deposunda yedek kart kontrol edilecek.</textarea></div>
+              </div>
+            </div>
+          </section>
+        </main>
+
+        <aside class="service-form-side">
+          <section class="card service-panel">
+            <div class="card-head service-card-head"><div class="card-title">Randevu / Atama</div></div>
+            <div class="card-body service-side-form">
+              <div class="form-group"><label class="form-label">Randevu Tarihi</label><input type="date" class="form-input" value="2026-07-09"></div>
+              <div class="form-group"><label class="form-label">Saat</label><input type="time" class="form-input" value="09:30"></div>
+              <div class="form-group"><label class="form-label">Teknisyen</label><select class="form-input"><option>Mehmet Usta</option><option>Ali Teknik</option><option>Servis Ekibi 2</option></select></div>
+              <div class="form-group"><label class="form-label">Servis Aracı</label><select class="form-input"><option>SRV-34</option><option>SRV-06</option><option>SRV-21</option></select></div>
+              <button class="btn btn-outline-primary w-100" onclick="showActionModal('info','Randevu Planlandı','Talep için randevu ve teknisyen ataması hazırlandı.')">Randevu Planla</button>
+            </div>
+          </section>
+
+          <section class="card service-panel mt-4">
+            <div class="card-head service-card-head"><div class="card-title">Evrak / Fotoğraf</div><span class="pill">Önizleme</span></div>
+            <div class="card-body">
+              <div class="service-doc-drop" onclick="showActionModal('info','Dosya Seç','Fotoğraf, video, PDF veya ses kaydı yükleme önizlemesi açıldı.')">
+                ${ICONS.upload || ICONS.file_text}
+                <strong>Dosya sürükle veya seç</strong>
+                <span>Yükleme onayından önce önizleme gösterilir.</span>
+              </div>
+              <div class="service-doc-preview mt-3">
+                <div><span>IMG_2459.jpg</span><em>Önizleme</em></div>
+                <div><span>ariza-video.mp4</span><em>Video</em></div>
+              </div>
+            </div>
+          </section>
+
+          <section class="card service-panel mt-4">
+            <div class="card-head service-card-head"><div class="card-title">Talep Zaman Çizgisi</div></div>
+            <div class="card-body service-request-timeline">
+              <div class="done"><b></b><span><strong>Talep oluşturuldu</strong><small>08.07.2026 15:30</small></span></div>
+              <div class="active"><b></b><span><strong>Randevu bekliyor</strong><small>Teknisyen atanacak</small></span></div>
+              <div><b></b><span><strong>İş emri</strong><small>Henüz oluşmadı</small></span></div>
+            </div>
+          </section>
+        </aside>
+      </div>
+
+      <div class="form-sticky-footer service-form-footer">
+        <div><strong>${demoEdit || 'STL202607080005'}</strong><span> · Servis talebi kaydedilmeye hazır</span></div>
+        <div class="footer-actions"><button class="btn btn-outline-danger" onclick="location.href='servis-talep.html'">Vazgeç</button><button class="btn btn-success" onclick="saveServiceRequest()">Kaydet</button><button class="btn btn-outline-primary" onclick="createWorkOrder()">İş Emrine Çevir</button></div>
+      </div>
+    `);
+    function openCustomerSelect(){ showActionModal('info','Cari Seç','Sadece servis yetkisine uygun cari seçim modalı açılır.'); }
+    function openDeviceSelect(){ showActionModal('info','Cihaz Seç','Müşteriye bağlı cihaz/makine listesi açılır ve garanti otomatik kontrol edilir.'); }
+    function saveServiceRequest(){ showActionModal('success','Kayıt Tamamlandı','Servis talebi kaydedildi.'); setTimeout(()=>location.href='servis-talep.html',850); }
+    function createWorkOrder(){ showActionModal('info','İş Emri','Servis talebi iş emrine çevrildi ve teknisyene atandı.'); }
+  </script>
+
+</body>
+</html>

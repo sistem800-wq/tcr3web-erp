@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#10243f" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-title" content="Tcr3WEB" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <link rel="manifest" href="../manifest.webmanifest?v=20260711-699" />
+  <link rel="icon" type="image/png" href="../assets/icons/favicon-64.png" />
+  <link rel="apple-touch-icon" href="../assets/icons/icon-180.png" />
+  <title>Tcr3WEB · Gösterge Paneli</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../assets/css/style.css?v=20260712-653" />
+  <link rel="stylesheet" href="../assets/css/responsive-master.css?v=20260713-591" />
+  <link rel="stylesheet" href="../assets/css/performance.css?v=20260711-700" />
+  <link rel="stylesheet" href="../assets/css/tcr-table.css?v=20260713-583" />
+  <link rel="stylesheet" href="../assets/css/kpi-standard.css?v=20260712-694" />
+  <link rel="stylesheet" href="../assets/css/text-readability.css?v=20260712-657" />
+</head>
+<body>
+  <div id="app" class="app"></div>
+  <script src="../assets/js/app.js?v=20260712-653"></script>
+  <script src="../assets/js/tcr-actions.js?v=20260713-600"></script>
+  <script src="../assets/js/master-init.js?v=20260713-583"></script>
+  <script src="../assets/js/tcr-table.js?v=20260713-587"></script>
+  <script>
+    bootPage('dashboard', () => `
+      <div class="page-head">
+        <div>
+          <div class="breadcrumb">
+            <a href="dashboard.html">Genel</a>
+            <span>›</span>
+            <span>Gösterge Paneli</span>
+          </div>
+          <h1 class="page-title">Gösterge Paneli</h1>
+          <div class="page-sub">Hoş geldiniz Ahmet Bey · Bugün ${fmtDate(new Date())}</div>
+        </div>
+        <div class="page-actions">
+          <button class="btn btn-ghost" onclick="toast('Rapor dışa aktarıldı (prototip)')">${ICONS.download} Rapor İndir</button>
+          <button class="btn btn-primary" onclick="window.location.href='satis.html'">${ICONS.plus} Yeni Satış</button>
+        </div>
+      </div>
+
+      ${heroSlider([
+        {
+          icon: 'dashboard', label: 'Temmuz 2026 · Genel Özet',
+          title: 'Aylık Hedef: %84 Tamamlandı',
+          desc: '380.300 ₺ gerçekleşen ciro · 450.000 ₺ hedef · 69.700 ₺ kalan',
+          metric: '%84', metricLabel: 'hedef başarısı'
+        },
+        {
+          icon: 'inbox', label: 'Satış · Aktif Siparişler', theme: 'green',
+          title: '8 Açık Sipariş — 3 Onay Bekliyor',
+          desc: 'Toplam 357.500 ₺ değerinde aktif müşteri sipariş portföyü',
+          metric: '8', metricLabel: 'açık sipariş'
+        },
+        {
+          icon: 'alert', label: 'Vade Uyarısı · 7 Gün', theme: 'amber',
+          title: '3 Çek / Senet Vadesi Yaklaşıyor',
+          desc: '10 Tem: CK0998 — 45.000 ₺ · 12 Tem: CK0996 — 28.000 ₺ · 18 Tem: SN0998 — 35.000 ₺',
+          metric: '108K ₺', metricLabel: '7 günlük vade'
+        },
+        {
+          icon: 'box', label: 'Stok Uyarısı · Kritik', theme: 'red',
+          title: '2 Ürün Minimum Stok Altında',
+          desc: 'ST0996 — Vida 6mm Paket: 45/100 adet · Sipariş vermeniz önerilir',
+          metric: '2', metricLabel: 'kritik ürün'
+        },
+      ])}
+
+      <div class="tcr-ac-grid">
+        <div class="tcr-action-card tcr-ac-blue">
+          <span class="tcr-ac-icon">${ICONS.wallet}</span>
+          <span class="tcr-ac-content">
+            <span class="tcr-ac-title">Toplam Kasa</span>
+            <span class="tcr-ac-desc">${fmtMoney(309900)} <span style="color:var(--tcr-ac-green);font-size:11px">↑ 12.4%</span></span>
+          </span>
+        </div>
+        <div class="tcr-action-card tcr-ac-green">
+          <span class="tcr-ac-icon">${ICONS.building}</span>
+          <span class="tcr-ac-content">
+            <span class="tcr-ac-title">Toplam Banka</span>
+            <span class="tcr-ac-desc">${fmtMoney(1501700)} <span style="color:var(--tcr-ac-green);font-size:11px">↑ 8.1%</span></span>
+          </span>
+        </div>
+        <div class="tcr-action-card tcr-ac-orange">
+          <span class="tcr-ac-icon">${ICONS.file_check}</span>
+          <span class="tcr-ac-content">
+            <span class="tcr-ac-title">Portföydeki Çek/Senet</span>
+            <span class="tcr-ac-desc">${fmtMoney(234800)} <span style="color:var(--text-mute);font-size:11px">7 çek · 3 senet</span></span>
+          </span>
+        </div>
+        <div class="tcr-action-card tcr-ac-red">
+          <span class="tcr-ac-icon">${ICONS.alert}</span>
+          <span class="tcr-ac-content">
+            <span class="tcr-ac-title">Vadesi Gelenler (7 gün)</span>
+            <span class="tcr-ac-desc">${fmtMoney(118000)} <span style="color:var(--tcr-ac-red);font-size:11px">↓ 3 gün kaldı</span></span>
+          </span>
+        </div>
+      </div>
+
+      <div class="grid-2 mb-6">
+        <div class="card">
+          <div class="card-head">
+            <div class="card-title">Aylık Nakit Akışı</div>
+            <div class="flex gap-2">
+              <span class="pill">2026</span>
+              <button class="btn btn-ghost btn-sm">Yıllık</button>
+            </div>
+          </div>
+          <div class="card-body">
+            ${lineChart([
+              {label:'Oca', value:185000},
+              {label:'Şub', value:220000},
+              {label:'Mar', value:198000},
+              {label:'Nis', value:245000},
+              {label:'May', value:278000},
+              {label:'Haz', value:312000},
+              {label:'Tem', value:309900},
+            ], {id:'cash'})}
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-head">
+            <div class="card-title">Aylık POS Akışı</div>
+            <div class="flex gap-2">
+              <span class="pill">2026</span>
+              <button class="btn btn-ghost btn-sm">Yıllık</button>
+            </div>
+          </div>
+          <div class="card-body">
+            ${lineChart([
+              {label:'Oca', value:98000},
+              {label:'Şub', value:118000},
+              {label:'Mar', value:104000},
+              {label:'Nis', value:132000},
+              {label:'May', value:146500},
+              {label:'Haz', value:171000},
+              {label:'Tem', value:168400},
+            ], {id:'pos'})}
+          </div>
+        </div>
+      </div>
+
+      <div class="grid-2 mb-6">
+        <div class="card">
+          <div class="card-head">
+            <div class="card-title">Gelir / Gider Dağılımı</div>
+            <span class="pill">Temmuz</span>
+          </div>
+          <div class="card-body">
+            <div class="donut-wrap">
+              ${donutChart([
+                {value: 309900, color: '#168a55', label: 'Kasa'},
+                {value: 1501700, color: '#2c4670', label: 'Banka'},
+                {value: 234800, color: '#e6a93c', label: 'Çek/Senet'},
+              ])}
+              <div class="donut-legend">
+                <div class="donut-legend-item"><span class="donut-legend-dot" style="background:#168a55"></span>Kasa <span class="donut-legend-val">${fmtMoney(309900)}</span></div>
+                <div class="donut-legend-item"><span class="donut-legend-dot" style="background:#2c4670"></span>Banka <span class="donut-legend-val">${fmtMoney(1501700)}</span></div>
+                <div class="donut-legend-item"><span class="donut-legend-dot" style="background:#e6a93c"></span>Çek/Senet <span class="donut-legend-val">${fmtMoney(234800)}</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-head">
+            <div class="card-title">Son Hareketler</div>
+            <a href="kasa.html" class="link" style="font-size:13px">Tümü</a>
+          </div>
+          <div class="card-body" style="padding:0">
+            <div class="timeline" style="padding:var(--s-5)">
+              <div class="timeline-item">
+                <div class="timeline-dot accent"></div>
+                <div class="timeline-time">14:32 · Bugün</div>
+                <div class="timeline-title">Marmara Tekstil - Tahsilat</div>
+                <div class="timeline-desc">Merkez Kasa · ${fmtMoney(145000)}</div>
+              </div>
+              <div class="timeline-item">
+                <div class="timeline-dot danger"></div>
+                <div class="timeline-time">11:15 · Bugün</div>
+                <div class="timeline-title">Ofis kira ödemesi</div>
+                <div class="timeline-desc">Merkez Kasa · -${fmtMoney(25000)}</div>
+              </div>
+              <div class="timeline-item">
+                <div class="timeline-dot accent"></div>
+                <div class="timeline-time">Dün</div>
+                <div class="timeline-title">Erciyes Yapı Market - Tahsilat</div>
+                <div class="timeline-desc">Merkez Kasa · ${fmtMoney(32000)}</div>
+              </div>
+              <div class="timeline-item">
+                <div class="timeline-dot warn"></div>
+                <div class="timeline-time">Dün</div>
+                <div class="timeline-title">Personel maaş ödemesi</div>
+                <div class="timeline-desc">Merkez Kasa · -${fmtMoney(89000)}</div>
+              </div>
+              <div class="timeline-item">
+                <div class="timeline-dot"></div>
+                <div class="timeline-time">2 gün önce</div>
+                <div class="timeline-title">Banka virmanı (Ziraat)</div>
+                <div class="timeline-desc">Merkez Kasa · ${fmtMoney(50000)}</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-head">
+            <div class="card-title">Vadesi Yaklaşanlar</div>
+            <a href="vade.html" class="link" style="font-size:13px">Takvim</a>
+          </div>
+          <div class="card-body" style="padding:0">
+            <table class="data">
+              <thead><tr><th>Tip</th><th>Açıklama</th><th>Vade</th><th class="num">Tutar</th></tr></thead>
+              <tbody>
+                <tr><td><span class="badge badge-danger">Çek</span></td><td class="strong">Yıldız Plastik (verilen)</td><td>10 Tem 2026</td><td class="num">${fmtMoney(45000)}</td></tr>
+                <tr><td><span class="badge badge-warn">Senet</span></td><td class="strong">Bizim Şirket (verilen)</td><td>08 Tem 2026</td><td class="num">${fmtMoney(22000)}</td></tr>
+                <tr><td><span class="badge badge-info">Çek</span></td><td class="strong">Marmara Tekstil (alınan)</td><td>15 Tem 2026</td><td class="num">${fmtMoney(75000)}</td></tr>
+                <tr><td><span class="badge badge-warn">Senet</span></td><td class="strong">Bizim Şirket (verilen)</td><td>18 Tem 2026</td><td class="num">${fmtMoney(35000)}</td></tr>
+                <tr><td><span class="badge badge-info">Çek</span></td><td class="strong">Anadolu Hırdavat (alınan)</td><td>20 Tem 2026</td><td class="num">${fmtMoney(32000)}</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-head">
+            <div class="card-title">Son Satışlar</div>
+            <a href="satis.html" class="link" style="font-size:13px">Tümü</a>
+          </div>
+          <div class="card-body" style="padding:0">
+            <table class="data">
+              <thead><tr><th>Belge No</th><th>Cari</th><th>Durum</th><th class="num">Tutar</th></tr></thead>
+              <tbody>
+                ${MOCK.satis.slice(0,5).map(s => `
+                  <tr>
+                    <td class="strong mono">${s.no}</td>
+                    <td>${s.cari}</td>
+                    <td><span class="badge ${s.durum==='Faturalandı'?'badge-success':s.durum==='İrsaliye'?'badge-info':'badge-neutral'}">${s.durum}</span></td>
+                    <td class="num">${fmtMoney(s.tutar)}</td>
+                  </tr>
+                `).join('')}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    `);
+  </script>
+</body>
+</html>

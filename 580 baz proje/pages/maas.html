@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#10243f" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-title" content="Tcr3WEB" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <link rel="manifest" href="../manifest.webmanifest?v=20260711-699" />
+  <link rel="icon" type="image/png" href="../assets/icons/favicon-64.png" />
+  <link rel="apple-touch-icon" href="../assets/icons/icon-180.png" />
+  <title>Tcr3WEB · Maaş Bordro</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../assets/css/style.css?v=20260712-653" />
+  <link rel="stylesheet" href="../assets/css/responsive-master.css?v=20260713-591" />
+  <link rel="stylesheet" href="../assets/css/performance.css?v=20260711-700" />
+  <link rel="stylesheet" href="../assets/css/tcr-table.css?v=20260713-583" />
+  <link rel="stylesheet" href="../assets/css/kpi-standard.css?v=20260712-694" />
+  <link rel="stylesheet" href="../assets/css/text-readability.css?v=20260712-657" />
+</head>
+<body>
+  <div id="app" class="app"></div>
+  <script src="../assets/js/app.js?v=20260712-653"></script>
+  <script src="../assets/js/tcr-actions.js?v=20260713-600"></script>
+  <script src="../assets/js/master-init.js?v=20260713-583"></script>
+  <script src="../assets/js/tcr-table.js?v=20260713-587"></script>
+  <script>
+    bootPage('maas', () => {
+      const brut = MOCK.maas.reduce((s,m) => s + m.brut, 0);
+      const net = MOCK.maas.reduce((s,m) => s + m.net, 0);
+      const sgk = MOCK.maas.reduce((s,m) => s + m.sgk, 0);
+      const vergi = MOCK.maas.reduce((s,m) => s + m.vergi, 0);
+      const odendi = MOCK.maas.filter(m => m.durum === 'Ödendi').reduce((s,m) => s + m.net, 0);
+      const bekleyen = MOCK.maas.filter(m => m.durum === 'Bekliyor').reduce((s,m) => s + m.net, 0);
+
+      return `
+      <div class="page-head">
+        <div>
+          <div class="breadcrumb">
+            <a href="dashboard.html">Genel</a><span>›</span>
+            <a href="maas.html">İnsan Kaynakları</a><span>›</span>
+            <span>Maaş Bordro</span>
+          </div>
+          <h1 class="page-title">Maaş Bordrosu</h1>
+          <div class="page-sub">Aylık ücret hesaplama, kesinti, mesai ve ödeme takibi</div>
+        </div>
+        <div class="page-actions">
+          <button class="btn btn-ghost" onclick="toast('Bordro indirildi (prototip)')">${ICONS.download} Bordro İndir</button>
+          <button class="btn btn-ghost" onclick="toast('Hesaplama yapıldı (prototip)')">${ICONS.chart} Hesapla</button>
+          <button class="btn btn-primary" onclick="openModal('odemeModal')">${ICONS.cash} Toplu Ödeme</button>
+        </div>
+      </div>
+
+      <div class="tcr-ac-grid">
+        <div class="tcr-action-card tcr-ac-blue"><span class="tcr-ac-icon">${ICONS.cash}</span><span class="tcr-ac-content"><span class="tcr-ac-title">Toplam Brüt</span><span class="tcr-ac-desc">${fmtMoney(brut)}</span></span></div>
+        <div class="tcr-action-card tcr-ac-green"><span class="tcr-ac-icon">${ICONS.wallet}</span><span class="tcr-ac-content"><span class="tcr-ac-title">Toplam Net</span><span class="tcr-ac-desc">${fmtMoney(net)}</span></span></div>
+        <div class="tcr-action-card tcr-ac-orange"><span class="tcr-ac-icon">${ICONS.trend_down}</span><span class="tcr-ac-content"><span class="tcr-ac-title">SGK + Vergi</span><span class="tcr-ac-desc">${fmtMoney(sgk + vergi)}</span></span></div>
+        <div class="tcr-action-card ${bekleyen>0?'tcr-ac-red':'tcr-ac-green'}"><span class="tcr-ac-icon">${ICONS.check}</span><span class="tcr-ac-content"><span class="tcr-ac-title">Bekleyen Ödeme</span><span class="tcr-ac-desc">${fmtMoney(bekleyen)}</span></span></div>
+      </div>
+
+      <div class="grid-2 mb-6">
+        <div class="card">
+          <div class="card-head"><div class="card-title">Bordro Dağılımı</div></div>
+          <div class="card-body">
+            ${donutChart([
+              {value: net, color:'#168a55', label:'Net Ücret'},
+              {value: sgk, color:'#2c4670', label:'SGK'},
+              {value: vergi, color:'#e6a93c', label:'Gelir Vergisi'},
+              {value: MOCK.maas.reduce((s,m)=>s+m.damga,0), color:'#c93838', label:'Damga Vergisi'},
+            ])}
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-head"><div class="card-title">Ödeme Durumu</div></div>
+          <div class="card-body">
+            <div class="stat-row"><span class="stat-label">Ödenen</span><span class="stat-value text-success">${fmtMoney(odendi)}</span></div>
+            <div class="progress mb-4"><div class="progress-bar accent" style="width:${(odendi/(odendi+bekleyen))*100}%"></div></div>
+            <div class="stat-row"><span class="stat-label">Bekleyen</span><span class="stat-value text-warn">${fmtMoney(bekleyen)}</span></div>
+            <div class="progress mb-4"><div class="progress-bar warn" style="width:${(bekleyen/(odendi+bekleyen))*100}%"></div></div>
+            <div class="stat-row"><span class="stat-label">İzinli (ertelendi)</span><span class="stat-value">${fmtMoney(MOCK.maas.filter(m=>m.durum==='İzinli').reduce((s,m)=>s+m.net,0))}</span></div>
+            <div class="divider"></div>
+            <div class="stat-row"><span class="stat-label">Toplam Personel</span><span class="stat-value">${MOCK.maas.length}</span></div>
+            <div class="stat-row"><span class="stat-label">Ortalama Maaş (Net)</span><span class="stat-value">${fmtMoney(net/MOCK.maas.length)}</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-head">
+          <div class="card-title">Temmuz 2026 Bordrosu</div>
+          <div class="flex gap-2">
+            <select class="filter-select"><option>Temmuz 2026</option><option>Haziran 2026</option><option>Mayıs 2026</option></select>
+            <select class="filter-select"><option>Tüm Departmanlar</option><option>Yönetim</option><option>Muhasebe</option><option>Satış</option></select>
+          </div>
+        </div>
+        <div class="card-body" style="padding:0;overflow-x:auto">
+          <table class="data">
+            <thead><tr><th>Personel</th><th class="num">Brüt</th><th class="num">SGK</th><th class="num">Vergi</th><th class="num">Mesai</th><th class="num">Prim</th><th class="num">Avans</th><th class="num">Net</th><th>Durum</th><th></th></tr></thead>
+            <tbody>
+              ${MOCK.maas.map(m => `
+                <tr>
+                  <td class="strong">${m.personel}</td>
+                  <td class="num">${fmtMoney(m.brut)}</td>
+                  <td class="num text-danger">${fmtMoney(m.sgk)}</td>
+                  <td class="num text-danger">${fmtMoney(m.vergi)}</td>
+                  <td class="num text-success">${m.mesai?fmtMoney(m.mesai):'-'}</td>
+                  <td class="num text-success">${m.prim?fmtMoney(m.prim):'-'}</td>
+                  <td class="num text-danger">${m.avans?fmtMoney(m.avans):'-'}</td>
+                  <td class="num strong">${fmtMoney(m.net)}</td>
+                  <td><span class="badge ${m.durum==='Ödendi'?'badge-success':m.durum==='Bekliyor'?'badge-warn':'badge-neutral'}">${m.durum}</span></td>
+                  <td><div class="flex gap-2"><button class="icon-btn" style="width:30px;height:30px" onclick="openModal('bordroModal')" title="Bordro">${ICONS.eye}</button><button class="icon-btn" style="width:30px;height:30px" onclick="openModal('odemeModal')" title="Öde">${ICONS.cash}</button></div></td>
+                </tr>
+              `).join('')}
+            </tbody>
+            <tfoot>
+              <tr style="background:var(--c-nu-50);font-weight:700">
+                <td>TOPLAM</td>
+                <td class="num">${fmtMoney(brut)}</td>
+                <td class="num text-danger">${fmtMoney(sgk)}</td>
+                <td class="num text-danger">${fmtMoney(vergi)}</td>
+                <td class="num text-success">${fmtMoney(MOCK.maas.reduce((s,m)=>s+m.mesai,0))}</td>
+                <td class="num text-success">${fmtMoney(MOCK.maas.reduce((s,m)=>s+m.prim,0))}</td>
+                <td class="num text-danger">${fmtMoney(MOCK.maas.reduce((s,m)=>s+m.avans,0))}</td>
+                <td class="num strong">${fmtMoney(net)}</td>
+                <td colspan="2"></td>
+              </tr>
+            </tfoot>
+          </table>
+        </div>
+      </div>
+
+      ${modalHtml('bordroModal', 'Personel Bordrosu · Ahmet Yılmaz', `
+        <div class="flex justify-between mb-4">
+          <div>
+            <h3 style="font-size:17px;color:var(--c-primary-800)">Ahmet Yılmaz</h3>
+            <div class="text-soft" style="font-size:13px">Genel Müdür · Temmuz 2026</div>
+          </div>
+          <span class="badge badge-success">Ödendi</span>
+        </div>
+        <div class="card" style="box-shadow:none">
+          <div class="card-body" style="padding:var(--s-4)">
+            <div class="text-soft mb-3" style="font-size:12px;font-weight:600">Kazançlar</div>
+            <div class="stat-row"><span class="stat-label">Brüt Ücret</span><span class="stat-value">${fmtMoney(85000)}</span></div>
+            <div class="stat-row"><span class="stat-label">Mesai</span><span class="stat-value">${fmtMoney(0)}</span></div>
+            <div class="stat-row"><span class="stat-label">Prim / İkramiye</span><span class="stat-value">${fmtMoney(5000)}</span></div>
+            <div class="stat-row" style="border-top:2px solid var(--border)"><span class="stat-label strong">Toplam Kazanç</span><span class="stat-value text-success">${fmtMoney(90000)}</span></div>
+          </div>
+        </div>
+        <div class="card mt-3" style="box-shadow:none">
+          <div class="card-body" style="padding:var(--s-4)">
+            <div class="text-soft mb-3" style="font-size:12px;font-weight:600">Kesintiler</div>
+            <div class="stat-row"><span class="stat-label">SGK (%15)</span><span class="stat-value text-danger">-${fmtMoney(12750)}</span></div>
+            <div class="stat-row"><span class="stat-label">Gelir Vergisi</span><span class="stat-value text-danger">-${fmtMoney(9350)}</span></div>
+            <div class="stat-row"><span class="stat-label">Damga Vergisi</span><span class="stat-value text-danger">-${fmtMoney(650)}</span></div>
+            <div class="stat-row"><span class="stat-label">Avans</span><span class="stat-value text-danger">-${fmtMoney(0)}</span></div>
+            <div class="stat-row" style="border-top:2px solid var(--border)"><span class="stat-label strong">Toplam Kesinti</span><span class="stat-value text-danger">-${fmtMoney(22750)}</span></div>
+          </div>
+        </div>
+        <div class="flex justify-between mt-4" style="background:var(--c-primary-50);padding:var(--s-4);border-radius:var(--r-md)">
+          <div class="text-strong" style="font-size:16px">Net Ödenecek</div>
+          <div class="text-success" style="font-size:22px;font-weight:700">${fmtMoney(61250)}</div>
+        </div>
+      `, `<button class="btn btn-ghost" onclick="closeModal('bordroModal')">Kapat</button><button class="btn btn-primary" onclick="toast('Bordro yazdırıldı (prototip)')">${ICONS.print} Yazdır</button>`, 'lg')}
+
+      ${modalHtml('odemeModal', 'Maaş Ödemesi', `
+        <div class="form-grid-2">
+          <div class="form-field full"><label class="form-label">Personel</label><select class="form-input"><option>Tüm Personel (Toplu Ödeme)</option>${MOCK.personel.map(p=>`<option>${p.ad}</option>`).join('')}</select></div>
+          <div class="form-field"><label class="form-label">Ödeme Tipi</label><select class="form-input"><option>Banka</option><option>Kasa</option></select></div>
+          <div class="form-field"><label class="form-label">Hesap / Kasa</label><select class="form-input">${MOCK.banka.map(b=>`<option>${b.banka} - ${b.hesap}</option>`).join('')}${MOCK.kasa.map(k=>`<option>${k.ad}</option>`).join('')}</select></div>
+          <div class="form-field"><label class="form-label">Tarih</label><input class="form-input" type="date" value="2026-07-04" /></div>
+          <div class="form-field"><label class="form-label">Tutar</label><input class="form-input" type="number" value="${net.toFixed(2)}" readonly /></div>
+          <div class="form-field full"><label class="form-label">Açıklama</label><input class="form-input" value="Temmuz 2026 maaş ödemesi" /></div>
+        </div>
+      `, `<button class="btn btn-ghost" onclick="closeModal('odemeModal')">İptal</button><button class="btn btn-primary" onclick="closeModal('odemeModal');toast('Maaş ödendi','success')">${ICONS.check} Öde</button>`)}
+      `;
+    });
+  </script>
+</body>
+</html>

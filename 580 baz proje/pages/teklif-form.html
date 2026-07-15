@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#10243f" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-title" content="Tcr3WEB" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <link rel="manifest" href="../manifest.webmanifest?v=20260711-699" />
+  <link rel="icon" type="image/png" href="../assets/icons/favicon-64.png" />
+  <link rel="apple-touch-icon" href="../assets/icons/icon-180.png" />
+  <title>Tcr3WEB · Yeni Teklif</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../assets/css/style.css?v=20260712-653" />
+  <link rel="stylesheet" href="../assets/css/responsive-master.css?v=20260713-591" />
+  <link rel="stylesheet" href="../assets/css/performance.css?v=20260711-700" />
+  <link rel="stylesheet" href="../assets/css/tcr-table.css?v=20260713-583" />
+  <link rel="stylesheet" href="../assets/css/text-readability.css?v=20260712-657" />
+</head>
+<body>
+  <div id="app" class="app"></div>
+  <script src="../assets/js/app.js?v=20260712-653"></script>
+  <script src="../assets/js/tcr-actions.js?v=20260713-600"></script>
+  <script src="../assets/js/master-init.js?v=20260713-583"></script>
+  <script src="../assets/js/tcr-table.js?v=20260713-587"></script>
+  <script>
+    const editId = new URLSearchParams(location.search).get('id');
+
+    bootPage('teklif', () => {
+      const belgeNo = editId || 'TK20261001';
+      const title = editId ? `Teklif Düzenle · ${editId}` : 'Yeni Teklif';
+
+      return `
+      <div class="page-head">
+        <div>
+          <div class="breadcrumb">
+            <a href="dashboard.html">Genel</a><span>›</span>
+            <a href="teklif.html">Teklif</a><span>›</span>
+            <span>${title}</span>
+          </div>
+          <h1 class="page-title">${ICONS.tag} ${title}</h1>
+        </div>
+        <div class="page-actions">
+          <a href="teklif.html" class="btn btn-danger">${ICONS.close} Vazgeç</a>
+          <button class="btn btn-ghost" onclick="toast('Taslak kaydedildi')">${ICONS.download} Taslak</button>
+          <button class="btn btn-ghost" onclick="toast('Teklif gönderildi','success')">${ICONS.mail} Gönder</button>
+          <button class="btn btn-success" onclick="teklifKaydet()">${ICONS.check} Kaydet</button>
+        </div>
+      </div>
+
+      <div class="form-page-grid">
+        <div style="display:flex;flex-direction:column;gap:var(--s-4)">
+
+          <!-- Teklif Bilgileri - Kompakt -->
+          <div class="card" style="overflow:hidden">
+            <div class="form-compact-head">
+              <div class="form-field">
+                <label class="form-label">Teklif No</label>
+                <input class="form-input mono" value="${belgeNo}" readonly />
+              </div>
+              <div class="form-field">
+                <label class="form-label">Para Birimi</label>
+                <select class="form-input">
+                  <option>TRY (₺)</option><option>USD ($)</option><option>EUR (€)</option>
+                </select>
+              </div>
+              <div class="form-field">
+                <label class="form-label">Teklif Tarihi</label>
+                <input type="date" class="form-input" value="2026-07-05" />
+              </div>
+              <div class="form-field">
+                <label class="form-label">Geçerlilik Tarihi</label>
+                <input type="date" class="form-input" value="2026-07-19" />
+              </div>
+              <div class="form-field span2">
+                <label class="form-label">Müşteri</label>
+                <div class="picker-field-wrap">
+                  <span class="picker-display" id="tkf-cari-display">Seçiniz...</span>
+                  <input type="hidden" id="tkf-cari-val">
+                  <button type="button" class="btn btn-ghost btn-sm picker-trigger" onclick="openPickerFor('musteri','tkf-cari-display','tkf-cari-val')">${ICONS.search} Seç</button>
+                </div>
+              </div>
+              <div class="form-field">
+                <label class="form-label">İlgili Kişi</label>
+                <input type="text" class="form-input" placeholder="Müşteri tarafı" />
+              </div>
+              <div class="form-field">
+                <label class="form-label">Ödeme Koşulları</label>
+                <input type="text" class="form-input" placeholder="ör. %50 peşin" />
+              </div>
+            </div>
+            <div class="form-compact-body">
+              <div class="form-field">
+                <label class="form-label">Teklif Notu</label>
+                <input type="text" class="form-input" placeholder="Müşteriye iletilecek notlar, özel koşullar..." />
+              </div>
+            </div>
+          </div>
+
+          <!-- Teklif Kalemleri -->
+          <div class="card">
+            <div class="card-head">
+              <div class="card-title">Teklif Kalemleri</div>
+              <div style="display:flex;gap:var(--s-2);flex-wrap:wrap"><button class="btn btn-ghost btn-sm" onclick="addFormLine('tkf-lines')">${ICONS.plus} Satır Ekle</button><button class="btn btn-ghost btn-sm" onclick="copySelectedFormLines('tkf-lines')">⧉ Kopyala</button><button class="btn btn-ghost btn-sm" onclick="pasteCopiedFormLines('tkf-lines')">▣ Yapıştır</button><button class="btn btn-primary btn-sm" onclick="openStockMultiPicker('tkf-lines')">${ICONS.search} Stok Seç</button></div>
+            </div>
+            <div class="form-line-table-wrap">
+              <table class="data form-line-table">
+                <colgroup class="fml-colgroup">
+                  <col class="col-check"><col class="col-product"><col class="col-qty-unit"><col class="col-price"><col class="col-disc"><col class="col-vat"><col class="col-total"><col class="col-actions">
+                </colgroup>
+                <thead><tr>
+                  <th class="fml-col-check"><input type="checkbox" onclick="toggleAllFormLineChecks(this)"></th>
+                  <th>Ürün / Depo Durumu</th>
+                  <th class="num">Miktar / Birim</th>
+                  <th class="num">Birim Fiyat</th>
+                  <th class="num">Satır İsk.</th>
+                  <th>KDV %</th>
+                  <th class="num">Tutar</th>
+                  <th class="num fml-col-actions">İşlem</th>
+                </tr></thead>
+                <tbody id="tkf-lines"></tbody>
+              </table>
+            </div>
+            <div class="totals-bar">
+              <div class="totals-bar-item">
+                <span class="totals-bar-label">Ara Toplam</span>
+                <span class="totals-bar-val" id="tkf-lines-ara">${fmtMoney(0)}</span>
+              </div>
+              <div class="totals-bar-item">
+                <span class="totals-bar-label">İskonto Toplamı</span>
+                <span class="totals-bar-val" id="tkf-lines-iskonto">${fmtMoney(0)}</span>
+              </div>
+              <div class="totals-bar-item">
+                <span class="totals-bar-label">KDV Tutar</span>
+                <span class="totals-bar-val" id="tkf-lines-kdv">${fmtMoney(0)}</span>
+              </div>
+              <div class="totals-bar-item">
+                <span class="totals-bar-label">Genel Toplam</span>
+                <span class="totals-bar-val big" id="tkf-lines-genel">${fmtMoney(0)}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Sidebar -->
+        <div class="form-page-side">
+          <div class="card">
+            <div class="card-head"><div class="card-title">Teklif Özeti</div></div>
+            <div class="card-body">
+              <div class="sum-row"><span class="sum-row-label">Cari Bakiye</span><span class="sum-row-val" id="sum-cari-bakiye" style="font-size:13px">—</span></div>
+              <div class="sum-row"><span class="sum-row-label">Risk</span><span class="sum-row-val" id="sum-cari-risk" style="font-size:13px">—</span></div>
+              <div class="sum-row" style="border-top:1px solid var(--border-soft);margin-top:var(--s-2);padding-top:var(--s-2)"><span class="sum-row-label">Ara Toplam</span><span class="sum-row-val" id="sum-ara">${fmtMoney(0)}</span></div>
+              <div class="sum-row"><span class="sum-row-label">Satır İskontosu</span><span class="sum-row-val" id="sum-satir-iskonto">${fmtMoney(0)}</span></div>
+              <div class="sum-row"><span class="sum-row-label">Genel İskonto</span><span class="sum-row-val"><span style="display:flex;gap:4px;justify-content:flex-end"><input class="form-input" id="genel-iskonto" type="number" min="0" value="0" step="0.01" style="width:76px;text-align:right;padding:5px 8px" oninput="calcFormTotals(document.querySelector('.form-line-table tbody')?.id||'')"><select class="form-input" id="genel-iskonto-tip" style="width:112px;padding:5px 6px" onchange="calcFormTotals(document.querySelector('.form-line-table tbody')?.id||'')"><option value="tl" selected>İskonto TL</option><option value="percent">İskonto %</option></select></span></span></div>
+              <div class="sum-row"><span class="sum-row-label">Genel İskonto</span><span class="sum-row-val" id="sum-genel-iskonto">${fmtMoney(0)}</span></div>
+              <div class="sum-row"><span class="sum-row-label">KDV Tutar</span><span class="sum-row-val" id="sum-kdv">${fmtMoney(0)}</span></div>
+              <div class="sum-row total"><span class="sum-row-label">Genel Toplam</span><span class="sum-row-val" id="sum-genel">${fmtMoney(0)}</span></div>
+            </div>
+          </div>
+          ${renderDepotFlowPanel('teklif')}
+
+          <div class="card">
+            <div class="card-head"><div class="card-title">İşlemler</div></div>
+            <div class="card-body" style="display:flex;flex-direction:column;gap:var(--s-2)">
+              <button class="btn btn-success" style="width:100%" onclick="teklifKaydet()">${ICONS.check} Kaydet</button>
+              <button class="btn btn-ghost" style="width:100%" onclick="toast('Müşteriye gönderildi','success')">${ICONS.mail} E-posta Gönder</button>
+              <button class="btn btn-whatsapp" style="width:100%" onclick="shareWhatsApp('${belgeNo}','Teklif',0,'Müşteri')">${ICONS.whatsapp} WhatsApp</button>
+              <button class="btn btn-accent" style="width:100%" onclick="toast('Siparişe dönüştürüldü','success')">${ICONS.inbox} Siparişe Dönüştür</button>
+              <button class="btn btn-ghost" style="width:100%" onclick="printDoc()">${ICONS.print} Yazdır / PDF</button>
+              <a href="teklif.html" class="btn btn-danger" style="width:100%;text-align:center">${ICONS.close} Vazgeç</a>
+            </div>
+          </div>
+      </div>
+      `;
+    });
+
+    window.afterRender = () => {
+      addFormLine('tkf-lines');
+    };
+
+    function teklifKaydet() {
+      toast('Teklif kaydedildi', 'success');
+      setTimeout(() => window.location.href = 'teklif.html', 1000);
+    }
+  </script>
+</body>
+</html>

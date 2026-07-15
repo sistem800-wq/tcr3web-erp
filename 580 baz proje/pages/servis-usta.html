@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Tcr3WEB · Usta Çalışma Alanı</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../assets/css/style.css?v=20260712-653" />
+  <link rel="stylesheet" href="../assets/css/responsive-master.css?v=20260713-591" />
+  <link rel="stylesheet" href="../assets/css/performance.css?v=20260711-700" />
+  <link rel="stylesheet" href="../assets/css/tcr-table.css?v=20260713-583" />
+  <link rel="stylesheet" href="../assets/css/kpi-standard.css?v=20260712-694" />
+  <link rel="stylesheet" href="../assets/css/text-readability.css?v=20260712-657" />
+</head>
+<body>
+<div id="app" class="app"></div>
+<script src="../assets/js/app.js?v=20260712-653"></script>
+<script src="../assets/js/tcr-actions.js?v=20260711-719"></script>
+<script src="../assets/js/master-init.js?v=20260713-583"></script>
+  <script src="../assets/js/tcr-table.js?v=20260713-587"></script>
+<script>
+const technicianJobs = [
+ {no:'SRV202607110021',time:'09:30',customer:'Arda Market',phone:'0532 111 22 33',device:'Soğuk Oda · SN-20442',fault:'Kompresör devreye girmiyor',address:'Kayapınar · Fırat Bulvarı No:18',distance:'3,2 km',eta:'11 dk',priority:'Kritik',status:'Atandı',step:0,parts:[],photos:0,notes:''},
+ {no:'SRV202607110024',time:'11:15',customer:'Güneş Yapı',phone:'0541 430 10 20',device:'Jeneratör · SN-98110',fault:'Periyodik bakım ve yağ değişimi',address:'Yenişehir · Ofis Cad. No:42',distance:'7,8 km',eta:'19 dk',priority:'Planlı',status:'Yolda',step:1,parts:[{name:'Motor Yağı 5W30',qty:1}],photos:1,notes:'Güvenlik birimine bilgi verildi.'},
+ {no:'SRV202607110027',time:'14:00',customer:'Mavi Otel',phone:'0507 222 44 55',device:'Endüstriyel Klima · SN-77102',fault:'Soğutma yetersiz',address:'Bağlar · Turizm Sok. No:7',distance:'5,1 km',eta:'16 dk',priority:'Acil',status:'İşlemde',step:3,parts:[{name:'Klima Filtresi',qty:2}],photos:2,notes:'Filtreler aşırı kirli.'}
+];
+let selectedJob = technicianJobs[0];
+const steps=['Atandı','Yola Çıktı','Ulaştım','İşleme Başlandı','Tamamlandı'];
+bootPage('servis-usta',()=>`
+ <div class="page-head tech-page-head">
+  <div><div class="breadcrumb"><a href="servis-havuzu.html">Servis</a><span>›</span><span>Usta Çalışma Alanı</span></div><h1 class="page-title">Günaydın, Mehmet Usta</h1><div class="page-sub">Bugünkü servislerini, saha işlemlerini, kullanılan parçaları, fotoğrafları, müşteri imzasını ve tahsilatı tek ekrandan yönet.</div></div>
+  <div class="page-actions"><button class="btn btn-outline-primary" onclick="location.href='servis-havuzu.html'">${ICONS.users}<span>Servis Havuzu</span></button><button class="btn btn-outline-info" onclick="showRoute()">${ICONS.map_pin}<span>Bugünkü Rota</span></button></div>
+ </div>
+ <div class="tcr-ac-grid mb-5">
+  ${roleKpi('briefcase','Atanan Servis','3','aktif iş','warn')}
+  ${roleKpi('alert','Acil / Kritik','2','öncelikli','danger')}
+  ${roleKpi('truck','Yolda','1','ETA 19 dk','accent')}
+  ${roleKpi('settings','İşlemde','1','sahada müdahale','warn')}
+  ${roleKpi('check','Tamamlanan','4','bugün','success')}
+  ${roleKpi('clock','Ortalama Süre','52 dk','son 30 gün','accent')}
+ </div>
+ <div class="tech-workspace">
+  <section class="card service-panel tech-job-list-panel"><div class="card-head"><div><div class="card-title">Servislerim</div><div class="text-mute small">Saat ve öncelik sırasına göre günlük iş listesi</div></div><span class="pill">3 / 3 Aktif</span></div><div class="card-body tech-job-list" id="techJobList"></div></section>
+  <section class="card service-panel tech-detail-panel" id="techDetail"></section>
+ </div>
+ <nav class="tech-mobile-nav"><button class="active" onclick="scrollToTop()">${ICONS.dashboard}<span>Ana Sayfa</span></button><button onclick="location.href='servis-havuzu.html'">${ICONS.users}<span>Havuz</span></button><button onclick="showRoute()">${ICONS.map_pin}<span>Harita</span></button><button onclick="showActionModal('info','Bildirimler','2 yeni servis bildiriminiz var.')">${ICONS.bell}<span>Bildirim</span></button><button onclick="showActionModal('info','Profil','Mehmet Usta · Elektrik / Soğutma uzmanlığı')">${ICONS.user_id}<span>Profil</span></button></nav>
+`);
+renderJobs(); selectJob(selectedJob.no);
+function renderJobs(){document.getElementById('techJobList').innerHTML=technicianJobs.map(j=>`<article class="tech-job-card ${selectedJob&&selectedJob.no===j.no?'selected':''}" onclick="selectJob('${j.no}')"><div class="tech-job-time"><strong>${j.time}</strong><span>${j.distance}</span></div><div class="tech-job-main"><div class="tech-job-title"><strong>${j.customer}</strong><span class="status ${j.priority==='Kritik'?'danger':j.priority==='Acil'?'warn':'info'}">${j.priority}</span></div><span>${j.device}</span><b>${j.fault}</b><small>${j.address}</small></div><div class="tech-job-state"><span class="status ${j.status==='İşlemde'?'warn':j.status==='Yolda'?'info':''}">${j.status}</span>${ICONS.chevron_right}</div></article>`).join('')}
+function selectJob(no){selectedJob=technicianJobs.find(x=>x.no===no)||technicianJobs[0];renderJobs();renderDetail()}
+function renderDetail(){const j=selectedJob;document.getElementById('techDetail').innerHTML=`
+ <div class="card-head tech-detail-head"><div><div class="card-title">${j.no}</div><div class="text-mute small">${j.customer} · ${j.device}</div></div><span class="status ${j.priority==='Kritik'?'danger':j.priority==='Acil'?'warn':'info'}">${j.priority}</span></div>
+ <div class="card-body">
+  <div class="tech-progress">${steps.map((s,i)=>`<div class="${i<=j.step?'done':''} ${i===j.step?'active':''}"><b>${i<j.step?ICONS.check:i+1}</b><span>${s}</span></div>`).join('')}</div>
+  <div class="tech-customer-box"><div><small>Müşteri</small><strong>${j.customer}</strong><span>${j.phone}</span></div><div><small>Adres</small><strong>${j.address}</strong><span>${j.distance} · ${j.eta}</span></div><div class="tech-contact-actions"><button class="btn btn-outline-success btn-icon-action" title="Müşteriyi ara" onclick="callCustomer()">${ICONS.phone}</button><button class="btn btn-outline-success btn-icon-action" title="WhatsApp mesajı gönder" onclick="whatsappCustomer()">${ICONS.whatsapp}</button><button class="btn btn-outline-info btn-icon-action" title="Navigasyonu aç" onclick="showRoute()">${ICONS.map_pin}</button></div></div>
+  <div class="tech-fault-box"><small>Arıza / Yapılacak İş</small><strong>${j.fault}</strong><span>${j.device}</span></div>
+  <div class="tech-main-actions">
+   <button class="btn btn-outline-primary" onclick="advanceJob(1)" ${j.step>=1?'disabled':''}>${ICONS.truck}<span>Yola Çık</span></button>
+   <button class="btn btn-outline-info" onclick="advanceJob(2)" ${j.step<1||j.step>=2?'disabled':''}>${ICONS.map_pin}<span>Ulaştım</span></button>
+   <button class="btn btn-outline-warning" onclick="advanceJob(3)" ${j.step<2||j.step>=3?'disabled':''}>${ICONS.settings}<span>İşleme Başla</span></button>
+   <button class="btn btn-outline-success" onclick="finishJob()" ${j.step<3||j.step>=4?'disabled':''}>${ICONS.check}<span>Servisi Bitir</span></button>
+  </div>
+  <div class="tech-tabs"><button class="active" onclick="showTechTab('work',this)">İşlem</button><button onclick="showTechTab('parts',this)">Parçalar <span>${j.parts.length}</span></button><button onclick="showTechTab('photos',this)">Fotoğraflar <span>${j.photos}</span></button><button onclick="showTechTab('notes',this)">Notlar</button><button onclick="showTechTab('payment',this)">Tahsilat</button></div>
+  <div id="techTabContent">${workTab()}</div>
+ </div>`}
+function workTab(){return `<div class="tech-tab-grid"><button onclick="showActionModal('info','Kontrol Listesi','Cihaz güvenliği, enerji bağlantısı, seri numarası ve garanti kontrolü açıldı.')">${ICONS.file_check}<strong>Kontrol Listesi</strong><span>Adımları tamamla</span></button><button onclick="showTechTabByName('parts')">${ICONS.box}<strong>Parça Kullan</strong><span>Stoktan sarf gir</span></button><button onclick="addPhoto()">${ICONS.eye}<strong>Fotoğraf Çek</strong><span>Önce / sonra</span></button><button onclick="captureSignature()">${ICONS.edit}<strong>Müşteri İmzası</strong><span>Parmakla imzala</span></button><button onclick="showTechTabByName('payment')">${ICONS.wallet}<strong>Tahsilat Al</strong><span>Nakit / kart / POS</span></button><button onclick="showActionModal('info','Servis Evrakı','Servis formu ve garanti belgeleri görüntülendi.')">${ICONS.file_text}<strong>Evraklar</strong><span>Form ve garanti</span></button></div>`}
+function showTechTab(type,btn){document.querySelectorAll('.tech-tabs button').forEach(x=>x.classList.remove('active'));btn&&btn.classList.add('active');const c=document.getElementById('techTabContent');if(type==='work')c.innerHTML=workTab();if(type==='parts')c.innerHTML=`<div class="tech-entry-panel"><div class="tech-entry-head"><strong>Kullanılan Parçalar</strong><button class="btn btn-outline-success btn-sm" onclick="addPart()">${ICONS.plus} Parça Ekle</button></div>${selectedJob.parts.length?selectedJob.parts.map(p=>`<div class="tech-part-row"><span>${ICONS.box}</span><strong>${p.name}</strong><em>${p.qty} adet</em><button class="btn btn-outline-danger btn-icon-action" onclick="removePart('${p.name}')">${ICONS.trash}</button></div>`).join(''):'<div class="empty-state">Henüz parça kullanılmadı.</div>'}</div>`;if(type==='photos')c.innerHTML=`<div class="tech-photo-grid"><button onclick="addPhoto()">${ICONS.plus}<strong>Fotoğraf Çek</strong><span>Önce / sonra / garanti</span></button>${Array.from({length:selectedJob.photos},(_,i)=>`<div class="tech-photo-placeholder">${ICONS.eye}<strong>Servis Fotoğrafı ${i+1}</strong><span>11.07.2026  ${10+i}:24</span></div>`).join('')}</div>`;if(type==='notes')c.innerHTML=`<div class="tech-entry-panel"><label class="form-label">Usta Notu</label><textarea class="form-input" rows="5" id="techNote" placeholder="Yapılan işlem, cihaz durumu ve müşteri bilgisi...">${selectedJob.notes}</textarea><button class="btn btn-success mt-3" onclick="saveNote()">${ICONS.check} Notu Kaydet</button></div>`;if(type==='payment')c.innerHTML=`<div class="tech-payment-grid"><button onclick="takePayment('Nakit')">${ICONS.cash}<strong>Nakit</strong><span>Tahsilat kaydı oluştur</span></button><button onclick="takePayment('Kart / POS')">${ICONS.wallet}<strong>Kart / POS</strong><span>Sanal POS ekranını aç</span></button><button onclick="takePayment('Havale')">${ICONS.building}<strong>Havale</strong><span>Banka tahsilatı gir</span></button><button onclick="takePayment('QR')">${ICONS.dashboard}<strong>QR Ödeme</strong><span>Ödeme bağlantısı oluştur</span></button></div>`}
+function showTechTabByName(n){const btn=[...document.querySelectorAll('.tech-tabs button')].find(x=>x.textContent.toLowerCase().includes(n==='parts'?'parça':'tahsilat'));showTechTab(n,btn)}
+function advanceJob(step){selectedJob.step=step;selectedJob.status=steps[step];showActionModal('success','Durum Güncellendi',selectedJob.no+' · '+steps[step]);renderDetail();renderJobs()}
+function finishJob(){showActionModal('confirm','Servisi Tamamla','Parça, fotoğraf, not, imza ve tahsilat kontrollerinden sonra servis kapatılacak.',()=>{selectedJob.step=4;selectedJob.status='Tamamlandı';renderDetail();renderJobs();showActionModal('success','Servis Tamamlandı',selectedJob.no+' müşteri imzası ile kapatıldı.');})}
+function addPart(){selectedJob.parts.push({name:'Servis Yedek Parçası',qty:1});showTechTab('parts',[...document.querySelectorAll('.tech-tabs button')][1]);showActionModal('success','Parça Eklendi','Parça araç/depo stoğundan servis sarfına işlendi.')}
+function removePart(n){selectedJob.parts=selectedJob.parts.filter(x=>x.name!==n);showTechTab('parts',[...document.querySelectorAll('.tech-tabs button')][1])}
+function addPhoto(){selectedJob.photos++;showActionModal('success','Fotoğraf Eklendi','Fotoğraf servis kaydına eklendi.');renderDetail()}
+function captureSignature(){showActionModal('success','Müşteri İmzası','İmza alanı açıldı ve servis formuna kaydedildi.')}
+function saveNote(){selectedJob.notes=document.getElementById('techNote').value;showActionModal('success','Not Kaydedildi','Usta notu servis hareketlerine eklendi.')}
+function takePayment(type){showActionModal('success','Tahsilat İşlemi',type+' ödeme ekranı açıldı. Tahsilat servis ve cari harekete işlenecek.')}
+function callCustomer(){showActionModal('info','Müşteri Aranıyor',selectedJob.customer+' · '+selectedJob.phone)}
+function whatsappCustomer(){showActionModal('info','WhatsApp',selectedJob.customer+' için hazır servis mesajı açıldı.')}
+function showRoute(){showActionModal('info','Navigasyon',selectedJob.customer+' konumu ve bugünkü rota haritada açıldı.')}
+function scrollToTop(){window.scrollTo({top:0,behavior:'smooth'})}
+</script>
+</body>
+</html>

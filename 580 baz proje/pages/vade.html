@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#10243f" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-title" content="Tcr3WEB" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <link rel="manifest" href="../manifest.webmanifest?v=20260711-699" />
+  <link rel="icon" type="image/png" href="../assets/icons/favicon-64.png" />
+  <link rel="apple-touch-icon" href="../assets/icons/icon-180.png" />
+  <title>Tcr3WEB · Vade Takvimi</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../assets/css/style.css?v=20260712-653" />
+  <link rel="stylesheet" href="../assets/css/responsive-master.css?v=20260713-591" />
+  <link rel="stylesheet" href="../assets/css/performance.css?v=20260711-700" />
+  <link rel="stylesheet" href="../assets/css/tcr-table.css?v=20260713-583" />
+  <link rel="stylesheet" href="../assets/css/kpi-standard.css?v=20260712-694" />
+  <link rel="stylesheet" href="../assets/css/text-readability.css?v=20260712-657" />
+</head>
+<body>
+  <div id="app" class="app"></div>
+  <script src="../assets/js/app.js?v=20260712-653"></script>
+  <script src="../assets/js/tcr-actions.js?v=20260713-600"></script>
+  <script src="../assets/js/master-init.js?v=20260713-583"></script>
+  <script src="../assets/js/tcr-table.js?v=20260713-587"></script>
+  <script>
+    bootPage('vade', () => {
+      const events = [
+        { date: '2026-07-08', tip: 'Senet', taraf: 'Bizim Şirket (verilen)', tutar: 22000, durum: 'Ödeme' },
+        { date: '2026-07-10', tip: 'Çek', taraf: 'Yıldız Plastik (verilen)', tutar: 45000, durum: 'Ödeme' },
+        { date: '2026-07-12', tip: 'Çek', taraf: 'Marmara Kimya (ciro)', tutar: 28000, durum: 'Ödeme' },
+        { date: '2026-07-15', tip: 'Çek', taraf: 'Marmara Tekstil (alınan)', tutar: 75000, durum: 'Tahsilat' },
+        { date: '2026-07-18', tip: 'Senet', taraf: 'Bizim Şirket (verilen)', tutar: 35000, durum: 'Ödeme' },
+        { date: '2026-07-20', tip: 'Çek', taraf: 'Anadolu Hırdavat (alınan)', tutar: 32000, durum: 'Tahsilat' },
+        { date: '2026-07-25', tip: 'Senet', taraf: 'Marmara Tekstil (alınan)', tutar: 60000, durum: 'Tahsilat' },
+        { date: '2026-08-01', tip: 'Çek', taraf: 'Karadeniz Mobilya (alınan)', tutar: 95000, durum: 'Tahsilat' },
+        { date: '2026-08-05', tip: 'Senet', taraf: 'Anadolu Hırdavat (alınan)', tutar: 27800, durum: 'Tahsilat' },
+        { date: '2026-08-15', tip: 'Senet', taraf: 'Karadeniz Mobilya (alınan)', tutar: 45000, durum: 'Tahsilat' },
+      ];
+
+      const today = new Date('2026-07-04');
+      const weekFromNow = new Date(today); weekFromNow.setDate(today.getDate() + 7);
+      const monthFromNow = new Date(today); monthFromNow.setDate(today.getDate() + 30);
+
+      const bugun = events.filter(e => new Date(e.date) <= weekFromNow).reduce((s,e) => s + e.tutar, 0);
+      const aylik = events.filter(e => new Date(e.date) <= monthFromNow).reduce((s,e) => s + e.tutar, 0);
+      const tahsilat = events.filter(e => e.durum === 'Tahsilat').reduce((s,e) => s + e.tutar, 0);
+      const odeme = events.filter(e => e.durum === 'Ödeme').reduce((s,e) => s + e.tutar, 0);
+
+      // Build calendar for July 2026
+      const year = 2026, month = 6; // July (0-indexed)
+      const firstDay = new Date(year, month, 1).getDay(); // 0=Sun
+      const offset = (firstDay + 6) % 7; // Monday-first
+      const daysInMonth = new Date(year, month + 1, 0).getDate();
+      const weeks = [];
+      let cells = [];
+      for (let i = 0; i < offset; i++) cells.push({ empty: true });
+      for (let d = 1; d <= daysInMonth; d++) {
+        const dateStr = `2026-07-${String(d).padStart(2,'0')}`;
+        const dayEvents = events.filter(e => e.date === dateStr);
+        cells.push({ day: d, events: dayEvents, today: d === 4 });
+        if (cells.length === 7) { weeks.push(cells); cells = []; }
+      }
+      if (cells.length) weeks.push(cells);
+
+      return `
+      <div class="page-head">
+        <div>
+          <div class="breadcrumb">
+            <a href="dashboard.html">Genel</a><span>›</span>
+            <a href="vade.html">Finans</a><span>›</span>
+            <span>Vade Takvimi</span>
+          </div>
+          <h1 class="page-title">Vade Takvimi</h1>
+          <div class="page-sub">Tüm vadeli işlemler (çek, senet, cari vade) tek takvimde</div>
+        </div>
+        <div class="page-actions">
+          <button class="btn btn-ghost">${ICONS.chevron_right} Ağustos</button>
+          <button class="btn btn-primary">Temmuz 2026</button>
+          <button class="btn btn-ghost">${ICONS.chevron_right} Eylül</button>
+        </div>
+      </div>
+
+      <div class="tcr-ac-grid">
+        <div class="tcr-action-card tcr-ac-red"><span class="tcr-ac-icon">${ICONS.alert}</span><span class="tcr-ac-content"><span class="tcr-ac-title">7 Gün İçinde</span><span class="tcr-ac-desc">${fmtMoney(bugun)}</span></span></div>
+        <div class="tcr-action-card tcr-ac-orange"><span class="tcr-ac-icon">${ICONS.calendar}</span><span class="tcr-ac-content"><span class="tcr-ac-title">30 Gün İçinde</span><span class="tcr-ac-desc">${fmtMoney(aylik)}</span></span></div>
+        <div class="tcr-action-card tcr-ac-green"><span class="tcr-ac-icon">${ICONS.trend_up}</span><span class="tcr-ac-content"><span class="tcr-ac-title">Beklenen Tahsilat</span><span class="tcr-ac-desc">${fmtMoney(tahsilat)}</span></span></div>
+        <div class="tcr-action-card tcr-ac-blue"><span class="tcr-ac-icon">${ICONS.trend_down}</span><span class="tcr-ac-content"><span class="tcr-ac-title">Beklenen Ödeme</span><span class="tcr-ac-desc">${fmtMoney(odeme)}</span></span></div>
+      </div>
+
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-head"><div class="card-title">Takvim · Temmuz 2026</div></div>
+          <div class="card-body" style="padding:var(--s-3)">
+            <div class="calendar">
+              <div class="calendar-head">Pzt</div><div class="calendar-head">Sal</div><div class="calendar-head">Çar</div><div class="calendar-head">Per</div><div class="calendar-head">Cum</div><div class="calendar-head">Cmt</div><div class="calendar-head">Paz</div>
+              ${weeks.map(week => week.map(cell => {
+                if (cell.empty) return '<div class="calendar-cell muted"></div>';
+                const evs = (cell.events||[]).map(e => `<div class="cal-event ${e.durum==='Tahsilat'?'accent':'danger'}" title="${e.taraf}">${e.tip}: ${fmtMoney(e.tutar,false)}</div>`).join('');
+                return `<div class="calendar-cell ${cell.today?'today':''}"><div class="calendar-day">${cell.day}</div>${evs}</div>`;
+              }).join('')).join('')}
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-head"><div class="card-title">Yaklaşan Vadeler</div><select class="filter-select"><option>Tümü</option><option>Tahsilat</option><option>Ödeme</option></select></div>
+          <div class="card-body" style="padding:0;max-height:480px;overflow-y:auto">
+            <table class="data">
+              <thead><tr><th>Vade</th><th>Tip</th><th>Taraf</th><th></th><th class="num">Tutar</th></tr></thead>
+              <tbody>
+                ${events.map(e => {
+                  const d = new Date(e.date);
+                  const days = Math.round((d - today) / 86400000);
+                  const urgent = days <= 7;
+                  return `
+                  <tr>
+                    <td class="muted">${fmtDate(e.date)}<div class="text-mute" style="font-size:11px">${days} gün sonra</div></td>
+                    <td><span class="badge ${e.tip==='Çek'?'badge-info':'badge-warn'}">${e.tip}</span></td>
+                    <td class="strong">${e.taraf}</td>
+                    <td><span class="badge ${e.durum==='Tahsilat'?'badge-success':'badge-danger'}">${e.durum}</span></td>
+                    <td class="num ${urgent?'text-danger':'strong'}">${fmtMoney(e.tutar)}</td>
+                  </tr>`;
+                }).join('')}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+      `;
+    });
+  </script>
+</body>
+</html>

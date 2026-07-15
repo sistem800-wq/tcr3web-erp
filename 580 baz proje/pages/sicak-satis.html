@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#10243f" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-title" content="Tcr3WEB" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <link rel="manifest" href="../manifest.webmanifest?v=20260711-699" />
+  <link rel="icon" type="image/png" href="../assets/icons/favicon-64.png" />
+  <link rel="apple-touch-icon" href="../assets/icons/icon-180.png" />
+  <title>Tcr3WEB · Sıcak Satış</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../assets/css/style.css?v=20260712-653" />
+  <link rel="stylesheet" href="../assets/css/responsive-master.css?v=20260713-591" />
+  <link rel="stylesheet" href="../assets/css/performance.css?v=20260711-700" />
+  <link rel="stylesheet" href="../assets/css/tcr-table.css?v=20260713-583" />
+
+  <style>
+    .hot-demo-table-wrap, .hot-cari-table-wrap{width:100%;overflow-x:auto;border-top:1px solid var(--border-color,#dbe3ef);border-radius:16px;}
+    .hot-demo-table, .hot-cari-table{width:100%;min-width:0;table-layout:fixed;border-collapse:separate;border-spacing:0;}
+    .hot-demo-table th,.hot-demo-table td,.hot-cari-table th,.hot-cari-table td{vertical-align:middle;white-space:normal;overflow:hidden;text-overflow:ellipsis;padding:12px 14px;}
+    .hot-demo-table th:nth-child(1){width:46%;}.hot-demo-table th:nth-child(2){width:15%;}.hot-demo-table th:nth-child(3){width:15%;}.hot-demo-table th:nth-child(4){width:24%;}
+    .hot-cari-table th:nth-child(1){width:26%;}.hot-cari-table th:nth-child(2){width:16%;}.hot-cari-table th:nth-child(3){width:14%;}.hot-cari-table th:nth-child(4){width:14%;}.hot-cari-table th:nth-child(5){width:12%;}.hot-cari-table th:nth-child(6){width:18%;}
+    .hot-cari-table .inline-actions{display:flex;gap:8px;align-items:center;justify-content:flex-start;flex-wrap:nowrap;}
+    .hot-cari-table .btn-xs{min-height:38px;padding:0 14px;border-radius:10px;font-weight:800;}
+    .hot-demo-table .badge,.hot-cari-table .badge{display:inline-flex;align-items:center;justify-content:center;min-height:26px;border-radius:999px;padding:4px 10px;font-size:12px;line-height:1.1;white-space:nowrap;}
+    .hot-demo-table small,.hot-cari-table small{display:block;margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+    @media (max-width: 1366px){
+      .hot-demo-table th,.hot-demo-table td,.hot-cari-table th,.hot-cari-table td{padding:10px 12px;font-size:13px;}
+      .hot-cari-table .btn-xs{min-height:34px;padding:0 11px;font-size:12px;}
+      .hot-cari-table th:nth-child(1){width:27%;}.hot-cari-table th:nth-child(6){width:20%;}
+    }
+    @media (max-width: 900px){
+      .hot-demo-table{min-width:640px}.hot-cari-table{min-width:860px}
+      .hot-demo-table-wrap,.hot-cari-table-wrap{overflow-x:auto;}
+    }
+  </style>
+  <link rel="stylesheet" href="../assets/css/kpi-standard.css?v=20260712-694" />
+  <link rel="stylesheet" href="../assets/css/text-readability.css?v=20260712-657" />
+</head>
+<body>
+  <div id="app" class="app"></div>
+  <script src="../assets/js/app.js?v=20260712-653"></script>
+  <script src="../assets/js/tcr-actions.js?v=20260713-600"></script>
+  <script src="../assets/js/master-init.js?v=20260713-583"></script>
+  <script src="../assets/js/tcr-table.js?v=20260713-587"></script>
+  <script>
+    bootPage('sicak-satis', () => `
+      <div class="page-head">
+        <div>
+          <div class="breadcrumb"><a href="dashboard.html">Genel</a><span>›</span><span>Sıcak Satış</span></div>
+          <h1 class="page-title">Sıcak Satış · Araç Satışı</h1>
+          <div class="page-sub">Araç deposu, haftalık rota, tanımlı cari, tahsilat ve sanal POS tek ekranda.</div>
+        </div>
+        <div class="page-actions">
+          <button class="btn btn-ghost" onclick="toast('Haftalık rota dışa aktarıldı')">${ICONS.download} Rota</button>
+          <button class="btn btn-ghost" onclick="toast('Sanal POS tahsilat ekranı açıldı')">${ICONS.wallet} POS Çek</button>
+          <button class="btn btn-primary" onclick="toast('Araçtan satış fişi açıldı')">${ICONS.plus} Araçtan Satış</button>
+        </div>
+      </div>
+
+      <div class="tcr-ac-grid mb-6">
+        ${roleKpi('truck','Kullanılan Depo','Araç Deposu 34','sabit yetkili depo','accent')}
+        ${roleKpi('users','Tanımlı Cari','42','sadece kendi carileri','')}
+        ${roleKpi('calendar','Bugünkü Ziyaret','12','rota içi müşteri','warn')}
+        ${roleKpi('wallet','Günlük Tahsilat',fmtMoney(18450),'nakit/havale/çek','')}
+        ${roleKpi('cash','Sanal POS',fmtMoney(12600),'Moka / PayTR / İyzico','accent')}
+        ${roleKpi('trend-up','Haftalık Satış',fmtMoney(86250),'hedef %71','accent')}
+      </div>
+
+      <div class="hot-sales-layout mb-6">
+        <div class="card">
+          <div class="card-head"><div class="card-title">Araç Deposu Stok Durumu</div><span class="pill">ARÇ-34</span></div>
+          <div class="card-body">
+            <div class="vehicle-warehouse-card mb-4">
+              <div class="flex-between gap-3">
+                <div>
+                  <strong>Araç Deposu 34 · Mehmet Kaya</strong>
+                  <div class="text-mute" style="font-size:12px;margin-top:4px">Bu kullanıcı satış yaparken yalnızca bu depoyu kullanır.</div>
+                </div>
+                <button class="btn btn-ghost btn-sm" onclick="toast('Araç sayımı prototip')">Sayım</button>
+              </div>
+            </div>
+            <div class="vehicle-stock-grid">
+              <div class="vehicle-stock-item"><span><strong>Endüstriyel Yağ 20L</strong><small>ST0998 · 7 adet araçta</small></span><b>7</b></div>
+              <div class="vehicle-stock-item"><span><strong>Metal Kesici Sprey</strong><small>ST0882 · 18 adet araçta</small></span><b>18</b></div>
+              <div class="vehicle-stock-item"><span><strong>Koruyucu Eldiven</strong><small>ST0710 · 45 paket araçta</small></span><b>45</b></div>
+              <div class="vehicle-stock-item"><span><strong>Hidrolik Hortum</strong><small>ST0664 · stok yok, sipariş gerekli</small></span><b class="text-danger">0</b></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-head"><div class="card-title">Haftalık Ziyaret Rotası</div><span class="pill">Bu Hafta</span></div>
+          <div class="card-body">
+            <div class="route-day"><div class="day">Pzt</div><div><b>Sanayi Bölgesi</b><div class="route-customers mt-2"><span class="customer-chip">Ege Lojistik</span><span class="customer-chip">Dicle Makina</span><span class="customer-chip">Aktaş Metal</span></div></div></div>
+            <div class="route-day"><div class="day">Sal</div><div><b>Merkez Hat</b><div class="route-customers mt-2"><span class="customer-chip">Kaya İnşaat</span><span class="customer-chip">Yıldız Hırdavat</span><span class="customer-chip">Özkan Teknik</span></div></div></div>
+            <div class="route-day"><div class="day">Çar</div><div><b>OSB Kuzey</b><div class="route-customers mt-2"><span class="customer-chip">Atlas Plastik</span><span class="customer-chip">Güneş Gıda</span></div></div></div>
+            <div class="route-day"><div class="day">Cum</div><div><b>Tahsilat Günü</b><div class="route-customers mt-2"><span class="customer-chip">Tahsilat</span><span class="customer-chip">Eksik Ürün Teslim</span></div></div></div>
+          </div>
+        </div>
+      </div>
+
+
+      <div class="grid-2 mb-6">
+        <div class="card hot-action-card">
+          <div class="card-head"><div class="card-title">Tahsilat Yetkileri</div><span class="pill">Sıcak Satış</span></div>
+          <div class="card-body">
+            <div class="payment-action-grid">
+              <button class="pay-action cash" onclick="toast('Nakit tahsilat fişi açıldı')"><b>Nakit Tahsilat</b><span>Kasa seçimi otomatik: Araç Kasası</span></button>
+              <button class="pay-action bank" onclick="toast('Havale/EFT tahsilatı açıldı')"><b>Havale / EFT</b><span>Yetkili banka hesapları</span></button>
+              <button class="pay-action cheque" onclick="toast('Çek tahsilatı açıldı')"><b>Çek Tahsilatı</b><span>Portföye alınacak müşteri çeki</span></button>
+              <button class="pay-action pos" onclick="toast('Sanal POS tahsilatı açıldı')"><b>Sanal POS</b><span>Moka, PayTR, İyzico, Param, Sipay, Paynet</span></button>
+            </div>
+          </div>
+        </div>
+
+        <div class="card hot-action-card">
+          <div class="card-head"><div class="card-title">Satış + Tahsilat Akışı</div><span class="pill">Araç Satışı</span></div>
+          <div class="card-body">
+            <div class="hot-flow">
+              <div><b>1</b><span>Cari seçilir</span><small>Sadece kullanıcıya atanmış cariler görünür.</small></div>
+              <div><b>2</b><span>Araç stoğundan satış</span><small>Depo sabittir; başka depo seçilemez.</small></div>
+              <div><b>3</b><span>Eksik miktar sipariş olur</span><small>Araçta olmayan ürün merkez depoya talep geçer.</small></div>
+              <div><b>4</b><span>Tahsilat / POS</span><small>Nakit, havale, çek veya sanal POS satışa bağlanır.</small></div>
+              <div><b>5</b><span>Gün sonu</span><small>Satış, tahsilat, POS ve araç stok özeti alınır.</small></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="grid-2 mb-6">
+        <div class="card">
+          <div class="card-head"><div class="card-title">Sıcak Satış İşlem Mantığı</div><span class="pill">Rol Kuralı</span></div>
+          <div class="card-body">
+            <div class="hot-rule-list">
+              <div class="rule"><div class="rule-icon">${ICONS.truck}</div><div><b>Depo sabitlenir</b><div class="text-mute">Kullanıcı sadece kendisine bağlı araç deposundan satış yapar; depo değiştiremez.</div></div></div>
+              <div class="rule"><div class="rule-icon">${ICONS.users}</div><div><b>Cari listesi filtrelenir</b><div class="text-mute">Cari seç ekranında yalnızca kullanıcıya atanmış cariler görünür.</div></div></div>
+              <div class="rule"><div class="rule-icon">${ICONS.inbox}</div><div><b>Eksik ürün siparişe döner</b><div class="text-mute">Araç deposunda olmayan miktar için merkez depoya otomatik sipariş talebi oluşturulur.</div></div></div>
+              <div class="rule"><div class="rule-icon">${ICONS.wallet}</div><div><b>Tahsilat girebilir</b><div class="text-mute">Nakit, çek, havale/EFT ve sanal POS tahsilatlarını satışa bağlayabilir.</div></div></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-head"><div class="card-title">Örnek Araçtan Satış</div><span class="pill">Demo</span></div>
+          <div class="table-wrap hot-demo-table-wrap">
+            <table class="data-table compact hot-demo-table">
+              <thead><tr><th>Ürün</th><th>İstenen</th><th>Araçta</th><th>İşlem</th></tr></thead>
+              <tbody>
+                <tr><td><b>Endüstriyel Yağ 20L</b><small class="block text-mute">ST0998</small></td><td>10</td><td><span class="badge success">7</span></td><td><span class="badge warn">3 adet sipariş</span></td></tr>
+                <tr><td><b>Koruyucu Eldiven</b><small class="block text-mute">ST0710</small></td><td>5</td><td><span class="badge success">45</span></td><td><span class="badge success">Araçtan satış</span></td></tr>
+                <tr><td><b>Hidrolik Hortum</b><small class="block text-mute">ST0664</small></td><td>2</td><td><span class="badge danger">0</span></td><td><span class="badge warn">2 adet sipariş</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-head"><div class="card-title">Tanımlı Cariler</div><span class="pill">42 cari içinden örnek</span></div>
+        <div class="table-wrap hot-cari-table-wrap">
+          <table class="data-table compact hot-cari-table">
+            <thead><tr><th>Cari</th><th>Bölge</th><th>Son Ziyaret</th><th>Limit</th><th>Durum</th><th>İşlem</th></tr></thead>
+            <tbody>
+              <tr><td><b>Ege Lojistik Ltd. Şti.</b><small class="block text-mute">Cari kod: CR0342</small></td><td>Sanayi Bölgesi</td><td>01.07.2026</td><td>${fmtMoney(85000)}</td><td><span class="badge success">Aktif</span></td><td><div class="inline-actions"><button class="btn btn-primary btn-xs" onclick="toast('Sıcak satış açıldı')">Satış</button><button class="btn btn-success btn-xs" onclick="toast('Tahsilat ekranı açıldı')">Tahsilat</button><button class="btn btn-ghost btn-xs" onclick="toast('POS çekim ekranı açıldı')">POS</button></div></td></tr>
+              <tr><td><b>Dicle Makina</b><small class="block text-mute">Cari kod: CR0291</small></td><td>Sanayi Bölgesi</td><td>03.07.2026</td><td>${fmtMoney(120000)}</td><td><span class="badge success">Aktif</span></td><td><div class="inline-actions"><button class="btn btn-primary btn-xs" onclick="toast('Sıcak satış açıldı')">Satış</button><button class="btn btn-success btn-xs" onclick="toast('Tahsilat ekranı açıldı')">Tahsilat</button><button class="btn btn-ghost btn-xs" onclick="toast('POS çekim ekranı açıldı')">POS</button></div></td></tr>
+              <tr><td><b>Kaya İnşaat</b><small class="block text-mute">Cari kod: CR0185</small></td><td>Merkez Hat</td><td>29.06.2026</td><td>${fmtMoney(60000)}</td><td><span class="badge warn">Tahsilat</span></td><td><div class="inline-actions"><button class="btn btn-primary btn-xs" onclick="toast('Sıcak satış açıldı')">Satış</button><button class="btn btn-success btn-xs" onclick="toast('Tahsilat ekranı açıldı')">Tahsilat</button><button class="btn btn-ghost btn-xs" onclick="toast('POS çekim ekranı açıldı')">POS</button></div></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    `);
+  </script>
+</body>
+</html>

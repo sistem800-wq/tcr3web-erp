@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#10243f" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-title" content="Tcr3WEB" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <link rel="manifest" href="../manifest.webmanifest?v=20260711-699" />
+  <link rel="icon" type="image/png" href="../assets/icons/favicon-64.png" />
+  <link rel="apple-touch-icon" href="../assets/icons/icon-180.png" />
+  <title>Tcr3WEB · Çalışma Takvimi</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../assets/css/style.css?v=20260712-653" />
+  <link rel="stylesheet" href="../assets/css/responsive-master.css?v=20260713-591" />
+  <link rel="stylesheet" href="../assets/css/performance.css?v=20260711-700" />
+  <link rel="stylesheet" href="../assets/css/tcr-table.css?v=20260713-583" />
+  <link rel="stylesheet" href="../assets/css/kpi-standard.css?v=20260712-694" />
+  <link rel="stylesheet" href="../assets/css/text-readability.css?v=20260712-657" />
+</head>
+<body>
+  <div id="app" class="app"></div>
+  <script src="../assets/js/app.js?v=20260712-653"></script>
+  <script src="../assets/js/tcr-actions.js?v=20260713-600"></script>
+  <script src="../assets/js/master-init.js?v=20260713-583"></script>
+  <script src="../assets/js/tcr-table.js?v=20260713-587"></script>
+  <script>
+    bootPage('takvim', () => {
+      const toplamGun = MOCK.devam.reduce((s,d) => s + d.gun, 0);
+      const toplamMesai = MOCK.devam.reduce((s,d) => s + d.mesai, 0);
+      const toplamIzin = MOCK.devam.reduce((s,d) => s + d.izin, 0);
+      const devamsizlik = MOCK.devam.reduce((s,d) => s + d.gelmedi, 0);
+
+      return `
+      <div class="page-head">
+        <div>
+          <div class="breadcrumb">
+            <a href="dashboard.html">Genel</a><span>›</span>
+            <a href="takvim.html">İnsan Kaynakları</a><span>›</span>
+            <span>Çalışma Takvimi</span>
+          </div>
+          <h1 class="page-title">Çalışma Takvimi</h1>
+          <div class="page-sub">Devam takibi, mesai, izin ve çalışma saatleri</div>
+        </div>
+        <div class="page-actions">
+          <button class="btn btn-ghost" onclick="openModal('izinModal')">${ICONS.calendar} İzin Talebi</button>
+          <button class="btn btn-primary" onclick="openModal('mesaiModal')">${ICONS.plus} Mesai Girişi</button>
+        </div>
+      </div>
+
+      <div class="tcr-ac-grid">
+        <div class="tcr-action-card tcr-ac-blue"><span class="tcr-ac-icon">${ICONS.clock}</span><span class="tcr-ac-content"><span class="tcr-ac-title">Toplam Çalışma Günü</span><span class="tcr-ac-desc">${fmtNum(toplamGun)}</span></span></div>
+        <div class="tcr-action-card tcr-ac-green"><span class="tcr-ac-icon">${ICONS.trend_up}</span><span class="tcr-ac-content"><span class="tcr-ac-title">Toplam Mesai (Saat)</span><span class="tcr-ac-desc">${fmtNum(toplamMesai)}</span></span></div>
+        <div class="tcr-action-card tcr-ac-orange"><span class="tcr-ac-icon">${ICONS.calendar}</span><span class="tcr-ac-content"><span class="tcr-ac-title">Kullanılan İzin (Gün)</span><span class="tcr-ac-desc">${fmtNum(toplamIzin)}</span></span></div>
+        <div class="tcr-action-card tcr-ac-red"><span class="tcr-ac-icon">${ICONS.alert}</span><span class="tcr-ac-content"><span class="tcr-ac-title">Devamsızlık (Gün)</span><span class="tcr-ac-desc">${fmtNum(devamsizlik)}</span></span></div>
+      </div>
+
+      <div class="grid-2 mb-6">
+        <div class="card">
+          <div class="card-head"><div class="card-title">Çalışma Takvimi · Temmuz 2026</div></div>
+          <div class="card-body" style="padding:var(--s-3)">
+            <div class="calendar">
+              <div class="calendar-head">Pzt</div><div class="calendar-head">Sal</div><div class="calendar-head">Çar</div><div class="calendar-head">Per</div><div class="calendar-head">Cum</div><div class="calendar-head">Cmt</div><div class="calendar-head">Paz</div>
+              <div class="calendar-cell muted"></div>
+              <div class="calendar-cell today"><div class="calendar-day">1</div><div class="cal-event accent">8 personel</div></div>
+              <div class="calendar-cell today"><div class="calendar-day">2</div><div class="cal-event accent">8 personel</div><div class="cal-event warn">1 izin</div></div>
+              <div class="calendar-cell today"><div class="calendar-day">3</div><div class="cal-event accent">8 personel</div></div>
+              <div class="calendar-cell today"><div class="calendar-day">4</div><div class="cal-event accent">Bugün</div><div class="cal-event">7 personel</div></div>
+              <div class="calendar-cell muted"><div class="calendar-day">5</div></div>
+              <div class="calendar-cell muted"><div class="calendar-day">6</div></div>
+              <div class="calendar-cell"><div class="calendar-day">7</div><div class="cal-event accent">8 personel</div></div>
+              <div class="calendar-cell"><div class="calendar-day">8</div><div class="cal-event accent">8 personel</div><div class="cal-event warn">mülakat</div></div>
+              <div class="calendar-cell"><div class="calendar-day">9</div><div class="cal-event accent">8 personel</div></div>
+              <div class="calendar-cell"><div class="calendar-day">10</div><div class="cal-event accent">8 personel</div></div>
+              <div class="calendar-cell"><div class="calendar-day">11</div><div class="cal-event accent">8 personel</div></div>
+              <div class="calendar-cell"><div class="calendar-day">12</div><div class="cal-event">resmi tatil</div></div>
+              <div class="calendar-cell muted"><div class="calendar-day">13</div></div>
+              <div class="calendar-cell"><div class="calendar-day">14</div><div class="cal-event accent">8 personel</div></div>
+              <div class="calendar-cell"><div class="calendar-day">15</div><div class="cal-event accent">8 personel</div></div>
+              <div class="calendar-cell"><div class="calendar-day">16</div><div class="cal-event accent">8 personel</div></div>
+              <div class="calendar-cell"><div class="calendar-day">17</div><div class="cal-event accent">8 personel</div></div>
+              <div class="calendar-cell"><div class="calendar-day">18</div><div class="cal-event accent">8 personel</div></div>
+              <div class="calendar-cell muted"><div class="calendar-day">19</div></div>
+              <div class="calendar-cell muted"><div class="calendar-day">20</div></div>
+              <div class="calendar-cell"><div class="calendar-day">21</div><div class="cal-event accent">8 personel</div></div>
+              <div class="calendar-cell"><div class="calendar-day">22</div><div class="cal-event accent">8 personel</div></div>
+              <div class="calendar-cell"><div class="calendar-day">23</div><div class="cal-event accent">8 personel</div></div>
+              <div class="calendar-cell"><div class="calendar-day">24</div><div class="cal-event accent">8 personel</div></div>
+              <div class="calendar-cell"><div class="calendar-day">25</div><div class="cal-event accent">8 personel</div></div>
+              <div class="calendar-cell muted"><div class="calendar-day">26</div></div>
+              <div class="calendar-cell muted"><div class="calendar-day">27</div></div>
+              <div class="calendar-cell"><div class="calendar-day">28</div><div class="cal-event accent">8 personel</div></div>
+              <div class="calendar-cell"><div class="calendar-day">29</div><div class="cal-event accent">8 personel</div></div>
+              <div class="calendar-cell"><div class="calendar-day">30</div><div class="cal-event accent">8 personel</div></div>
+              <div class="calendar-cell"><div class="calendar-day">31</div><div class="cal-event accent">8 personel</div></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-head"><div class="card-title">Bu Günün Devamı</div><span class="pill">04.07.2026</span></div>
+          <div class="card-body" style="padding:0;max-height:480px;overflow-y:auto">
+            <table class="data">
+              <thead><tr><th>Personel</th><th>Giriş</th><th>Çıkış</th><th>Durum</th></tr></thead>
+              <tbody>
+                <tr><td class="strong">Ahmet Yılmaz</td><td class="mono">08:55</td><td class="mono muted">-</td><td><span class="badge badge-success">İşte</span></td></tr>
+                <tr><td class="strong">Ayşe Kaya</td><td class="mono">09:02</td><td class="mono muted">-</td><td><span class="badge badge-warn">Geç</span></td></tr>
+                <tr><td class="strong">Mehmet Demir</td><td class="mono">08:48</td><td class="mono muted">-</td><td><span class="badge badge-success">İşte</span></td></tr>
+                <tr><td class="strong">Fatma Şahin</td><td class="mono">08:50</td><td class="mono muted">-</td><td><span class="badge badge-success">İşte</span></td></tr>
+                <tr><td class="strong">Ali Çelik</td><td class="mono muted">-</td><td class="mono muted">-</td><td><span class="badge badge-danger">Gelmedi</span></td></tr>
+                <tr><td class="strong">Zeynep Arslan</td><td class="mono">09:00</td><td class="mono muted">-</td><td><span class="badge badge-success">İşte</span></td></tr>
+                <tr><td class="strong">Osman Türk</td><td class="mono muted">-</td><td class="mono muted">-</td><td><span class="badge badge-warn">İzinli</span></td></tr>
+                <tr><td class="strong">Emine Demir</td><td class="mono">08:58</td><td class="mono muted">-</td><td><span class="badge badge-success">İşte</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-head"><div class="card-title">Aylık Devam Raporu · Temmuz 2026</div><select class="filter-select"><option>Tüm Departmanlar</option><option>Yönetim</option><option>Muhasebe</option><option>Satış</option></select></div>
+        <div class="card-body" style="padding:0">
+          <table class="data">
+            <thead><tr><th>Personel</th><th class="num">Çalışma Günü</th><th class="num">Gelmedi</th><th class="num">Geç</th><th class="num">Mesai (saat)</th><th class="num">İzin (gün)</th><th>Performans</th></tr></thead>
+            <tbody>
+              ${MOCK.devam.map((d,i) => {
+                const p = MOCK.personel[i];
+                const perf = Math.round((d.gun / 22) * 100);
+                return `
+                <tr>
+                  <td class="strong">${d.personel}</td>
+                  <td class="num">${d.gun}</td>
+                  <td class="num ${d.gelmedi>0?'text-danger':''}">${d.gelmedi}</td>
+                  <td class="num ${d.gec>0?'text-warn':''}">${d.gec}</td>
+                  <td class="num">${d.mesai}</td>
+                  <td class="num">${d.izin}</td>
+                  <td style="min-width:120px"><div class="flex items-center gap-2"><div class="progress" style="flex:1"><div class="progress-bar ${perf>=90?'accent':perf>=70?'warn':'danger'}" style="width:${perf}%"></div></div><span style="font-size:11px;font-weight:600">${perf}%</span></div></td>
+                </tr>`;
+              }).join('')}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      ${modalHtml('mesaiModal', 'Mesai Girişi', `
+        <div class="form-grid-2">
+          <div class="form-field"><label class="form-label">Personel</label><select class="form-input">${MOCK.personel.map(p=>`<option>${p.ad}</option>`).join('')}</select></div>
+          <div class="form-field"><label class="form-label">Tarih</label><input class="form-input" type="date" value="2026-07-04" /></div>
+          <div class="form-field"><label class="form-label">Başlangıç</label><input class="form-input" type="time" value="18:00" /></div>
+          <div class="form-field"><label class="form-label">Bitiş</label><input class="form-input" type="time" value="20:00" /></div>
+          <div class="form-field full"><label class="form-label">Açıklama</label><input class="form-input" placeholder="Mesai nedeni" /></div>
+        </div>
+      `, `<button class="btn btn-ghost" onclick="closeModal('mesaiModal')">İptal</button><button class="btn btn-primary" onclick="closeModal('mesaiModal');toast('Mesai kaydedildi','success')">${ICONS.check} Kaydet</button>`)}
+
+      ${modalHtml('izinModal', 'İzin Talebi', `
+        <div class="form-grid-2">
+          <div class="form-field"><label class="form-label">Personel</label><select class="form-input">${MOCK.personel.map(p=>`<option>${p.ad}</option>`).join('')}</select></div>
+          <div class="form-field"><label class="form-label">İzin Tipi</label><select class="form-input"><option>Yıllık İzin</option><option>Mazeret İzni</option><option>Hastalık İzni</option><option>Ücretsiz İzin</option></select></div>
+          <div class="form-field"><label class="form-label">Başlangıç</label><input class="form-input" type="date" value="2026-07-10" /></div>
+          <div class="form-field"><label class="form-label">Bitiş</label><input class="form-input" type="date" value="2026-07-14" /></div>
+          <div class="form-field full"><label class="form-label">Açıklama</label><textarea class="form-input"></textarea></div>
+        </div>
+      `, `<button class="btn btn-ghost" onclick="closeModal('izinModal')">İptal</button><button class="btn btn-primary" onclick="closeModal('izinModal');toast('İzin talebi gönderildi','success')">${ICONS.check} Gönder</button>`)}
+      `;
+    });
+  </script>
+</body>
+</html>

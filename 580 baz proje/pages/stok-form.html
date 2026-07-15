@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#10243f" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-title" content="Tcr3WEB" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <link rel="manifest" href="../manifest.webmanifest?v=20260711-699" />
+  <link rel="icon" type="image/png" href="../assets/icons/favicon-64.png" />
+  <link rel="apple-touch-icon" href="../assets/icons/icon-180.png" />
+  <title>Tcr3WEB · Stok Kartı</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../assets/css/style.css?v=20260712-653" />
+  <link rel="stylesheet" href="../assets/css/responsive-master.css?v=20260713-591" />
+  <link rel="stylesheet" href="../assets/css/performance.css?v=20260711-700" />
+  <link rel="stylesheet" href="../assets/css/tcr-table.css?v=20260713-583" />
+  <link rel="stylesheet" href="../assets/css/text-readability.css?v=20260712-657" />
+</head>
+<body>
+  <div id="app" class="app"></div>
+  <script src="../assets/js/app.js?v=20260712-653"></script>
+  <script src="../assets/js/tcr-actions.js?v=20260713-600"></script>
+  <script src="../assets/js/master-init.js?v=20260713-583"></script>
+  <script src="../assets/js/tcr-table.js?v=20260713-587"></script>
+  <script>
+    const editId = new URLSearchParams(location.search).get('id');
+
+    bootPage('stok', () => {
+      const stokKod = editId || 'ST0009';
+      const title = editId ? `Stok Düzenle · ${editId}` : 'Yeni Stok Kartı';
+      const rec = editId ? MOCK.stok.find(s => s.kod === editId) : null;
+
+      return `
+      <div class="page-head">
+        <div>
+          <div class="breadcrumb">
+            <a href="dashboard.html">Genel</a><span>›</span>
+            <a href="stok.html">Stok Kartları</a><span>›</span>
+            <span>${title}</span>
+          </div>
+          <h1 class="page-title">${ICONS.box} ${title}</h1>
+        </div>
+        <div class="page-actions">
+          <a href="stok.html" class="btn btn-danger">${ICONS.close} Vazgeç</a>
+          <button class="btn btn-success" onclick="stokKaydet()">${ICONS.check} Kaydet</button>
+        </div>
+      </div>
+
+      <div class="form-page-grid">
+        <div style="display:flex;flex-direction:column;gap:var(--s-4)">
+
+          <!-- Temel Bilgiler - Kompakt -->
+          <div class="card" style="overflow:hidden">
+            <div class="form-compact-head">
+              <div class="form-field">
+                <label class="form-label">Stok Kodu</label>
+                <input class="form-input mono" value="${stokKod}" readonly />
+              </div>
+              <div class="form-field">
+                <label class="form-label">Kategori</label>
+                <select class="form-input">
+                  ${['Hammadde','Ambalaj','Kimyasal','Metal','Sarf','Elektrik'].map(k => `<option ${rec?.kategori===k?'selected':''}>${k}</option>`).join('')}
+                </select>
+              </div>
+              <div class="form-field">
+                <label class="form-label">Birim</label>
+                <select class="form-input">
+                  ${['adet','kg','lt','mt','paket','kutu','çift'].map(b => `<option ${rec?.birim===b?'selected':''}>${b}</option>`).join('')}
+                </select>
+              </div>
+              <div class="form-field">
+                <label class="form-label">KDV Oranı (%)</label>
+                <select class="form-input">
+                  <option>1</option><option>10</option><option selected>20</option>
+                </select>
+              </div>
+              <div class="form-field span2">
+                <label class="form-label">Ürün Adı</label>
+                <input class="form-input" placeholder="Örn: Plastik Ham Madde PP" value="${rec?.ad||''}" />
+              </div>
+              <div class="form-field">
+                <label class="form-label">Barkod / SKU</label>
+                <input class="form-input mono" placeholder="8681234567890" />
+              </div>
+              <div class="form-field">
+                <label class="form-label">Marka</label>
+                <input class="form-input" placeholder="Marka adı" />
+              </div>
+            </div>
+            <div class="form-compact-body">
+              <div class="form-field">
+                <label class="form-label">Açıklama / Notlar</label>
+                <input type="text" class="form-input" placeholder="Ürün açıklaması, özellikler..." />
+              </div>
+            </div>
+          </div>
+
+          <!-- Stok & Fiyat Bilgileri -->
+          <div class="card">
+            <div class="card-head"><div class="card-title">Stok & Fiyat Bilgileri</div></div>
+            <div class="card-body">
+              <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:var(--s-4)">
+                <div class="form-field">
+                  <label class="form-label">Açılış Miktarı</label>
+                  <input type="number" class="form-input" value="${rec?.miktar||0}" />
+                </div>
+                <div class="form-field">
+                  <label class="form-label">Min. Stok Seviyesi</label>
+                  <input type="number" class="form-input" value="${rec?.min||100}" />
+                </div>
+                <div class="form-field">
+                  <label class="form-label">Maks. Stok Seviyesi</label>
+                  <input type="number" class="form-input" value="${(rec?.min||100)*5}" />
+                </div>
+                <div class="form-field">
+                  <label class="form-label">Alış Fiyatı</label>
+                  <input type="number" class="form-input" value="${rec?.fiyat||0}" step="0.01" />
+                </div>
+                <div class="form-field">
+                  <label class="form-label">Satış Fiyatı</label>
+                  <input type="number" class="form-input" value="${rec ? (rec.fiyat*1.2).toFixed(2) : '0.00'}" step="0.01" />
+                </div>
+                <div class="form-field">
+                  <label class="form-label">Kar Marjı (%)</label>
+                  <input type="number" class="form-input" value="20" step="0.1" />
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Depo Dağılımı -->
+          <div class="card">
+            <div class="card-head">
+              <div class="card-title">Depo Dağılımı</div>
+              <span class="text-soft" style="font-size:12px">Her depodaki miktarı girin</span>
+            </div>
+            <div class="card-body">
+              <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:var(--s-4)">
+                <div class="form-field">
+                  <label class="form-label">Ana Depo</label>
+                  <div style="display:flex;gap:var(--s-2);align-items:center">
+                    <input type="number" class="form-input" value="${rec?.depo==='Ana Depo'?rec.miktar:0}" style="flex:1" />
+                    <span class="text-mute" style="font-size:12px;white-space:nowrap">${rec?.birim||'birim'}</span>
+                  </div>
+                </div>
+                <div class="form-field">
+                  <label class="form-label">Kimya Depo</label>
+                  <div style="display:flex;gap:var(--s-2);align-items:center">
+                    <input type="number" class="form-input" value="${rec?.depo==='Kimya Depo'?rec.miktar:0}" style="flex:1" />
+                    <span class="text-mute" style="font-size:12px;white-space:nowrap">${rec?.birim||'birim'}</span>
+                  </div>
+                </div>
+                <div class="form-field">
+                  <label class="form-label">Metal Depo</label>
+                  <div style="display:flex;gap:var(--s-2);align-items:center">
+                    <input type="number" class="form-input" value="${rec?.depo==='Metal Depo'?rec.miktar:0}" style="flex:1" />
+                    <span class="text-mute" style="font-size:12px;white-space:nowrap">${rec?.birim||'birim'}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Sidebar -->
+        <div class="form-page-side">
+          <div class="card">
+            <div class="card-head"><div class="card-title">Stok Özeti</div></div>
+            <div class="card-body">
+              <div class="sum-row"><span class="sum-row-label">Toplam Miktar</span><span class="sum-row-val">${rec?fmtNum(rec.miktar):0}</span></div>
+              <div class="sum-row"><span class="sum-row-label">Min. Seviye</span><span class="sum-row-val">${rec?fmtNum(rec.min):100}</span></div>
+              <div class="sum-row total"><span class="sum-row-label">Stok Değeri</span><span class="sum-row-val">${rec?fmtMoney(rec.miktar*rec.fiyat):fmtMoney(0)}</span></div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-head"><div class="card-title">İşlemler</div></div>
+            <div class="card-body" style="display:flex;flex-direction:column;gap:var(--s-2)">
+              <button class="btn btn-success" style="width:100%" onclick="stokKaydet()">${ICONS.check} Kaydet</button>
+              <button class="btn btn-ghost" style="width:100%" onclick="printDoc()">${ICONS.print} Yazdır</button>
+              <button class="btn btn-ghost" style="width:100%" onclick="toast('Stok hareketi eklenecek')">${ICONS.trend_up} Stok Girişi</button>
+              <a href="stok.html" class="btn btn-danger" style="width:100%;text-align:center">${ICONS.close} Vazgeç</a>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-head">
+              <div class="card-title">${ICONS.file_check} Evrak</div>
+              <label class="btn btn-ghost btn-sm" style="cursor:pointer;display:inline-flex;align-items:center;gap:4px">
+                <input type="file" multiple accept="image/*,.pdf,.doc,.docx,.xls,.xlsx" style="display:none" onchange="eklerUpload(this,'stok','${stokKod}')">
+                ${ICONS.plus}
+              </label>
+            </div>
+            <div class="card-body" style="padding:var(--s-3)">
+              <div class="ekler-list" id="sf2-ekler-list"><div class="ekler-empty">Henüz evrak yok</div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      `;
+    });
+
+    window.afterRender = () => {
+      const id = new URLSearchParams(location.search).get('id') || 'YENI';
+      initEkler('stok', id, 'sf2-ekler-list');
+    };
+
+    function stokKaydet() {
+      toast('Stok kartı kaydedildi', 'success');
+      setTimeout(() => window.location.href = 'stok.html', 1000);
+    }
+  </script>
+</body>
+</html>

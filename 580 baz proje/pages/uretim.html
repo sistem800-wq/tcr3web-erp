@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Tcr3WEB · Üretim İşlemleri</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../assets/css/style.css?v=20260712-653" />
+  <link rel="stylesheet" href="../assets/css/responsive-master.css?v=20260713-591" />
+  <link rel="stylesheet" href="../assets/css/performance.css?v=20260711-700" />
+  <link rel="stylesheet" href="../assets/css/tcr-table.css?v=20260713-583" />
+  <link rel="stylesheet" href="../assets/css/kpi-standard.css?v=20260712-694" />
+  <link rel="stylesheet" href="../assets/css/text-readability.css?v=20260712-657" />
+</head>
+<body>
+  <div id="app" class="app"></div>
+  <script src="../assets/js/app.js?v=20260712-653"></script>
+  <script src="../assets/js/tcr-actions.js?v=20260713-600"></script>
+  <script src="../assets/js/master-init.js?v=20260713-583"></script>
+  <script src="../assets/js/tcr-table.js?v=20260713-587"></script>
+  <script>
+    bootPage('uretim', () => `
+      <div class="page-head">
+        <div><div class="breadcrumb"><a href="dashboard.html">Üretim</a><span>›</span><span>İşlemler</span></div><h1 class="page-title">Üretim İşlemleri</h1><div class="page-sub">İş emri, sarf çıkışı, üretim girişi ve fire takibi.</div></div>
+        <div class="page-actions"><button class="btn btn-primary" onclick="toast('Yeni iş emri prototip')">${ICONS.plus} Yeni İş Emri</button></div>
+      </div>
+      <div class="tcr-ac-grid mb-6">
+        ${roleKpi('settings','Açık İş Emri','11','3 acil','warn')}
+        ${roleKpi('box','Üretilen Miktar','2.450','bu hafta','accent')}
+        ${roleKpi('trend-down','Fire Oranı','%2,4','hedef altında','')}
+        ${roleKpi('calendar','Planlanan','7','bugünkü sıra','')}
+      </div>
+      <div class="card"><div class="card-head"><div class="card-title">Üretim İş Emirleri</div><span class="pill">Demo</span></div><div class="card-body"><div class="table-wrap"><table class="table"><thead><tr><th>İş Emri</th><th>Ürün</th><th>Miktar</th><th>Durum</th><th>İşlem</th></tr></thead><tbody><tr><td>URE202607080001</td><td>Profil Seti</td><td>250 Adet</td><td><span class="status warn">Üretimde</span></td><td><button class="btn btn-light btn-sm">Detay</button></td></tr><tr><td>URE202607080002</td><td>Montaj Parçası</td><td>120 Adet</td><td><span class="status success">Tamamlandı</span></td><td><button class="btn btn-light btn-sm">Detay</button></td></tr></tbody></table></div></div></div>
+    `);
+  </script>
+</body>
+</html>

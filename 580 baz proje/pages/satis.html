@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#10243f" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-title" content="Tcr3WEB" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <link rel="manifest" href="../manifest.webmanifest?v=20260711-699" />
+  <link rel="icon" type="image/png" href="../assets/icons/favicon-64.png" />
+  <link rel="apple-touch-icon" href="../assets/icons/icon-180.png" />
+  <title>Tcr3WEB · Satış</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../assets/css/style.css?v=20260712-653" />
+  <link rel="stylesheet" href="../assets/css/responsive-master.css?v=20260713-591" />
+  <link rel="stylesheet" href="../assets/css/performance.css?v=20260711-700" />
+  <link rel="stylesheet" href="../assets/css/tcr-table.css?v=20260713-583" />
+  <link rel="stylesheet" href="../assets/css/kpi-standard.css?v=20260712-694" />
+  <link rel="stylesheet" href="../assets/css/text-readability.css?v=20260712-657" />
+</head>
+<body>
+  <div id="app" class="app"></div>
+  <script src="../assets/js/app.js?v=20260712-653"></script>
+  <script src="../assets/js/tcr-actions.js?v=20260713-600"></script>
+  <script src="../assets/js/master-init.js?v=20260713-583"></script>
+  <script src="../assets/js/tcr-table.js?v=20260713-587"></script>
+  <script>
+    bootPage('satis', () => {
+      const total = MOCK.satis.reduce((s,x) => s + x.tutar, 0);
+      const faturali = MOCK.satis.filter(x => x.durum === 'Faturalandı').reduce((s,x) => s + x.tutar, 0);
+      const siparis = MOCK.satis.filter(x => x.durum === 'Sipariş').length;
+      const acik = MOCK.satis.filter(x => x.odeme === 'Açık' || x.odeme === 'Vadeli').reduce((s,x) => s + x.tutar, 0);
+
+      return `
+      <div class="page-head">
+        <div>
+          <div class="breadcrumb">
+            <a href="dashboard.html">Genel</a><span>›</span>
+            <a href="satis.html">Ticaret</a><span>›</span>
+            <span>Satış</span>
+          </div>
+          <h1 class="page-title">Satış İşlemleri</h1>
+          <div class="page-sub">Sipariş → İrsaliye → Fatura akışı</div>
+        </div>
+        <div class="page-actions">
+          <button class="btn btn-ghost" onclick="toast('Rapor yazdırıldı (prototip)')">${ICONS.print} Yazdır</button>
+          <button class="btn btn-primary" onclick="location.href='satis-form.html'">${ICONS.plus} Yeni Satış</button>
+        </div>
+      </div>
+
+      <div class="tcr-ac-grid">
+        <div class="tcr-action-card tcr-ac-blue"><span class="tcr-ac-icon">${ICONS.trend_up}</span><span class="tcr-ac-content"><span class="tcr-ac-title">Toplam Satış</span><span class="tcr-ac-desc">${fmtMoney(total)}</span></span></div>
+        <div class="tcr-action-card tcr-ac-green"><span class="tcr-ac-icon">${ICONS.file_check}</span><span class="tcr-ac-content"><span class="tcr-ac-title">Faturalanan</span><span class="tcr-ac-desc">${fmtMoney(faturali)}</span></span></div>
+        <div class="tcr-action-card tcr-ac-orange"><span class="tcr-ac-icon">${ICONS.file_text}</span><span class="tcr-ac-content"><span class="tcr-ac-title">Açık Sipariş</span><span class="tcr-ac-desc">${siparis}</span></span></div>
+        <div class="tcr-action-card tcr-ac-red"><span class="tcr-ac-icon">${ICONS.cash}</span><span class="tcr-ac-content"><span class="tcr-ac-title">Açık Alacak</span><span class="tcr-ac-desc">${fmtMoney(acik)}</span></span></div>
+      </div>
+
+      <div class="card mb-6">
+        <div class="card-head">
+          <div class="card-title">Satış Akışı</div>
+          <div class="flex gap-2">
+            <span class="pill">Sipariş</span>
+            <span class="pill" style="background:var(--c-primary-50);color:var(--c-primary-600)">İrsaliye</span>
+            <span class="pill" style="background:var(--c-accent-50);color:var(--c-accent-700)">Fatura</span>
+          </div>
+        </div>
+        <div class="card-body" style="padding:var(--s-5)">
+          <div class="flex items-center gap-4 flex-wrap">
+            <div class="flex items-center gap-3" style="flex:1;min-width:200px">
+              <div style="width:36px;height:36px;border-radius:50%;background:var(--c-primary-100);color:var(--c-primary-700);display:grid;place-items:center;font-weight:700">1</div>
+              <div><div class="strong">Sipariş</div><div class="text-mute" style="font-size:12px">Müşteri talebi alındı</div></div>
+            </div>
+            <div style="flex:1;height:2px;background:linear-gradient(90deg,var(--c-primary-200),var(--c-primary-400))"></div>
+            <div class="flex items-center gap-3" style="flex:1;min-width:200px">
+              <div style="width:36px;height:36px;border-radius:50%;background:var(--c-primary-100);color:var(--c-primary-700);display:grid;place-items:center;font-weight:700">2</div>
+              <div><div class="strong">İrsaliye</div><div class="text-mute" style="font-size:12px">Sevk irsaliyesi düzenlendi</div></div>
+            </div>
+            <div style="flex:1;height:2px;background:linear-gradient(90deg,var(--c-primary-200),var(--c-accent-400))"></div>
+            <div class="flex items-center gap-3" style="flex:1;min-width:200px">
+              <div style="width:36px;height:36px;border-radius:50%;background:var(--c-accent-100);color:var(--c-accent-700);display:grid;place-items:center;font-weight:700">3</div>
+              <div><div class="strong">Fatura</div><div class="text-mute" style="font-size:12px">Satış faturası kesildi</div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-body" style="padding:var(--s-4)">
+          <div class="toolbar">
+            <div class="toolbar-search">
+              <span class="toolbar-search-icon">${ICONS.search}</span>
+              <input type="text" placeholder="Belge no veya cari ara..." />
+            </div>
+            <select class="filter-select">
+              <option>Tüm Durumlar</option>
+              <option>Sipariş</option>
+              <option>İrsaliye</option>
+              <option>Faturalandı</option>
+            </select>
+            <select class="filter-select">
+              <option>Tüm Ödemeler</option>
+              <option>Ödendi</option>
+              <option>Açık</option>
+              <option>Vadeli</option>
+            </select>
+            <div class="toolbar-spacer"></div>
+            <span class="text-soft" style="font-size:13px">Toplam: <strong class="text-strong">${fmtMoney(total)}</strong></span>
+          </div>
+
+          <div class="table-wrap" style="border:none">
+            <table class="data">
+              <thead><tr><th>Belge No</th><th>Cari</th><th>Tarih</th><th>Durum</th><th>Ödeme</th><th class="num">Tutar</th><th></th></tr></thead>
+              <tbody>
+                ${MOCK.satis.map(s => `
+                  <tr>
+                    <td class="mono strong">${s.no}</td>
+                    <td class="strong">${s.cari}</td>
+                    <td class="muted">${fmtDate(s.tarih)}</td>
+                    <td><span class="badge ${s.durum==='Faturalandı'?'badge-success':s.durum==='İrsaliye'?'badge-info':'badge-neutral'}">${s.durum}</span></td>
+                    <td><span class="badge ${s.odeme==='Ödendi'?'badge-success':s.odeme==='Vadeli'?'badge-warn':'badge-neutral'}">${s.odeme}</span></td>
+                    <td class="num strong">${fmtMoney(s.tutar)}</td>
+                    <td><div class="flex gap-2">
+                      <button class="icon-btn" style="width:30px;height:30px" onclick="openModal('detayModal')" title="Detay">${ICONS.eye}</button>
+                      <button class="icon-btn" style="width:30px;height:30px" onclick="location.href='satis-form.html?id=${s.no}'" title="Düzenle">${ICONS.edit}</button>
+                      <button class="icon-btn" style="width:30px;height:30px" onclick="openListEvrak('satis','${s.no}','Satış Faturası Evrakları','${s.cari}')" title="Evrak Yönetimi">${ICONS.file_check}</button>
+                      <button class="icon-btn" style="width:30px;height:30px" onclick="toast('Fatura yazdırıldı (prototip)')" title="Yazdır">${ICONS.print}</button>
+                    </div></td>
+                  </tr>
+                `).join('')}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      ${modalHtml('satisModal', 'Yeni Satış Belgesi', `
+        <div class="form-grid-2 mb-4">
+          <div class="form-field"><label class="form-label">Belge Tipi</label><select class="form-input"><option>Sipariş</option><option>İrsaliye</option><option>Fatura</option></select></div>
+          <div class="form-field"><label class="form-label">Belge No</label><input class="form-input" value="S20260007" readonly /></div>
+          <div class="form-field"><label class="form-label">Cari</label><select class="form-input">${MOCK.cari.filter(c=>c.tip==='Müşteri').map(c=>`<option>${c.ad}</option>`).join('')}</select></div>
+          <div class="form-field"><label class="form-label">Tarih</label><input class="form-input" type="date" value="2026-07-04" /></div>
+          <div class="form-field"><label class="form-label">Ödeme Tipi</label><select class="form-input"><option>Nakit</option><option>Havale/EFT</option><option>Çek</option><option>Senet</option><option>Vadeli</option></select></div>
+          <div class="form-field"><label class="form-label">Vade Tarihi</label><input class="form-input" type="date" value="2026-08-03" /></div>
+        </div>
+
+        <div class="text-soft mb-3" style="font-size:12px;font-weight:600">Kalemler</div>
+        <div class="table-wrap mb-4">
+          <table class="data">
+            <thead><tr><th>Ürün</th><th class="num">Miktar</th><th class="num">Birim Fiyat</th><th>KDV</th><th class="num">Tutar</th><th></th></tr></thead>
+            <tbody>
+              <tr><td><select class="form-input" style="padding:6px 8px"><option>Plastik Ham Madde PP</option><option>Karton Koli 40x30x30</option></select></td><td><input class="form-input" type="number" value="100" style="padding:6px 8px;width:80px;text-align:right" /></td><td class="num mono">12,50</td><td>%20</td><td class="num strong">1.250,00</td><td><button class="icon-btn" style="width:28px;height:28px">${ICONS.trash}</button></td></tr>
+              <tr><td><select class="form-input" style="padding:6px 8px"><option>Karton Koli 40x30x30</option></select></td><td><input class="form-input" type="number" value="50" style="padding:6px 8px;width:80px;text-align:right" /></td><td class="num mono">8,75</td><td>%20</td><td class="num strong">437,50</td><td><button class="icon-btn" style="width:28px;height:28px">${ICONS.trash}</button></td></tr>
+            </tbody>
+          </table>
+        </div>
+        <button class="btn btn-ghost btn-sm mb-4" onclick="toast('Satır eklendi (prototip)')">${ICONS.plus} Satır Ekle</button>
+
+        <div class="flex justify-between" style="background:var(--c-nu-50);padding:var(--s-4);border-radius:var(--r-md)">
+          <div class="text-soft">Ara Toplam: <strong class="text-strong">${fmtMoney(1687.50)}</strong> · KDV: <strong class="text-strong">${fmtMoney(337.50)}</strong></div>
+          <div class="text-strong" style="font-size:18px">Genel Toplam: ${fmtMoney(2025)}</div>
+        </div>
+      `, `<button class="btn btn-ghost" onclick="closeModal('satisModal')">İptal</button><button class="btn btn-primary" onclick="closeModal('satisModal');toast('Satış belgesi kaydedildi','success')">${ICONS.check} Kaydet</button>`, 'xl')}
+
+      ${modalHtml('detayModal', 'Satış Detayı · S20260001', `
+        <div class="flex justify-between mb-4">
+          <div>
+            <h3 style="font-size:17px;color:var(--c-primary-800)">S20260001</h3>
+            <div class="text-soft" style="font-size:13px">Marmara Tekstil A.Ş. · 04.07.2026</div>
+          </div>
+          <span class="badge badge-success">Faturalandı</span>
+        </div>
+        <div class="table-wrap mb-4">
+          <table class="data">
+            <thead><tr><th>Ürün</th><th class="num">Miktar</th><th class="num">Fiyat</th><th class="num">Tutar</th></tr></thead>
+            <tbody>
+              <tr><td>Plastik Ham Madde PP</td><td class="num">5.000 kg</td><td class="num">${fmtMoney(12.50)}</td><td class="num">${fmtMoney(62500)}</td></tr>
+              <tr><td>Karton Koli 40x30x30</td><td class="num">1.000 adet</td><td class="num">${fmtMoney(8.75)}</td><td class="num">${fmtMoney(8750)}</td></tr>
+              <tr><td>Endüstriyel Yağ 20L</td><td class="num">300 lt</td><td class="num">${fmtMoney(245)}</td><td class="num">${fmtMoney(73500)}</td></tr>
+            </tbody>
+            <tfoot><tr><td colspan="3" class="strong text-right">Genel Toplam</td><td class="num strong">${fmtMoney(145000)}</td></tr></tfoot>
+          </table>
+        </div>
+        <div class="grid-2">
+          <div class="card" style="box-shadow:none"><div class="card-body" style="padding:var(--s-4)">
+            <div class="text-soft mb-3" style="font-size:12px;font-weight:600">Ödeme Bilgisi</div>
+            <div class="stat-row"><span class="stat-label">Tip</span><span class="stat-value">Çek</span></div>
+            <div class="stat-row"><span class="stat-label">Çek No</span><span class="stat-value mono">CK0001</span></div>
+            <div class="stat-row"><span class="stat-label">Vade</span><span class="stat-value">15.07.2026</span></div>
+            <div class="stat-row"><span class="stat-label">Durum</span><span class="stat-value text-success">Tahsil edildi</span></div>
+          </div></div>
+          <div class="card" style="box-shadow:none"><div class="card-body" style="padding:var(--s-4)">
+            <div class="text-soft mb-3" style="font-size:12px;font-weight:600">Sevk Bilgisi</div>
+            <div class="stat-row"><span class="stat-label">İrsaliye</span><span class="stat-value mono">IR20260015</span></div>
+            <div class="stat-row"><span class="stat-label">Tarih</span><span class="stat-value">04.07.2026</span></div>
+            <div class="stat-row"><span class="stat-label">Plaka</span><span class="stat-value mono">34 ABC 123</span></div>
+            <div class="stat-row"><span class="stat-label">Teslim</span><span class="stat-value">Alıcıda</span></div>
+          </div></div>
+        </div>
+      `, `<button class="btn btn-ghost" onclick="closeModal('detayModal')">Kapat</button><button class="btn btn-primary" onclick="toast('Fatura yazdırıldı (prototip)')">${ICONS.print} Yazdır</button>`, 'xl')}
+
+
+      ${modalHtml('listeEvrakModal', 'Evrak Yönetimi', `
+        <div class="evrak-manager">
+          <div class="evrak-manager-head">
+            <div class="evrak-entity-icon cari">${ICONS.file_check}</div>
+            <div>
+              <div id="liste-evrak-title" class="evrak-entity-title">Evrak Yönetimi</div>
+              <div id="liste-evrak-sub" class="evrak-entity-sub">Ana kayıt evrakları</div>
+            </div>
+            <div class="evrak-head-spacer"></div>
+            <span class="badge badge-info">Ana Kayıt Evrakları</span>
+          </div>
+          <div class="evrak-manager-grid">
+            <label class="evrak-drop-card">
+              <input type="file" multiple accept="image/*,.pdf,.doc,.docx,.xls,.xlsx" style="display:none" onchange="handleListEvrakUpload(this)">
+              <span class="evrak-drop-icon">${ICONS.download}</span>
+              <b>Evrak Yükle</b>
+              <small>Resim, PDF, Word veya Excel dosyası seçin.</small>
+            </label>
+            <div class="evrak-list-card">
+              <div class="evrak-list-head">
+                <div>
+                  <b>Ekli Evraklar</b>
+                  <small>Seçili ana kayda bağlı dosyalar</small>
+                </div>
+                <input class="form-input evrak-search" placeholder="Evrak ara..." oninput="filterEvrakList(this,'liste-evrak-list')" />
+              </div>
+              <div class="ekler-list evrak-list-modern" id="liste-evrak-list"><div class="ekler-empty">Evrak yükleniyor…</div></div>
+            </div>
+          </div>
+        </div>
+      `, `<span class="modal-footer-info">Evraklar seçili ana kayda bağlanır.<span class="ek-selected-info" data-ekler-selected-count="liste-evrak-list">Seçili evrak yok</span></span><button class="btn btn-ghost" onclick="eklerDownloadSelected(_listEvrakType,_listEvrakId,'liste-evrak-list')">${ICONS.download} İndir</button><button class="btn btn-success" onclick="eklerWhatsappSelected(_listEvrakType,_listEvrakId,'liste-evrak-list')">${ICONS.whatsapp} WhatsApp Gönder</button><button class="btn btn-danger" onclick="closeModal('listeEvrakModal')">Kapat</button>`, 'xl')}
+      `;
+    });
+
+    let _listEvrakType = 'genel';
+    let _listEvrakId = 'YENI';
+    function openListEvrak(type, id, title, sub) {
+      _listEvrakType = type;
+      _listEvrakId = id;
+      openModal('listeEvrakModal');
+      const titleEl = document.getElementById('liste-evrak-title');
+      const subEl = document.getElementById('liste-evrak-sub');
+      if (titleEl) titleEl.textContent = `${title} · ${id}`;
+      if (subEl) subEl.textContent = sub || 'Ana kayıt evrakları';
+      initEkler(type, id, 'liste-evrak-list');
+    }
+    async function handleListEvrakUpload(input) {
+      await eklerUpload(input, _listEvrakType, _listEvrakId);
+      setTimeout(() => initEkler(_listEvrakType, _listEvrakId, 'liste-evrak-list'), 150);
+    }
+
+  </script>
+</body>
+</html>

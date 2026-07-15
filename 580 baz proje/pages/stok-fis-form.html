@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#10243f" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-title" content="Tcr3WEB" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <link rel="manifest" href="../manifest.webmanifest?v=20260711-699" />
+  <link rel="icon" type="image/png" href="../assets/icons/favicon-64.png" />
+  <link rel="apple-touch-icon" href="../assets/icons/icon-180.png" />
+  <title>Tcr3WEB · Stok Fişi</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../assets/css/style.css?v=20260712-653" />
+  <link rel="stylesheet" href="../assets/css/responsive-master.css?v=20260713-591" />
+  <link rel="stylesheet" href="../assets/css/performance.css?v=20260711-700" />
+  <link rel="stylesheet" href="../assets/css/tcr-table.css?v=20260713-583" />
+  <link rel="stylesheet" href="../assets/css/text-readability.css?v=20260712-657" />
+</head>
+<body>
+  <div id="app" class="app"></div>
+  <script src="../assets/js/app.js?v=20260712-653"></script>
+  <script src="../assets/js/tcr-actions.js?v=20260713-600"></script>
+  <script src="../assets/js/master-init.js?v=20260713-583"></script>
+  <script src="../assets/js/tcr-table.js?v=20260713-587"></script>
+  <script>
+    const params   = new URLSearchParams(location.search);
+    const editId   = params.get('id');
+    const fisTipi  = params.get('tip') || 'devir';
+
+    const FIS_META = {
+      devir:  { label: 'Devir Fişi',  icon: 'trend_up',   prefix: 'DVR', color: 'var(--c-primary-500)' },
+      acilis: { label: 'Açılış Fişi', icon: 'inbox',      prefix: 'ACS', color: 'var(--c-accent-500)' },
+      sayim:  { label: 'Sayım Fişi',  icon: 'file_check', prefix: 'SAY', color: 'var(--c-warn-400)' },
+      virman: { label: 'Virman Fişi', icon: 'send',       prefix: 'VIR', color: 'var(--c-danger-400)' },
+    };
+
+    bootPage('stok-islemler', () => {
+      const meta   = FIS_META[fisTipi] || FIS_META.devir;
+      const fisNo  = editId || (meta.prefix + '2026' + String(Math.floor(Math.random()*9000)+1000));
+      const title  = editId ? `${meta.label} Düzenle · ${editId}` : `Yeni ${meta.label}`;
+      const isVirman = fisTipi === 'virman';
+
+      return `
+      <div class="page-head">
+        <div>
+          <div class="breadcrumb">
+            <a href="dashboard.html">Genel</a><span>›</span>
+            <a href="stok-islemler.html">Stok Fişleri</a><span>›</span>
+            <span>${title}</span>
+          </div>
+          <h1 class="page-title" style="color:${meta.color}">${ICONS[meta.icon]} ${title}</h1>
+        </div>
+        <div class="page-actions">
+          <a href="stok-islemler.html" class="btn btn-danger">${ICONS.close} Vazgeç</a>
+          <button class="btn btn-success" onclick="stokFisKaydet()">${ICONS.check} Kaydet</button>
+        </div>
+      </div>
+
+      <div class="form-page-grid">
+        <div style="display:flex;flex-direction:column;gap:var(--s-4)">
+
+          <!-- Fiş Bilgileri -->
+          <div class="card" style="overflow:hidden">
+            <div class="form-compact-head">
+              <div class="form-field">
+                <label class="form-label">Fiş No</label>
+                <input class="form-input mono" value="${fisNo}" readonly />
+              </div>
+              <div class="form-field">
+                <label class="form-label">Fiş Tipi</label>
+                <input class="form-input" value="${meta.label}" readonly style="color:${meta.color};font-weight:600" />
+              </div>
+              <div class="form-field">
+                <label class="form-label">Tarih</label>
+                <input type="date" class="form-input" value="2026-07-05" />
+              </div>
+              <div class="form-field">
+                <label class="form-label">Dönem</label>
+                <input class="form-input" value="Temmuz 2026" />
+              </div>
+              ${isVirman ? `
+              <div class="form-field">
+                <label class="form-label">Kaynak Depo</label>
+                <select class="form-input">
+                  <option>Ana Depo</option><option>Kimya Depo</option><option>Metal Depo</option>
+                </select>
+              </div>
+              <div class="form-field">
+                <label class="form-label">Hedef Depo</label>
+                <select class="form-input">
+                  <option>Metal Depo</option><option>Ana Depo</option><option>Kimya Depo</option>
+                </select>
+              </div>
+              ` : `
+              <div class="form-field span2">
+                <label class="form-label">Depo</label>
+                <select class="form-input">
+                  <option>Ana Depo</option><option>Kimya Depo</option><option>Metal Depo</option>
+                </select>
+              </div>
+              `}
+              <div class="form-field">
+                <label class="form-label">Durum</label>
+                <select class="form-input">
+                  <option>Taslak</option><option>Bekliyor</option><option>Onaylandı</option>
+                </select>
+              </div>
+              <div class="form-field">
+                <label class="form-label">Onaylayan</label>
+                <input class="form-input" placeholder="Sorumlu kişi" />
+              </div>
+            </div>
+            <div class="form-compact-body">
+              <div class="form-field">
+                <label class="form-label">Açıklama / Not</label>
+                <input type="text" class="form-input" placeholder="Bu fişe ait açıklama..." />
+              </div>
+            </div>
+          </div>
+
+          <!-- Ürün Kalemleri -->
+          <div class="card">
+            <div class="card-head">
+              <div class="card-title">Ürün Kalemleri</div>
+              <button class="btn btn-ghost btn-sm" onclick="addStokFisLine()">${ICONS.plus} Satır Ekle</button>
+            </div>
+            <div style="overflow-x:auto">
+              <table class="data form-line-table" style="min-width:700px">
+                <thead><tr>
+                  <th style="min-width:220px">Ürün / Hammadde</th>
+                  <th class="num">Miktar / Birim</th>
+                  ${fisTipi === 'sayim' ? '<th class="num">Sistem</th><th class="num">Fark</th>' : ''}
+                  ${fisTipi === 'virman' ? '' : '<th class="num">Birim Maliyet</th><th class="num">Tutar</th>'}
+                  <th style="width:40px"></th>
+                </tr></thead>
+                <tbody id="sfis-lines"></tbody>
+              </table>
+            </div>
+            ${fisTipi !== 'sayim' ? `
+            <div class="totals-bar">
+              <div class="totals-bar-item">
+                <span class="totals-bar-label">Toplam Kalem</span>
+                <span class="totals-bar-val" id="sfis-kalem-say">0</span>
+              </div>
+              <div class="totals-bar-item">
+                <span class="totals-bar-label">Toplam Miktar</span>
+                <span class="totals-bar-val" id="sfis-total-miktar">0</span>
+              </div>
+              <div class="totals-bar-item">
+                <span class="totals-bar-label">Toplam Tutar</span>
+                <span class="totals-bar-val big" id="sfis-total-tutar">${fmtMoney(0)}</span>
+              </div>
+            </div>` : ''}
+          </div>
+
+        </div>
+
+        <!-- Sidebar -->
+        <div class="form-page-side">
+          <div class="card">
+            <div class="card-head"><div class="card-title" style="color:${meta.color}">${ICONS[meta.icon]} ${meta.label}</div></div>
+            <div class="card-body">
+              <div class="sum-row"><span class="sum-row-label">Fiş No</span><span class="sum-row-val mono" style="font-size:12px">${fisNo}</span></div>
+              <div class="sum-row"><span class="sum-row-label">Kalem Sayısı</span><span class="sum-row-val" id="side-kalem-say">0</span></div>
+              <div class="sum-row total"><span class="sum-row-label">Toplam Tutar</span><span class="sum-row-val" id="side-tutar">${fmtMoney(0)}</span></div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-head"><div class="card-title">İşlemler</div></div>
+            <div class="card-body" style="display:flex;flex-direction:column;gap:var(--s-2)">
+              <button class="btn btn-success" style="width:100%" onclick="stokFisKaydet()">${ICONS.check} Kaydet</button>
+              <button class="btn btn-ghost" style="width:100%" onclick="printDoc()">${ICONS.print} Yazdır</button>
+              <a href="stok-islemler.html" class="btn btn-danger" style="width:100%;text-align:center">${ICONS.close} Vazgeç</a>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-head">
+              <div class="card-title">${ICONS.file_check} Evrak</div>
+              <label class="btn btn-ghost btn-sm" style="cursor:pointer;display:inline-flex;align-items:center;gap:4px">
+                <input type="file" multiple accept="image/*,.pdf,.doc,.docx,.xls,.xlsx" style="display:none" onchange="eklerUpload(this,'stokfis','${fisNo}')">
+                ${ICONS.plus}
+              </label>
+            </div>
+            <div class="card-body" style="padding:var(--s-3)">
+              <div class="ekler-list" id="sfis-ekler-list"><div class="ekler-empty">Henüz evrak yok</div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      `;
+    });
+
+    window.afterRender = () => {
+      const id = editId || 'YENI';
+      initEkler('stokfis', id, 'sfis-ekler-list');
+      addStokFisLine();
+    };
+
+    let _sfisRowCounter = 0;
+
+    function addStokFisLine() {
+      const tbody = document.getElementById('sfis-lines');
+      if (!tbody) return;
+      const rowId = 'sfis-row-' + (++_sfisRowCounter);
+      const tr = document.createElement('tr');
+      tr.id = rowId;
+      const isSayim  = fisTipi === 'sayim';
+      const isVirman = fisTipi === 'virman';
+
+      const extraCols = isSayim
+        ? `<td><input class="form-input sfis-sistem" type="number" value="0" style="width:80px;text-align:right;padding:5px 8px" oninput="calcSfisTotals()"></td>
+           <td class="num strong sfis-fark" style="font-weight:700">0</td>`
+        : isVirman
+        ? ``
+        : `<td><input class="form-input sfis-maliyet" type="number" value="0" step="0.01" style="width:100px;text-align:right;padding:5px 8px" oninput="calcSfisTotals()"></td>
+           <td class="num strong sfis-total">0,00 ₺</td>`;
+
+      tr.innerHTML = `
+        <td style="min-width:220px">
+          <div class="picker-field-wrap" style="gap:4px">
+            <span class="picker-display sfis-stok-name" id="${rowId}-name" style="font-size:13px;min-height:32px;display:flex;align-items:center;padding:4px 8px;flex:1">Seçiniz...</span>
+            <input type="hidden" class="sfis-stok-id" id="${rowId}-stokid">
+            <button type="button" class="btn btn-ghost btn-sm" style="padding:4px 8px;flex-shrink:0"
+              onclick="openPickerFor('stok','${rowId}-name','${rowId}-stokid',function(id,ad){sfisStokSec(id,'${rowId}')})">${ICONS.search}</button>
+          </div>
+        </td>
+        <td><input class="form-input sfis-miktar" type="number" value="1" min="0" style="width:68px;text-align:right;padding:5px 8px" oninput="calcSfisTotals()"></td>
+        <td><input class="form-input sfis-birim" value="adet" style="width:56px;padding:5px 8px" readonly></td>
+        ${extraCols}
+        <td><button class="icon-btn" style="width:28px;height:28px;color:var(--c-danger-400)" onclick="this.closest('tr').remove();calcSfisTotals()" title="Kaldır">${ICONS.trash}</button></td>
+      `;
+      tbody.appendChild(tr);
+      calcSfisTotals();
+    }
+
+    function sfisStokSec(kod, rowId) {
+      const s = MOCK.stok.find(x => (x.kod || String(x.id)) === kod);
+      if (!s) return;
+      const row = document.getElementById(rowId);
+      if (!row) return;
+      const birimEl   = row.querySelector('.sfis-birim');
+      const maliyetEl = row.querySelector('.sfis-maliyet');
+      const sistemEl  = row.querySelector('.sfis-sistem');
+      if (birimEl)   birimEl.value   = s.birim || 'adet';
+      if (maliyetEl) maliyetEl.value = s.fiyat || 0;
+      if (sistemEl)  sistemEl.value  = s.miktar || 0;
+      calcSfisTotals();
+    }
+
+    function calcSfisTotals() {
+      const tbody = document.getElementById('sfis-lines');
+      if (!tbody) return;
+      const rows = tbody.querySelectorAll('tr');
+      let totalTutar = 0, totalMiktar = 0;
+
+      rows.forEach(row => {
+        const miktar   = parseFloat(row.querySelector('.sfis-miktar')?.value  || 0);
+        const maliyet  = parseFloat(row.querySelector('.sfis-maliyet')?.value || 0);
+        const sistem   = parseFloat(row.querySelector('.sfis-sistem')?.value  || 0);
+        totalMiktar   += miktar;
+
+        if (fisTipi === 'sayim') {
+          const farkEl = row.querySelector('.sfis-fark');
+          const fark = miktar - sistem;
+          if (farkEl) { farkEl.textContent = (fark > 0 ? '+' : '') + fmtNum(fark); farkEl.style.color = fark < 0 ? 'var(--c-danger-400)' : fark > 0 ? 'var(--c-accent-500)' : 'var(--text-mute)'; }
+        } else if (fisTipi !== 'virman') {
+          const tutar  = miktar * maliyet;
+          totalTutar  += tutar;
+          const totEl  = row.querySelector('.sfis-total');
+          if (totEl) totEl.textContent = fmtMoney(tutar, false);
+        }
+      });
+
+      const setEl = (id, v) => { const e = document.getElementById(id); if (e) e.textContent = v; };
+      setEl('sfis-kalem-say',    rows.length);
+      setEl('sfis-total-miktar', fmtNum(totalMiktar));
+      setEl('sfis-total-tutar',  fmtMoney(totalTutar));
+      setEl('side-kalem-say',    rows.length);
+      setEl('side-tutar',        fmtMoney(totalTutar));
+    }
+
+    function stokFisKaydet() {
+      const meta = FIS_META[fisTipi] || FIS_META.devir;
+      toast(meta.label + ' kaydedildi', 'success');
+      setTimeout(() => window.location.href = 'stok-islemler.html', 1000);
+    }
+  </script>
+</body>
+</html>

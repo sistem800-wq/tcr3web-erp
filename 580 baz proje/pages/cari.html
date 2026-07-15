@@ -1,0 +1,1094 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#10243f" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-title" content="Tcr3WEB" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <link rel="manifest" href="../manifest.webmanifest?v=20260711-699" />
+  <link rel="icon" type="image/png" href="../assets/icons/favicon-64.png" />
+  <link rel="apple-touch-icon" href="../assets/icons/icon-180.png" />
+  <title>Tcr3WEB · Cari Kartlar</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../assets/css/style.css?v=20260712-653" />
+  <link rel="stylesheet" href="../assets/css/responsive-master.css?v=20260713-591" />
+  <link rel="stylesheet" href="../assets/css/performance.css?v=20260711-700" />
+  <link rel="stylesheet" href="../assets/css/tcr-table.css?v=20260713-583" />
+  <link rel="stylesheet" href="../assets/css/kpi-standard.css?v=20260712-694" />
+  <link rel="stylesheet" href="../assets/css/text-readability.css?v=20260712-657" />
+  <link rel="stylesheet" href="../assets/css/cari-table-enhancements.css?v=20260713-613" />
+  <link rel="stylesheet" href="../assets/css/cari-amount-status.css?v=20260712-621" />
+
+  <style>
+    /* 616 - Hareket Detayı ürün tablosu: modal genişliğine uyumlu kesin kolon hizası */
+    #hareketDetayModal .hareket-urun-table-wrap {
+      width: 100%;
+      overflow-x: hidden;
+      border-radius: 10px;
+    }
+    #hareketDetayModal .hareket-urun-table {
+      width: 100%;
+      min-width: 0 !important;
+      table-layout: fixed;
+    }
+    #hareketDetayModal .hareket-urun-table .col-code { width: 13%; }
+    #hareketDetayModal .hareket-urun-table .col-name { width: 25%; }
+    #hareketDetayModal .hareket-urun-table .col-qty { width: 9%; }
+    #hareketDetayModal .hareket-urun-table .col-unit { width: 10%; }
+    #hareketDetayModal .hareket-urun-table .col-price { width: 15%; }
+    #hareketDetayModal .hareket-urun-table .col-vat { width: 10%; }
+    #hareketDetayModal .hareket-urun-table .col-total { width: 18%; }
+    #hareketDetayModal .hareket-urun-table th,
+    #hareketDetayModal .hareket-urun-table td {
+      padding: 10px 12px;
+      font-size: 12px;
+      line-height: 1.25;
+      vertical-align: middle;
+      box-sizing: border-box;
+    }
+    #hareketDetayModal .hareket-urun-table th {
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    #hareketDetayModal .hareket-urun-table td:nth-child(2) {
+      white-space: normal;
+      overflow-wrap: anywhere;
+    }
+    #hareketDetayModal .hareket-urun-table td:not(:nth-child(2)),
+    #hareketDetayModal .hareket-urun-table tfoot th {
+      white-space: nowrap;
+    }
+    #hareketDetayModal .hareket-urun-table tfoot th {
+      padding-top: 7px;
+      padding-bottom: 7px;
+    }
+    #hareketDetayModal .hareket-urun-table .tcr-column-selector-head,
+    #hareketDetayModal .hareket-urun-table .tcr-column-selector-cell {
+      display: none !important;
+    }
+    @media (max-width: 720px) {
+      #hareketDetayModal .hareket-urun-table-wrap { overflow-x: hidden; }
+      #hareketDetayModal .hareket-urun-table { min-width: 0 !important; }
+    }
+
+    /* 614 · Hareket Detayı iki sütun / evrak paneli */
+    #hareketDetayModal .modal-dialog{max-width:min(1180px,calc(100vw - 32px))}
+    #hareketDetayModal .modal-body{padding:0;overflow:hidden}
+    .hareket-detail-layout{display:grid;grid-template-columns:300px minmax(0,1fr);height:min(690px,calc(100vh - 180px));min-height:520px}
+    .hareket-doc-panel{border-right:1px solid #dbe4ee;background:#f8fafc;padding:16px;display:flex;flex-direction:column;min-height:0}
+    .hareket-doc-title{font-size:14px;font-weight:800;color:#111827;margin-bottom:10px}
+    .hareket-doc-upload{height:76px;display:flex;align-items:center;justify-content:center;gap:10px;border:1.5px dashed #b8c6d8;border-radius:12px;background:#fff;color:#0f2747;font-size:12px;font-weight:800;cursor:pointer;flex:0 0 auto}
+    .hareket-doc-upload svg{width:20px;height:20px;color:#2563eb}
+    .hareket-doc-list{display:flex;flex-direction:column;gap:9px;margin-top:12px;overflow:auto;min-height:0;padding-right:3px}
+    .hareket-doc-item{display:grid;grid-template-columns:58px minmax(0,1fr) auto;align-items:center;gap:9px;padding:8px;border:1px solid #dbe4ee;border-radius:11px;background:#fff;min-width:0}
+    .hareket-doc-thumb{width:58px;height:48px;border-radius:8px;overflow:hidden;background:#eef2f7;display:grid;place-items:center;color:#dc2626;font-weight:900;font-size:11px}
+    .hareket-doc-thumb img{width:100%;height:100%;object-fit:cover;display:block}
+    .hareket-doc-meta{min-width:0}
+    .hareket-doc-name{font-size:11px;font-weight:800;color:#111827;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .hareket-doc-sub{font-size:10px;color:#334155;margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .hareket-doc-actions{display:flex;gap:5px}
+    .hareket-doc-actions .icon-btn{width:32px;height:32px;min-width:32px}
+    .hareket-detail-main{overflow:auto;padding:16px;min-width:0}
+    .hareket-detail-main .grid-2{gap:12px}
+    .hareket-detail-main .card{border-radius:12px}
+    /* 613 · Üst bilgi kartları kompakt */
+    #hareketDetayModal .hareket-detail-main > .grid-2.mb-4{margin-bottom:10px !important}
+    #hareketDetayModal .hareket-detail-main > .grid-2.mb-4 .card-body{padding:10px 12px !important}
+    #hareketDetayModal .hareket-detail-main > .grid-2.mb-4 .text-soft{margin-bottom:4px !important;font-size:11px !important}
+    #hareketDetayModal .hareket-detail-main > .grid-2.mb-4 .stat-row{min-height:31px;padding:5px 0}
+    #hareketDetayModal .hareket-detail-main > .grid-2.mb-4 .stat-label{font-size:12px}
+    #hareketDetayModal .hareket-detail-main > .grid-2.mb-4 .stat-value{font-size:13px}
+    #hareketDetayModal #hareketUrunKart .card-body{padding:12px !important}
+    #hareketDetayModal #hareketUrunKart .text-soft{margin-bottom:8px !important}
+    #hareketPreviewModal .hareket-preview-stage{min-height:420px;display:grid;place-items:center;background:#f1f5f9;border-radius:12px;overflow:auto;padding:12px}
+    #hareketPreviewModal .hareket-preview-stage img{max-width:100%;max-height:68vh;object-fit:contain}
+    #hareketPreviewModal .hareket-preview-pdf{width:100%;height:58vh;border:0;background:#fff}
+    @media(max-width:820px){
+      #hareketDetayModal .modal-body{overflow:auto}
+      .hareket-detail-layout{grid-template-columns:1fr;height:auto;min-height:0}
+      .hareket-doc-panel{border-right:0;border-bottom:1px solid #dbe4ee;max-height:280px}
+      .hareket-detail-main{overflow:visible}
+    }
+  
+
+    /* 598 · Evraklı detay modalları: tablet/mobilde evraklar üstte */
+    @media (max-width:1199px){
+      #hareketDetayModal .modal-dialog,
+      #stokHareketDetayModal .modal-dialog{max-width:min(980px,calc(100vw - 20px))!important}
+      #hareketDetayModal .modal-body,
+      #stokHareketDetayModal .modal-body{overflow:auto!important}
+      #hareketDetayModal .hareket-detail-layout,
+      #stokHareketDetayModal .stok-detail-layout{
+        display:flex!important;
+        flex-direction:column!important;
+        height:auto!important;
+        max-height:none!important;
+        min-height:0!important;
+      }
+      #hareketDetayModal .hareket-doc-panel,
+      #stokHareketDetayModal .stok-detail-docs{
+        order:0!important;
+        width:100%!important;
+        max-height:none!important;
+        border-right:0!important;
+        border-bottom:1px solid #dbe4ee!important;
+        overflow:visible!important;
+      }
+      #hareketDetayModal .hareket-doc-list{
+        display:grid!important;
+        grid-template-columns:repeat(2,minmax(0,1fr))!important;
+        overflow:visible!important;
+      }
+      #stokHareketDetayModal .stok-detail-docs{
+        display:grid!important;
+        grid-template-columns:repeat(2,minmax(0,1fr))!important;
+        gap:9px!important;
+      }
+      #stokHareketDetayModal .stok-detail-docs>.strong{grid-column:1/-1}
+      #stokHareketDetayModal .stok-detail-doc-item{margin-top:0!important}
+      #hareketDetayModal .hareket-detail-main,
+      #stokHareketDetayModal .stok-detail-main{
+        order:1!important;
+        width:100%!important;
+        max-height:none!important;
+        overflow:visible!important;
+      }
+    }
+    @media (max-width:640px){
+      #hareketDetayModal .hareket-doc-list,
+      #stokHareketDetayModal .stok-detail-docs{grid-template-columns:1fr!important}
+    }
+
+    /* 598 · Ürün kalemleri sığmadığında iki satırlı kompakt görünüm */
+    @media (max-width:1199px){
+      #hareketDetayModal .hareket-detail-table-wrap,
+      #stokHareketDetayModal .stok-detail-table-wrap{overflow:visible!important}
+      #hareketDetayModal .hareket-urun-table,
+      #stokHareketDetayModal .stok-detail-line-table{
+        display:block!important;
+        min-width:0!important;
+        width:100%!important;
+        table-layout:auto!important;
+      }
+      #hareketDetayModal .hareket-urun-table colgroup,
+      #stokHareketDetayModal .stok-detail-line-table colgroup,
+      #hareketDetayModal .hareket-urun-table thead,
+      #stokHareketDetayModal .stok-detail-line-table thead{display:none!important}
+      #hareketDetayModal .hareket-urun-table tbody,
+      #stokHareketDetayModal .stok-detail-line-table tbody{display:block!important}
+      #hareketDetayModal .hareket-urun-table tbody tr,
+      #stokHareketDetayModal .stok-detail-line-table tbody tr{
+        display:grid!important;
+        grid-template-columns:minmax(100px,.9fr) minmax(0,2.1fr) repeat(2,minmax(80px,1fr))!important;
+        gap:0!important;
+        margin:0 0 8px!important;
+        border:1px solid #dbe4ee!important;
+        border-radius:10px!important;
+        overflow:hidden!important;
+        background:#fff!important;
+      }
+      #hareketDetayModal .hareket-urun-table tbody td,
+      #stokHareketDetayModal .stok-detail-line-table tbody td{
+        width:auto!important;
+        min-width:0!important;
+        border:0!important;
+        padding:8px 10px!important;
+        white-space:nowrap!important;
+        overflow:hidden!important;
+        text-overflow:ellipsis!important;
+        text-align:left!important;
+        background:#fff!important;
+      }
+      #hareketDetayModal .hareket-urun-table tbody td:nth-child(1),
+      #stokHareketDetayModal .stok-detail-line-table tbody td:nth-child(1){
+        grid-column:1/2;grid-row:1;font-weight:800;background:#f8fafc!important
+      }
+      #hareketDetayModal .hareket-urun-table tbody td:nth-child(2),
+      #stokHareketDetayModal .stok-detail-line-table tbody td:nth-child(2){
+        grid-column:2/5;grid-row:1;font-weight:700;white-space:normal!important;background:#f8fafc!important
+      }
+      #hareketDetayModal .hareket-urun-table tbody td:nth-child(n+3),
+      #stokHareketDetayModal .stok-detail-line-table tbody td:nth-child(n+3){
+        grid-row:2;border-top:1px solid #e5e7eb!important
+      }
+      #hareketDetayModal .hareket-urun-table tbody td:nth-child(3),
+      #stokHareketDetayModal .stok-detail-line-table tbody td:nth-child(3){grid-column:1}
+      #hareketDetayModal .hareket-urun-table tbody td:nth-child(4),
+      #stokHareketDetayModal .stok-detail-line-table tbody td:nth-child(4){grid-column:2}
+      #hareketDetayModal .hareket-urun-table tbody td:nth-child(5),
+      #stokHareketDetayModal .stok-detail-line-table tbody td:nth-child(5){grid-column:3}
+      #hareketDetayModal .hareket-urun-table tbody td:nth-child(6),
+      #stokHareketDetayModal .stok-detail-line-table tbody td:nth-child(6){grid-column:4}
+
+      #hareketDetayModal .hareket-urun-table tbody td:nth-child(3)::before{content:'Miktar: ';font-weight:700;color:#475569}
+      #hareketDetayModal .hareket-urun-table tbody td:nth-child(4)::before{content:'Birim: ';font-weight:700;color:#475569}
+      #hareketDetayModal .hareket-urun-table tbody td:nth-child(5)::before{content:'İskonto: ';font-weight:700;color:#475569}
+      #hareketDetayModal .hareket-urun-table tbody td:nth-child(6)::before{content:'Tutar: ';font-weight:700;color:#475569}
+
+      #stokHareketDetayModal .stok-detail-line-table tbody td:nth-child(3)::before{content:'Miktar: ';font-weight:700;color:#475569}
+      #stokHareketDetayModal .stok-detail-line-table tbody td:nth-child(4)::before{content:'Birim: ';font-weight:700;color:#475569}
+      #stokHareketDetayModal .stok-detail-line-table tbody td:nth-child(5)::before{content:'Depo: ';font-weight:700;color:#475569}
+      #stokHareketDetayModal .stok-detail-line-table tbody td:nth-child(6)::before{content:'İşlem: ';font-weight:700;color:#475569}
+
+      #hareketDetayModal .hareket-urun-table tfoot{display:block!important}
+      #hareketDetayModal .hareket-urun-table tfoot tr{display:flex!important;justify-content:flex-end!important;gap:10px;padding:4px 8px}
+      #hareketDetayModal .hareket-urun-table tfoot th{display:block!important;width:auto!important;padding:4px!important}
+    }
+    @media (max-width:620px){
+      #hareketDetayModal .hareket-urun-table tbody tr,
+      #stokHareketDetayModal .stok-detail-line-table tbody tr{
+        grid-template-columns:1fr 1fr!important;
+      }
+      #hareketDetayModal .hareket-urun-table tbody td:nth-child(1),
+      #stokHareketDetayModal .stok-detail-line-table tbody td:nth-child(1){grid-column:1;grid-row:1}
+      #hareketDetayModal .hareket-urun-table tbody td:nth-child(2),
+      #stokHareketDetayModal .stok-detail-line-table tbody td:nth-child(2){grid-column:2;grid-row:1}
+      #hareketDetayModal .hareket-urun-table tbody td:nth-child(3),
+      #stokHareketDetayModal .stok-detail-line-table tbody td:nth-child(3){grid-column:1;grid-row:2}
+      #hareketDetayModal .hareket-urun-table tbody td:nth-child(4),
+      #stokHareketDetayModal .stok-detail-line-table tbody td:nth-child(4){grid-column:2;grid-row:2}
+      #hareketDetayModal .hareket-urun-table tbody td:nth-child(5),
+      #stokHareketDetayModal .stok-detail-line-table tbody td:nth-child(5){grid-column:1;grid-row:3}
+      #hareketDetayModal .hareket-urun-table tbody td:nth-child(6),
+      #stokHareketDetayModal .stok-detail-line-table tbody td:nth-child(6){grid-column:2;grid-row:3}
+    }
+</style>
+</head>
+<body>
+  <div id="app" class="app"></div>
+  <script src="../assets/js/app.js?v=20260712-653"></script>
+  <script src="../assets/js/tcr-actions.js?v=20260713-600"></script>
+  <script src="../assets/js/master-init.js?v=20260713-583"></script>
+  <script src="../assets/js/tcr-table.js?v=20260713-587"></script>
+  <script>
+    const TURKIYE_ILLERI = ['Adana','Adıyaman','Afyonkarahisar','Ağrı','Aksaray','Amasya','Ankara','Antalya','Ardahan','Artvin','Aydın','Balıkesir','Bartın','Batman','Bayburt','Bilecik','Bingöl','Bitlis','Bolu','Burdur','Bursa','Çanakkale','Çankırı','Çorum','Denizli','Diyarbakır','Düzce','Edirne','Elazığ','Erzincan','Erzurum','Eskişehir','Gaziantep','Giresun','Gümüşhane','Hakkâri','Hatay','Iğdır','Isparta','İstanbul','İzmir','Kahramanmaraş','Karabük','Karaman','Kars','Kastamonu','Kayseri','Kırıkkale','Kırklareli','Kırşehir','Kilis','Kocaeli','Konya','Kütahya','Malatya','Manisa','Mardin','Mersin','Muğla','Muş','Nevşehir','Niğde','Ordu','Osmaniye','Rize','Sakarya','Samsun','Siirt','Sinop','Sivas','Şanlıurfa','Şırnak','Tekirdağ','Tokat','Trabzon','Tunceli','Uşak','Van','Yalova','Yozgat','Zonguldak'];
+    const ilOptions = (selected='') => '<option value="">İl Seçiniz</option>' + TURKIYE_ILLERI.map(il => `<option value="${il}" ${il===selected?'selected':''}>${il}</option>`).join('');
+    bootPage('cari', () => {
+      const totalBakiye = MOCK.cari.reduce((s,c) => s + c.bakiye, 0);
+      const musteri = MOCK.cari.filter(c => c.tip === 'Müşteri').length;
+      const tedarik = MOCK.cari.filter(c => c.tip === 'Tedarikçi').length;
+      const riskliCariler = MOCK.cari.filter(c => Number(c.risk || 0) > 0);
+      const riskli = riskliCariler.length;
+      const borcluCariler = MOCK.cari.filter(c => Number(c.bakiye || 0) > 0);
+      const alacakliCariler = MOCK.cari.filter(c => Number(c.bakiye || 0) < 0);
+      const borclu = borcluCariler.length;
+      const alacakli = alacakliCariler.length;
+      const borcluBakiye = borcluCariler.reduce((sum, c) => sum + Number(c.bakiye || 0), 0);
+      const alacakliBakiye = Math.abs(alacakliCariler.reduce((sum, c) => sum + Number(c.bakiye || 0), 0));
+      const riskliBakiye = Math.abs(riskliCariler.reduce((sum, c) => sum + Number(c.bakiye || 0), 0));
+
+      return `
+      <div class="page-head">
+        <div>
+          <div class="breadcrumb">
+            <a href="dashboard.html">Genel</a><span>›</span>
+            <a href="cari.html">Ticaret</a><span>›</span>
+            <span>Cari Kartlar</span>
+          </div>
+          <h1 class="page-title">Cari Kartlar</h1>
+          <div class="page-sub">Müşteri ve tedarikçi hesapları, bakiye ve risk takibi</div>
+        </div>
+        <div class="page-actions">
+          <button class="btn btn-ghost" onclick="location.href='cari-ekstre.html'">${ICONS.chart} Cari Ekstre</button>
+          <button class="btn btn-ghost" onclick="toast('Dışa aktarıldı (prototip)')">${ICONS.download} Dışa Aktar</button>
+          <button class="btn btn-primary" onclick="location.href='cari-form.html'">${ICONS.plus} Yeni Cari</button>
+        </div>
+      </div>
+
+      <div class="tcr-ac-grid">
+        <button type="button" class="tcr-action-card tcr-ac-blue" onclick="filterTip('')">
+          <span class="tcr-ac-icon">${ICONS.users}</span>
+          <span class="tcr-ac-content">
+            <span class="tcr-ac-title">Tüm Cariler</span>
+            <span class="tcr-ac-desc">Aktif ve pasif tüm kayıtlar</span>
+          </span>
+          <span class="tcr-ac-badge">${MOCK.cari.length}</span>
+        </button>
+
+        <button type="button" class="tcr-action-card tcr-ac-green" onclick="filterTip('Müşteri')">
+          <span class="tcr-ac-icon">${ICONS.users}</span>
+          <span class="tcr-ac-content">
+            <span class="tcr-ac-title">Müşteriler</span>
+            <span class="tcr-ac-desc">Sadece müşteri cariler</span>
+          </span>
+          <span class="tcr-ac-badge">${musteri}</span>
+        </button>
+
+        <button type="button" class="tcr-action-card tcr-ac-orange" onclick="filterTip('Tedarikçi')">
+          <span class="tcr-ac-icon">${ICONS.box}</span>
+          <span class="tcr-ac-content">
+            <span class="tcr-ac-title">Tedarikçiler</span>
+            <span class="tcr-ac-desc">Sadece tedarikçi cariler</span>
+          </span>
+          <span class="tcr-ac-badge">${tedarik}</span>
+        </button>
+
+        <button type="button" class="tcr-action-card tcr-ac-red" onclick="filterBakiye('borclu')">
+          <span class="tcr-ac-icon">${ICONS.trend_down}</span>
+          <span class="tcr-ac-content">
+            <span class="tcr-ac-title">Borçlu Cariler</span>
+            <span class="tcr-ac-desc">${fmtMoney(borcluBakiye)}</span>
+          </span>
+          <span class="tcr-ac-badge">${borclu}</span>
+        </button>
+
+        <button type="button" class="tcr-action-card tcr-ac-orange" onclick="filterBakiye('alacakli')">
+          <span class="tcr-ac-icon">${ICONS.trend_up}</span>
+          <span class="tcr-ac-content">
+            <span class="tcr-ac-title">Alacaklı Cariler</span>
+            <span class="tcr-ac-desc">${fmtMoney(alacakliBakiye)}</span>
+          </span>
+          <span class="tcr-ac-badge">${alacakli}</span>
+        </button>
+
+        <button type="button" class="tcr-action-card tcr-ac-purple" onclick="filterRiskliCari()">
+          <span class="tcr-ac-icon">${ICONS.alert}</span>
+          <span class="tcr-ac-content">
+            <span class="tcr-ac-title">Riskli Cariler</span>
+            <span class="tcr-ac-desc">${fmtMoney(riskliBakiye)}</span>
+          </span>
+          <span class="tcr-ac-badge">${riskli}</span>
+        </button>
+      </div>
+
+      <nav class="cari-mobile-nav" aria-label="Cari hızlı işlemler">
+        <button type="button" class="active" onclick="toggleSidebar()">${ICONS.menu}<span>Menü</span></button>
+        <button type="button" onclick="location.href='cari-form.html'">${ICONS.user_plus}<span>Yeni</span></button>
+        <button type="button" onclick="location.href='cari-ekstre.html'">${ICONS.chart}<span>Ekstre</span></button>
+        <button type="button" onclick="filterBakiye('borclu');scrollToCariTable()">${ICONS.trend_down}<span>Borç</span></button>
+        <button type="button" onclick="filterBakiye('alacakli');scrollToCariTable()">${ICONS.trend_up}<span>Alacak</span></button>
+      </nav>
+
+      <div class="card cari-list-card">
+        <div class="card-body" style="padding:var(--s-4)">
+          <div class="toolbar">
+            <div class="toolbar-search">
+              <span class="toolbar-search-icon">${ICONS.search}</span>
+              <input type="text" placeholder="Cari adı, kodu veya yetkili ara..." oninput="filterCari(this.value)" />
+            </div>
+            <select class="filter-select" onchange="filterTip(this.value)">
+              <option value="">Tüm Tipler</option>
+              <option value="Müşteri">Müşteri</option>
+              <option value="Tedarikçi">Tedarikçi</option>
+            </select>
+            <select class="filter-select">
+              <option>Tüm Şehirler</option>
+              <option>İstanbul</option>
+              <option>İzmir</option>
+              <option>Ankara</option>
+              <option>Antalya</option>
+              <option>Trabzon</option>
+              <option>Kayseri</option>
+            </select>
+            <div class="toolbar-spacer"></div>
+          </div>
+
+          <div class="table-wrap" style="border:none">
+            <table class="data" id="cariTable">
+              <thead><tr>
+                <th style="width:42px"><input type="checkbox" onclick="document.querySelectorAll('#cariTable tbody input[type=checkbox]').forEach(x=>x.checked=this.checked)" /></th>
+                <th data-col="kod">Kod</th><th data-col="unvan">Ünvan</th><th data-col="tip">Tip</th><th data-col="yetkili">Yetkili</th><th data-col="sehir">Şehir</th><th data-col="vade">Vade</th><th class="num" data-col="bakiye">Bakiye</th><th data-col="durum">Durum</th>
+                <th class="cari-column-selector-head">
+                  <button type="button" class="icon-btn cari-column-selector-btn" onclick="event.stopPropagation();toggleCariColumnMenu()" title="Kolon Seç">${ICONS.settings || ICONS.sliders || ICONS.filter}</button>
+                  <div id="cariColumnMenu" class="cari-column-menu" onclick="event.stopPropagation()">
+                    <label><input type="checkbox" checked data-column-toggle="kod" onchange="toggleCariColumn(this)"> Kod</label>
+                    <label><input type="checkbox" checked data-column-toggle="unvan" onchange="toggleCariColumn(this)"> Ünvan</label>
+                    <label><input type="checkbox" checked data-column-toggle="tip" onchange="toggleCariColumn(this)"> Tip</label>
+                    <label><input type="checkbox" checked data-column-toggle="yetkili" onchange="toggleCariColumn(this)"> Yetkili</label>
+                    <label><input type="checkbox" checked data-column-toggle="sehir" onchange="toggleCariColumn(this)"> Şehir</label>
+                    <label><input type="checkbox" checked data-column-toggle="vade" onchange="toggleCariColumn(this)"> Vade</label>
+                    <label><input type="checkbox" checked data-column-toggle="bakiye" onchange="toggleCariColumn(this)"> Bakiye</label>
+                    <label><input type="checkbox" checked data-column-toggle="durum" onchange="toggleCariColumn(this)"> Durum</label>
+                  </div>
+                </th>
+              </tr></thead>
+              <tbody>
+                ${MOCK.cari.map(c => `
+                  <tr data-ad="${c.ad.toLowerCase()}" data-tip="${c.tip}" data-risk="${c.risk}" data-bakiye="${Number(c.bakiye || 0)}">
+                    <td><input type="checkbox" onclick="event.stopPropagation()" /></td>
+                    <td class="mono strong" data-col="kod">${c.kod}</td>
+                    <td class="strong clickable" data-col="unvan" onclick="openCariDetay('${c.kod}')">${c.ad}</td>
+                    <td data-col="tip"><span class="badge ${c.tip==='Müşteri'?'badge-info':'badge-warn'}">${c.tip}</span></td>
+                    <td data-col="yetkili">${c.yetkili}</td>
+                    <td data-col="sehir">${c.sehir}</td>
+                    <td data-col="vade" class="${isCariVadeGecmis(c) ? 'cari-vade-overdue' : ''}" title="${isCariVadeGecmis(c) ? 'Borç bakiyesi var ve vade süresi geçmiş' : 'Vade süresi'}">${c.vade} gün</td>
+                    <td class="num ${c.bakiye>0?'text-danger':c.bakiye<0?'text-success':''}" data-col="bakiye"><span class="cari-balance-hint" data-hint="${cariActivityHint(c)}">${fmtMoney(c.bakiye)}</span></td>
+                    <td data-col="durum"><span class="badge ${c.durum==='Aktif'?'badge-success':'badge-neutral'}">${c.durum}</span></td>
+                    <td>
+                      <div class="flex gap-2">
+                        <button class="icon-btn" style="width:30px;height:30px" onclick="openCariDetay('${c.kod}')" title="Detay">${ICONS.eye}</button>
+                        <button class="icon-btn" style="width:30px;height:30px" onclick="location.href='cari-form.html?id=${c.kod}'" title="Düzenle">${ICONS.edit}</button>
+                        <button class="icon-btn" style="width:30px;height:30px" onclick="location.href='cari-ekstre.html?cariKod=${encodeURIComponent(c.kod)}&cariAd=${encodeURIComponent(c.ad)}'" title="Cari Ekstre">${ICONS.trend_up}</button>
+                        <button class="icon-btn" style="width:30px;height:30px" onclick="openCariStokOzet('${c.kod}')" title="Stok Alım / Satış Özeti">${ICONS.box}</button>
+                        <button class="icon-btn" style="width:30px;height:30px" onclick="openCariEvrak('${c.kod}')" title="Evraklar">${ICONS.file_check}</button>
+                        <button class="icon-btn" style="width:30px;height:30px" onclick="openCariActivity('${c.kod}')" title="Son İşlem Tarihleri">${ICONS.calendar}</button>
+                      </div>
+                    </td>
+                  </tr>
+                `).join('')}
+              </tbody>
+              <tfoot class="cari-bakiye-footer">
+                <tr>
+                  <td colspan="7" class="cari-bakiye-footer-label">Durum :</td>
+                  <td colspan="3">
+                    <div class="cari-bakiye-footer-values">
+                      <span class="cari-footer-total cari-footer-borc">Borç: <strong id="cariFooterBorc">0,00 ₺</strong></span>
+                      <span class="cari-footer-total cari-footer-alacak">Alacak: <strong id="cariFooterAlacak">0,00 ₺</strong></span>
+                      <span class="cari-footer-total cari-footer-net">Net: <strong id="cariFooterNet">0,00 ₺</strong></span>
+                    </div>
+                  </td>
+                </tr>
+              </tfoot>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      ${modalHtml('cariActivityModal', 'Cari İşlem Takvimi', `
+        <div class="cari-activity-modal-head">
+          <div>
+            <div class="cari-activity-code" id="cariActivityCode">—</div>
+            <div class="cari-activity-name" id="cariActivityName">—</div>
+          </div>
+          <span class="badge badge-info" id="cariActivityType">—</span>
+        </div>
+        <div class="cari-activity-list">
+          <div class="cari-activity-row"><span class="cari-activity-icon activity-sale">${ICONS.shopping_cart || ICONS.cart || ICONS.box}</span><span><strong>Son Satış</strong><small id="cariLastSale">Kayıt yok</small></span><b id="cariLastSaleDay">—</b></div>
+          <div class="cari-activity-row"><span class="cari-activity-icon activity-collection">${ICONS.wallet || ICONS.trend_up}</span><span><strong>Son Tahsilat</strong><small id="cariLastCollection">Kayıt yok</small></span><b id="cariLastCollectionDay">—</b></div>
+          <div class="cari-activity-row"><span class="cari-activity-icon activity-purchase">${ICONS.package || ICONS.box}</span><span><strong>Son Alım</strong><small id="cariLastPurchase">Kayıt yok</small></span><b id="cariLastPurchaseDay">—</b></div>
+          <div class="cari-activity-row"><span class="cari-activity-icon activity-payment">${ICONS.credit_card || ICONS.wallet}</span><span><strong>Son Ödeme</strong><small id="cariLastPayment">Kayıt yok</small></span><b id="cariLastPaymentDay">—</b></div>
+        </div>
+      `, `<button class="btn btn-ghost" onclick="closeModal('cariActivityModal')">Kapat</button>`, 'md')}
+
+      ${modalHtml('cariModal', 'Yeni Cari Kartı', `
+        <div class="form-grid-2">
+          <div class="form-field"><label class="form-label">Cari Kodu</label><input class="form-input" value="CR0009" readonly /></div>
+          <div class="form-field"><label class="form-label">Cari Tipi</label><select class="form-input"><option>Müşteri</option><option>Tedarikçi</option><option>Her İkisi</option></select></div>
+          <div class="form-field full"><label class="form-label">Ünvan / Ad</label><input class="form-input" placeholder="Örn: Marmara Tekstil A.Ş." /></div>
+          <div class="form-field"><label class="form-label">Yetkili Kişi</label><input class="form-input" placeholder="Ad Soyad" /></div>
+          <div class="form-field"><label class="form-label">Vergi No</label><input class="form-input" /></div>
+          <div class="form-field"><label class="form-label">Telefon</label><input class="form-input" placeholder="0xxx xxx xx xx" /></div>
+          <div class="form-field"><label class="form-label">E-posta</label><input class="form-input" placeholder="ornek@sirket.com" /></div>
+          <div class="form-field"><label class="form-label">Şehir</label><select class="form-input">${ilOptions('')}</select></div>
+          <div class="form-field"><label class="form-label">Vade (gün)</label><input class="form-input" type="number" value="30" /></div>
+          <div class="form-field full"><label class="form-label">Adres</label><textarea class="form-input"></textarea></div>
+          <div class="form-field"><label class="form-label">Açılış Bakiyesi</label><input class="form-input" type="number" value="0" /></div>
+          <div class="form-field"><label class="form-label">Risk Limiti</label><input class="form-input" type="number" value="0" /></div>
+        </div>
+      `, `<button class="btn btn-ghost" onclick="closeModal('cariModal')">İptal</button><button class="btn btn-primary" onclick="closeModal('cariModal');toast('Cari kartı kaydedildi','success')">${ICONS.check} Kaydet</button>`, 'lg')}
+
+      ${modalHtml('detayModal', 'Cari Detayı · Marmara Tekstil A.Ş.', `
+        <div class="flex items-center gap-4 mb-5">
+          <div class="avatar avatar-lg" style="background:linear-gradient(135deg,#2c4670,#142544)">MT</div>
+          <div>
+            <h3 style="font-size:18px;color:var(--c-primary-800)">Marmara Tekstil A.Ş.</h3>
+            <div class="text-soft" style="font-size:13px">CR0001 · Müşteri · İstanbul</div>
+            <div class="flex gap-2 mt-2">
+              <span class="badge badge-success">Aktif</span>
+              <span class="badge badge-info">30 gün vade</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="grid-2 mb-4">
+          <div class="card" style="box-shadow:none">
+            <div class="card-body" style="padding:var(--s-4)">
+              <div class="text-soft" style="font-size:12px;margin-bottom:var(--s-2)">İletişim</div>
+              <div class="stat-row"><span class="stat-label">Yetkili</span><span class="stat-value">Mehmet Demir</span></div>
+              <div class="stat-row"><span class="stat-label">Telefon</span><span class="stat-value mono">0212 555 11 22</span></div>
+              <div class="stat-row"><span class="stat-label">E-posta</span><span class="stat-value">info@marmaratekstil.com</span></div>
+              <div class="stat-row"><span class="stat-label">Vergi No</span><span class="stat-value mono">1234567890</span></div>
+            </div>
+          </div>
+          <div class="card" style="box-shadow:none">
+            <div class="card-body" style="padding:var(--s-4)">
+              <div class="text-soft" style="font-size:12px;margin-bottom:var(--s-2)">Finansal Özet</div>
+              <div class="stat-row"><span class="stat-label">Açılış Bakiyesi</span><span class="stat-value">${fmtMoney(0)}</span></div>
+              <div class="stat-row"><span class="stat-label">Mevcut Bakiye</span><span class="stat-value text-success">${fmtMoney(145000)}</span></div>
+              <div class="stat-row"><span class="stat-label">Risk Limiti</span><span class="stat-value">${fmtMoney(200000)}</span></div>
+              <div class="stat-row"><span class="stat-label">Son İşlem</span><span class="stat-value">04.07.2026</span></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="text-soft mb-3" style="font-size:12px;font-weight:600">Müşteri Hareketleri</div>
+        <div class="table-wrap">
+          <table class="data">
+            <thead><tr><th>Tarih</th><th>Belge</th><th>Açıklama</th><th class="num">Borç</th><th class="num">Alacak</th><th></th></tr></thead>
+            <tbody>
+              <tr class="clickable-row" onclick="openHareketDetay('SF20260012')" style="cursor:pointer"><td>04.07.2026</td><td class="mono strong">SF20260012</td><td>Satış faturası</td><td class="num">${fmtMoney(145000)}</td><td class="num muted">-</td><td><button class="icon-btn" onclick="event.stopPropagation();openHareketDetay('SF20260012')" title="Hareket Detayı">${ICONS.eye}</button></td></tr>
+              <tr class="clickable-row" onclick="openHareketDetay('CK0001')" style="cursor:pointer"><td>04.07.2026</td><td class="mono strong">CK0001</td><td>Çek tahsilatı</td><td class="num muted">-</td><td class="num">${fmtMoney(75000)}</td><td><button class="icon-btn" onclick="event.stopPropagation();openHareketDetay('CK0001')" title="Hareket Detayı">${ICONS.eye}</button></td></tr>
+              <tr class="clickable-row" onclick="openHareketDetay('S20260001')" style="cursor:pointer"><td>02.07.2026</td><td class="mono strong">S20260001</td><td>Sipariş</td><td class="num">${fmtMoney(145000)}</td><td class="num muted">-</td><td><button class="icon-btn" onclick="event.stopPropagation();openHareketDetay('S20260001')" title="Hareket Detayı">${ICONS.eye}</button></td></tr>
+              <tr class="clickable-row" onclick="openHareketDetay('SF20260008')" style="cursor:pointer"><td>15.06.2026</td><td class="mono strong">SF20260008</td><td>Satış faturası</td><td class="num">${fmtMoney(89000)}</td><td class="num muted">-</td><td><button class="icon-btn" onclick="event.stopPropagation();openHareketDetay('SF20260008')" title="Hareket Detayı">${ICONS.eye}</button></td></tr>
+            </tbody>
+          </table>
+        </div>
+      `, `<button class="btn btn-ghost" onclick="closeModal('detayModal')">Kapat</button><button class="btn btn-primary" onclick="window.location.href='satis.html'">${ICONS.plus} Yeni İşlem</button>`, 'xl')}
+
+
+      ${modalHtml('cariEvrakModal', 'Cari Evrakları', `
+        <div class="evrak-manager">
+          <div class="evrak-manager-head">
+            <div class="evrak-entity-icon cari">${ICONS.file_check}</div>
+            <div>
+              <div id="evrak-cari-ad" class="evrak-entity-title">-</div>
+              <div id="evrak-cari-kod" class="evrak-entity-sub">-</div>
+            </div>
+            <div class="evrak-head-spacer"></div>
+            <span class="badge badge-info">Cari Evrakları</span>
+          </div>
+          <div class="evrak-manager-grid">
+            <label class="evrak-drop-card">
+              <input type="file" multiple accept="image/*,.pdf,.doc,.docx,.xls,.xlsx" style="display:none" onchange="eklerModalCari(this)">
+              <span class="evrak-drop-icon">${ICONS.download}</span>
+              <b>Dosya yükle</b>
+              <small>Vergi levhası, sözleşme, kimlik, PDF, Word, Excel veya resim ekleyin.</small>
+              <em>Çoklu seçim desteklenir</em>
+            </label>
+            <div class="evrak-list-card">
+              <div class="evrak-list-head">
+                <div>
+                  <b>Ekli Evraklar</b>
+                  <small>Önizleme, indirme ve silme işlemleri</small>
+                </div>
+                <input class="form-input evrak-search" placeholder="Evrak ara..." oninput="filterEvrakList(this,'ekl-modal-cari-standalone-list')" />
+              </div>
+              <div class="ekler-list evrak-list-modern" id="ekl-modal-cari-standalone-list"><div class="ekler-empty">Evrak yükleniyor…</div></div>
+            </div>
+          </div>
+        </div>
+      `, `<span class="modal-footer-info">Evraklar seçili cari kartına bağlanır.<span class="ek-selected-info" data-ekler-selected-count="ekl-modal-cari-standalone-list">Seçili evrak yok</span></span><button class="btn btn-ghost" onclick="eklerDownloadSelected('cari',_cariDetayId,'ekl-modal-cari-standalone-list')">${ICONS.download} İndir</button><button class="btn btn-success" onclick="eklerWhatsappSelected('cari',_cariDetayId,'ekl-modal-cari-standalone-list')">${ICONS.whatsapp} WhatsApp Gönder</button><button class="btn btn-danger" onclick="closeModal('cariEvrakModal')">Kapat</button>`, 'xl')}
+
+
+      ${modalHtml('cariStokOzetModal', 'Cari Ürün Alım / Satış Geçmişi', `
+        <div class="form-grid-2">
+          <div class="info-card">
+            <div class="text-soft" style="font-size:12px;font-weight:600;margin-bottom:var(--s-2)">Cari Bilgisi</div>
+            <div class="stat-row"><span class="stat-label">Cari Kod</span><span class="stat-value mono" id="stokOzetCariKod">-</span></div>
+            <div class="stat-row"><span class="stat-label">Cari Ünvan</span><span class="stat-value" id="stokOzetCariAd">-</span></div>
+            <div class="stat-row"><span class="stat-label">Cari Tipi</span><span class="stat-value" id="stokOzetCariTip">-</span></div>
+          </div>
+          <div class="info-card">
+            <div class="text-soft" style="font-size:12px;font-weight:600;margin-bottom:var(--s-2)">Bugüne Kadar Toplam</div>
+            <div class="stat-row"><span class="stat-label">Alım Toplamı</span><span class="stat-value text-danger" id="stokOzetAlim">-</span></div>
+            <div class="stat-row"><span class="stat-label">Satış Toplamı</span><span class="stat-value text-success" id="stokOzetSatis">-</span></div>
+            <div class="stat-row"><span class="stat-label">Ürün Çeşidi</span><span class="stat-value" id="stokOzetUrunCesit">-</span></div>
+            <div class="stat-row"><span class="stat-label">Net Fark</span><span class="stat-value" id="stokOzetNet">-</span></div>
+          </div>
+        </div>
+
+        <div class="table-wrap" style="margin-top:var(--s-4)">
+          <table class="data">
+            <thead>
+              <tr><th>Stok Kodu</th><th>Ürün</th><th class="num">Alım Adet</th><th class="num">Alım Ort. Fiyat</th><th class="num">Alım Tutar</th><th class="num">Satış Adet</th><th class="num">Satış Ort. Fiyat</th><th class="num">Satış Tutar</th></tr>
+            </thead>
+            <tbody id="stokOzetBody"></tbody>
+            <tfoot id="stokOzetFoot"></tfoot>
+          </table>
+        </div>
+      `, `<button class="btn btn-ghost" onclick="window.print()">${ICONS.print} Yazdır</button><button class="btn btn-danger" onclick="closeModal('cariStokOzetModal')">Kapat</button>`, 'xl')}
+
+      ${modalHtml('hareketDetayModal', 'Hareket Detayı', `
+        <div class="hareket-detail-layout">
+          <aside class="hareket-doc-panel">
+            <div class="hareket-doc-title">Resim ve Evraklar</div>
+            <label class="hareket-doc-upload" title="Dosya ekle">
+              <input type="file" multiple accept="image/*,.pdf" hidden onchange="hareketEvrakEkle(this)">
+              ${ICONS.download}<span>Dosya Seç / Sürükle</span>
+            </label>
+            <div class="hareket-doc-list" id="hareketEvrakList">
+              <div class="hareket-doc-item">
+                <div class="hareket-doc-thumb"><img src="../assets/img/tcr3web-logo-wide.png" alt="Fatura önizleme"></div>
+                <div class="hareket-doc-meta"><div class="hareket-doc-name">Fatura Görseli.jpg</div><div class="hareket-doc-sub">145 KB · 04.07.2026</div></div>
+                <div class="hareket-doc-actions"><button class="icon-btn" type="button" title="Görüntüle" onclick="openHareketEvrakPreview('../assets/img/tcr3web-logo-wide.png','Fatura Görseli')">${ICONS.eye}</button><button class="icon-btn" type="button" title="İndir" onclick="toast('Evrak indirmeye hazırlandı','info')">${ICONS.download}</button></div>
+              </div>
+              <div class="hareket-doc-item">
+                <div class="hareket-doc-thumb">PDF</div>
+                <div class="hareket-doc-meta"><div class="hareket-doc-name">Satış Faturası.pdf</div><div class="hareket-doc-sub">92 KB · 04.07.2026</div></div>
+                <div class="hareket-doc-actions"><button class="icon-btn" type="button" title="Görüntüle" onclick="openHareketEvrakPreview('pdf','Satış Faturası PDF')">${ICONS.eye}</button><button class="icon-btn" type="button" title="İndir" onclick="toast('PDF indirmeye hazırlandı','info')">${ICONS.download}</button></div>
+              </div>
+            </div>
+          </aside>
+          <section class="hareket-detail-main">
+        <div class="grid-2 mb-4">
+          <div class="card" style="box-shadow:none">
+            <div class="card-body" style="padding:var(--s-4)">
+              <div class="text-soft" style="font-size:12px;margin-bottom:var(--s-2)">Belge Bilgileri</div>
+              <div class="stat-row"><span class="stat-label">Belge No</span><span class="stat-value mono" id="hareketBelgeNo">-</span></div>
+              <div class="stat-row"><span class="stat-label">Hareket Türü</span><span class="stat-value" id="hareketTur">-</span></div>
+              <div class="stat-row"><span class="stat-label">Tarih</span><span class="stat-value" id="hareketTarih">-</span></div>
+              <div class="stat-row"><span class="stat-label">Cari</span><span class="stat-value">Marmara Tekstil A.Ş.</span></div>
+            </div>
+          </div>
+          <div class="card" style="box-shadow:none">
+            <div class="card-body" style="padding:var(--s-4)">
+              <div class="text-soft" style="font-size:12px;margin-bottom:var(--s-2)">Tutar Bilgileri</div>
+              <div class="stat-row"><span class="stat-label">Borç</span><span class="stat-value text-danger" id="hareketBorc">-</span></div>
+              <div class="stat-row"><span class="stat-label">Alacak</span><span class="stat-value text-success" id="hareketAlacak">-</span></div>
+              <div class="stat-row"><span class="stat-label">İşlem Sonrası Bakiye</span><span class="stat-value" id="hareketBakiye">-</span></div>
+              <div class="stat-row"><span class="stat-label">Durum</span><span class="stat-value"><span class="badge badge-success">Onaylı</span></span></div>
+            </div>
+          </div>
+        </div>
+        <div class="card" style="box-shadow:none;margin-bottom:var(--s-4)">
+          <div class="card-body" style="padding:var(--s-4)">
+            <div class="text-soft" style="font-size:12px;margin-bottom:var(--s-2)">Açıklama / İçerik</div>
+            <div id="hareketAciklama" style="font-size:14px;color:var(--text-strong);line-height:1.6">-</div>
+          </div>
+        </div>
+
+        <div class="card" id="hareketEkDetayKart" style="box-shadow:none;margin-bottom:var(--s-4);display:none">
+          <div class="card-body" style="padding:var(--s-4)">
+            <div class="text-soft" id="hareketEkDetayBaslik" style="font-size:12px;margin-bottom:var(--s-3);font-weight:600">Hareket Detayları</div>
+            <div class="grid-2" id="hareketEkDetayIcerik"></div>
+          </div>
+        </div>
+
+        <div class="card" id="hareketUrunKart" style="box-shadow:none">
+          <div class="card-body" style="padding:var(--s-4)">
+            <div class="text-soft" style="font-size:12px;margin-bottom:var(--s-3);font-weight:600">Fatura Ürün Detayları</div>
+            <div class="table-wrap hareket-urun-table-wrap">
+              <table class="data hareket-urun-table" data-no-record-lock="true" data-no-column-selector="true">
+                <colgroup>
+                  <col class="col-code">
+                  <col class="col-name">
+                  <col class="col-qty">
+                  <col class="col-unit">
+                  <col class="col-vat">
+                  <col class="col-discount">
+                  <col class="col-total">
+                </colgroup>
+                <thead>
+                  <tr>
+                    <th>Ürün Kodu</th>
+                    <th>Ürün/Hizmet</th>
+                    <th class="num">Miktar</th>
+                    <th>Birim</th>
+                    <th class="num">KDV</th>
+                    <th class="num">İskonto</th>
+                    <th class="num">Tutar</th>
+                  </tr>
+                </thead>
+                <tbody id="hareketUrunlerBody">
+                  <tr><td colspan="7" class="muted">Bu hareket için ürün kalemi yok.</td></tr>
+                </tbody>
+                <tfoot id="hareketUrunlerToplam"></tfoot>
+              </table>
+            </div>
+          </div>
+        </div>
+          </section>
+        </div>
+      `, `<button class="btn btn-ghost" onclick="printDoc()">${ICONS.print} Yazdır</button><button class="btn btn-danger" onclick="closeModal('hareketDetayModal')">${ICONS.close} Kapat</button>`, 'xl')}
+
+      ${modalHtml('hareketPreviewModal', 'Evrak Önizleme', `
+        <div class="hareket-preview-stage" id="hareketPreviewStage"></div>
+      `, `<button class="btn btn-danger" onclick="closeModal('hareketPreviewModal')">${ICONS.close} Kapat</button>`, 'lg')}
+      `;
+    });
+
+    function updateCariFooterTotals() {
+      const rows = Array.from(document.querySelectorAll('#cariTable tbody tr'));
+      let borc = 0;
+      let alacak = 0;
+
+      rows.forEach(row => {
+        const cssHidden = row.style.display === 'none';
+        const pageHidden = row.hidden;
+        if (cssHidden || pageHidden) return;
+
+        const bakiye = Number(row.dataset.bakiye || 0);
+        if (bakiye > 0) borc += bakiye;
+        else if (bakiye < 0) alacak += Math.abs(bakiye);
+      });
+
+      const net = borc - alacak;
+      const borcEl = document.getElementById('cariFooterBorc');
+      const alacakEl = document.getElementById('cariFooterAlacak');
+      const netEl = document.getElementById('cariFooterNet');
+      if (borcEl) borcEl.textContent = fmtMoney(borc);
+      if (alacakEl) alacakEl.textContent = fmtMoney(alacak);
+      if (netEl) {
+        netEl.textContent = fmtMoney(Math.abs(net));
+        netEl.parentElement.classList.toggle('is-negative', net < 0);
+        netEl.parentElement.classList.toggle('is-positive', net > 0);
+        netEl.parentElement.setAttribute('data-state', net < 0 ? 'Alacak' : net > 0 ? 'Borç' : 'Denge');
+      }
+    }
+
+    function scheduleCariFooterTotals() {
+      requestAnimationFrame(updateCariFooterTotals);
+    }
+
+    function initCariFooterTotals() {
+      const table = document.getElementById('cariTable');
+      if (!table || table.dataset.cariFooterReady === '1') return;
+      table.dataset.cariFooterReady = '1';
+
+      const tbody = table.tBodies[0];
+      if (tbody) {
+        new MutationObserver(scheduleCariFooterTotals).observe(tbody, {
+          subtree: true,
+          childList: true,
+          attributes: true,
+          attributeFilter: ['hidden', 'style', 'data-bakiye', 'data-tcr-filter-hidden']
+        });
+      }
+
+      table.addEventListener('click', scheduleCariFooterTotals);
+      table.addEventListener('change', scheduleCariFooterTotals);
+      scheduleCariFooterTotals();
+    }
+
+    document.addEventListener('DOMContentLoaded', () => { initCariFooterTotals(); initCariColumnSelection(); });
+    window.addEventListener('load', () => { initCariFooterTotals(); initCariColumnSelection(); });
+
+    function daysAgoDate(days) {
+      if (days === null || days === undefined || days === '' || Number.isNaN(Number(days))) return 'Kayıt yok';
+      const d = new Date();
+      d.setHours(12,0,0,0);
+      d.setDate(d.getDate() - Number(days));
+      return new Intl.DateTimeFormat('tr-TR', { day:'2-digit', month:'2-digit', year:'numeric' }).format(d);
+    }
+    function activityDateWithDay(days) {
+      if (days === null || days === undefined || days === '' || Number.isNaN(Number(days))) return 'Kayıt yok';
+      return `${daysAgoDate(days)} (${Number(days)} Gün)`;
+    }
+    function cariActivityHint(c) {
+      return [
+        `Son Satış: ${activityDateWithDay(c.sonSatisGun)}`,
+        `Son Tahsilat: ${activityDateWithDay(c.sonTahsilatGun)}`,
+        `Son Alım: ${activityDateWithDay(c.sonAlimGun)}`,
+        `Son Ödeme: ${activityDateWithDay(c.sonOdemeGun)}`
+      ].join('&#10;');
+    }
+    function isCariVadeGecmis(c) {
+      return Number(c.bakiye || 0) > 0 && c.sonSatisGun !== null && c.sonSatisGun !== undefined && Number(c.sonSatisGun) > Number(c.vade || 0);
+    }
+    function setCariActivityValue(dateId, dayId, days) {
+      const dateEl = document.getElementById(dateId);
+      const dayEl = document.getElementById(dayId);
+      const hasValue = days !== null && days !== undefined && days !== '';
+      if (dateEl) dateEl.textContent = hasValue ? daysAgoDate(days) : 'Kayıt yok';
+      if (dayEl) dayEl.textContent = hasValue ? `${days} gün önce` : '—';
+    }
+    function openCariActivity(kod) {
+      const c = MOCK.cari.find(x => x.kod === kod);
+      if (!c) return;
+      document.getElementById('cariActivityCode').textContent = c.kod;
+      document.getElementById('cariActivityName').textContent = c.ad;
+      document.getElementById('cariActivityType').textContent = c.tip;
+      setCariActivityValue('cariLastSale','cariLastSaleDay',c.sonSatisGun);
+      setCariActivityValue('cariLastCollection','cariLastCollectionDay',c.sonTahsilatGun);
+      setCariActivityValue('cariLastPurchase','cariLastPurchaseDay',c.sonAlimGun);
+      setCariActivityValue('cariLastPayment','cariLastPaymentDay',c.sonOdemeGun);
+      openModal('cariActivityModal');
+    }
+    function toggleCariColumnMenu() {
+      document.getElementById('cariColumnMenu')?.classList.toggle('open');
+    }
+    function toggleCariColumn(input) {
+      const col = input.dataset.columnToggle;
+      document.querySelectorAll(`#cariTable [data-col="${col}"]`).forEach(el => {
+        el.classList.toggle('cari-col-hidden', !input.checked);
+      });
+      const state = {};
+      document.querySelectorAll('[data-column-toggle]').forEach(cb => state[cb.dataset.columnToggle] = cb.checked);
+      localStorage.setItem('tcrCariTableColumns', JSON.stringify(state));
+    }
+    function initCariColumnSelection() {
+      let state = {};
+      try { state = JSON.parse(localStorage.getItem('tcrCariTableColumns') || '{}'); } catch(e) {}
+      document.querySelectorAll('[data-column-toggle]').forEach(cb => {
+        if (Object.prototype.hasOwnProperty.call(state, cb.dataset.columnToggle)) cb.checked = !!state[cb.dataset.columnToggle];
+        toggleCariColumn(cb);
+      });
+      document.addEventListener('click', () => document.getElementById('cariColumnMenu')?.classList.remove('open'));
+    }
+
+    function scrollToCariTable(){
+  setTimeout(function(){document.querySelector('.cari-list-card')?.scrollIntoView({behavior:'smooth',block:'start'});},60);
+}
+
+function filterCari(v) {
+      const rows = document.querySelectorAll('#cariTable tbody tr');
+      rows.forEach(r => {
+        r.style.display = r.dataset.ad.includes(v.toLowerCase()) ? '' : 'none';
+      });
+      scheduleCariFooterTotals();
+    }
+    function filterTip(v) {
+      const rows = document.querySelectorAll('#cariTable tbody tr');
+      rows.forEach(r => {
+        if (!v || r.dataset.tip === v) r.style.display = '';
+        else r.style.display = 'none';
+      });
+      scheduleCariFooterTotals();
+    }
+    function filterRiskliCari() {
+      const rows = document.querySelectorAll('#cariTable tbody tr');
+      rows.forEach(r => {
+        r.style.display = Number(r.dataset.risk || 0) > 0 ? '' : 'none';
+      });
+      scheduleCariFooterTotals();
+    }
+    function filterBakiye(type) {
+      const rows = document.querySelectorAll('#cariTable tbody tr');
+      rows.forEach(r => {
+        const bakiye = Number(r.dataset.bakiye || 0);
+        r.style.display = type === 'borclu' ? (bakiye > 0 ? '' : 'none') : (bakiye < 0 ? '' : 'none');
+      });
+      scheduleCariFooterTotals();
+    }
+
+    let _cariDetayId = null;
+    let _cariEvrakListId = 'ekl-modal-cari-list';
+    function setCariEvrakHeader(kod) {
+      const cari = MOCK.cari.find(x => x.kod === kod);
+      const ad = document.getElementById('evrak-cari-ad');
+      const kodEl = document.getElementById('evrak-cari-kod');
+      if (ad) ad.textContent = cari ? cari.ad : kod;
+      if (kodEl) kodEl.textContent = kod;
+    }
+    function openCariDetay(kod) {
+      _cariDetayId = kod;
+      _cariEvrakListId = 'ekl-modal-cari-list';
+      openModal('detayModal');
+      initEkler('cari', kod, _cariEvrakListId);
+    }
+    function openCariEvrak(kod) {
+      _cariDetayId = kod;
+      _cariEvrakListId = 'ekl-modal-cari-standalone-list';
+      openModal('cariEvrakModal');
+      setCariEvrakHeader(kod);
+      initEkler('cari', kod, _cariEvrakListId);
+    }
+    async function eklerModalCari(input) {
+      if (!_cariDetayId) return;
+      await eklerUpload(input, 'cari', _cariDetayId);
+    }
+
+    const cariHareketDetaylari = {
+      'SF20260012': {
+        tur:'Satış Faturası', tarih:'04.07.2026', borc:145000, alacak:0, bakiye:145000,
+        aciklama:'Satış faturası hareketi. Ürün çıkışı ve cari borç hareketi oluşturur. Evrak tipi: Satış Faturası.',
+        urunler:[
+          { kod:'STK-1001', ad:'Çimento 50 KG', adet:120, birim:'Torba', fiyat:185, kdv:20 },
+          { kod:'STK-1034', ad:'İnşaat Demiri Ø12', adet:2500, birim:'KG', fiyat:31.50, kdv:20 },
+          { kod:'HZM-001', ad:'Nakliye Hizmeti', adet:1, birim:'Hizmet', fiyat:4400, kdv:20 }
+        ]
+      },
+      'CK0001': { tur:'Çek Tahsilatı', tarih:'04.07.2026', borc:0, alacak:75000, bakiye:70000, aciklama:'Müşteriden alınan çek tahsilatı. Vade ve portföy bilgileri çek/senet ekranından takip edilir.', cekDetay:{cekNo:'CK0001', banka:'Garanti BBVA', kesideci:'Marmara Tekstil A.Ş.', vade:'30.08.2026', tahsilatTarihi:'04.07.2026', portfoy:'Portföyde', durum:'Tahsil Edildi'}, urunler:[] },
+      'S20260001': { tur:'Sipariş', tarih:'02.07.2026', borc:145000, alacak:0, bakiye:145000, aciklama:'Müşteri sipariş hareketi. Sipariş onaylandıktan sonra fatura/irsaliye sürecine aktarılabilir.', urunler:[
+          { kod:'STK-1001', ad:'Çimento 50 KG', adet:120, birim:'Torba', fiyat:185, kdv:20 },
+          { kod:'STK-1034', ad:'İnşaat Demiri Ø12', adet:2500, birim:'KG', fiyat:31.50, kdv:20 }
+        ] },
+      'SF20260008': {
+        tur:'Satış Faturası', tarih:'15.06.2026', borc:89000, alacak:0, bakiye:234000,
+        aciklama:'Önceki dönem satış faturası. Ürün çıkışı ve cari borç hareketi oluşturur.',
+        urunler:[
+          { kod:'STK-2007', ad:'Seramik Yapıştırıcı', adet:80, birim:'Paket', fiyat:245, kdv:20 },
+          { kod:'STK-2042', ad:'Fayans 60x60', adet:120, birim:'M²', fiyat:465, kdv:20 },
+          { kod:'HZM-002', ad:'Yükleme Hizmeti', adet:1, birim:'Hizmet', fiyat:1360, kdv:20 }
+        ]
+      }
+    };
+    function renderHareketUrunler(urunler = []) {
+      const body = document.getElementById('hareketUrunlerBody');
+      const foot = document.getElementById('hareketUrunlerToplam');
+      if (!body || !foot) return;
+      if (!urunler.length) {
+        body.innerHTML = '<tr><td colspan="7" class="muted">Bu hareket için ürün kalemi yok.</td></tr>';
+        foot.innerHTML = '';
+        return;
+      }
+      let araToplam = 0;
+      let kdvToplam = 0;
+      body.innerHTML = urunler.map(u => {
+        const brut = Number(u.adet) * Number(u.fiyat);
+        const iskonto = Number(u.iskonto || 0);
+        const ara = Math.max(0, brut - iskonto);
+        const kdv = ara * (Number(u.kdv || 0) / 100);
+        araToplam += ara;
+        kdvToplam += kdv;
+        return `<tr>
+          <td class="mono strong">${u.kod}</td>
+          <td>${u.ad}</td>
+          <td class="num">${Number(u.adet).toLocaleString('tr-TR')}</td>
+          <td>${u.birim}</td>
+          <td class="num">%${u.kdv || 0}</td>
+          <td class="num">${fmtMoney(iskonto)}</td>
+          <td class="num strong">${fmtMoney(ara + kdv)}</td>
+        </tr>`;
+      }).join('');
+      foot.innerHTML = `
+        <tr><th colspan="6" class="num">Ara Toplam</th><th class="num">${fmtMoney(araToplam)}</th></tr>
+        <tr><th colspan="6" class="num">KDV Toplam</th><th class="num">${fmtMoney(kdvToplam)}</th></tr>
+        <tr><th colspan="6" class="num">Genel Toplam</th><th class="num">${fmtMoney(araToplam + kdvToplam)}</th></tr>
+      `;
+      normalizeHareketUrunTable();
+    }
+
+    // 613 · Eski cache/markup kaynaklı "Durum" kolonunu güvenli biçimde temizler.
+    function normalizeHareketUrunTable() {
+      const table = document.querySelector('#hareketDetayModal .hareket-urun-table');
+      if (!table) return;
+      const firstHead = table.querySelector('thead th:first-child');
+      if (firstHead && firstHead.textContent.trim().toLocaleLowerCase('tr-TR') === 'durum') {
+        firstHead.remove();
+        table.querySelectorAll('tbody tr').forEach(row => {
+          const cell = row.querySelector('td:first-child');
+          if (cell) cell.remove();
+        });
+        table.querySelectorAll('tfoot tr').forEach(row => {
+          const first = row.querySelector('th:first-child,td:first-child');
+          if (first && first.hasAttribute('colspan')) {
+            const value = Math.max(1, Number(first.getAttribute('colspan')) - 1);
+            first.setAttribute('colspan', String(value));
+          }
+        });
+      }
+    }
+
+
+    const cariStokOzetleri = {
+      'CR0001': [
+        { kod:'STK-1001', ad:'Plastik Ham Madde PP', alimMiktar:3200, alimTutar:485000, satisMiktar:4500, satisTutar:742500 },
+        { kod:'STK-2007', ad:'Seramik Yapıştırıcı', alimMiktar:120, alimTutar:25200, satisMiktar:80, satisTutar:23520 },
+        { kod:'STK-2042', ad:'Fayans 60x60', alimMiktar:60, alimTutar:22500, satisMiktar:120, satisTutar:66960 }
+      ],
+      'CR0002': [
+        { kod:'STK-3004', ad:'Çelik Profil 6m', alimMiktar:260, alimTutar:221000, satisMiktar:95, satisTutar:91200 },
+        { kod:'STK-3102', ad:'Galvaniz Sac', alimMiktar:180, alimTutar:144000, satisMiktar:50, satisTutar:45500 }
+      ],
+      'CR0003': [
+        { kod:'STK-4001', ad:'Karton Koli 40x30x30', alimMiktar:900, alimTutar:58500, satisMiktar:1200, satisTutar:96000 },
+        { kod:'STK-4108', ad:'Ambalaj Streç Film', alimMiktar:250, alimTutar:28750, satisMiktar:310, satisTutar:41850 }
+      ]
+    };
+
+    function openCariStokOzet(kod) {
+      const cari = MOCK.cari.find(x => x.kod === kod);
+      if (!cari) return;
+      const rows = cariStokOzetleri[kod] || [
+        { kod:'STK-1001', ad:'Genel Ticari Ürün', alimMiktar:0, alimTutar:0, satisMiktar:0, satisTutar:0 }
+      ];
+      let alimMiktar = 0, alimTutar = 0, satisMiktar = 0, satisTutar = 0;
+      document.getElementById('stokOzetCariKod').textContent = cari.kod;
+      document.getElementById('stokOzetCariAd').textContent = cari.ad;
+      document.getElementById('stokOzetCariTip').innerHTML = `<span class="badge ${cari.tip === 'Müşteri' ? 'badge-info' : 'badge-warn'}">${cari.tip}</span>`;
+      const avg = (tutar, miktar) => Number(miktar || 0) > 0 ? Number(tutar || 0) / Number(miktar || 0) : 0;
+      document.getElementById('stokOzetBody').innerHTML = rows.map(r => {
+        alimMiktar += Number(r.alimMiktar || 0);
+        alimTutar += Number(r.alimTutar || 0);
+        satisMiktar += Number(r.satisMiktar || 0);
+        satisTutar += Number(r.satisTutar || 0);
+        return `<tr>
+          <td class="mono strong">${r.kod}</td>
+          <td>${r.ad}</td>
+          <td class="num">${Number(r.alimMiktar || 0).toLocaleString('tr-TR')}</td>
+          <td class="num">${fmtMoney(avg(r.alimTutar, r.alimMiktar))}</td>
+          <td class="num text-danger">${fmtMoney(r.alimTutar || 0)}</td>
+          <td class="num">${Number(r.satisMiktar || 0).toLocaleString('tr-TR')}</td>
+          <td class="num">${fmtMoney(avg(r.satisTutar, r.satisMiktar))}</td>
+          <td class="num text-success">${fmtMoney(r.satisTutar || 0)}</td>
+        </tr>`;
+      }).join('');
+      const net = satisTutar - alimTutar;
+      document.getElementById('stokOzetAlim').textContent = fmtMoney(alimTutar);
+      document.getElementById('stokOzetSatis').textContent = fmtMoney(satisTutar);
+      document.getElementById('stokOzetNet').textContent = fmtMoney(net);
+      document.getElementById('stokOzetNet').className = `stat-value ${net >= 0 ? 'text-success' : 'text-danger'}`;
+      document.getElementById('stokOzetUrunCesit').textContent = `${rows.length} ürün`;
+      document.getElementById('stokOzetFoot').innerHTML = `
+        <tr>
+          <th colspan="2" class="num">Toplam</th>
+          <th class="num">${alimMiktar.toLocaleString('tr-TR')}</th>
+          <th class="num">${fmtMoney(avg(alimTutar, alimMiktar))}</th>
+          <th class="num text-danger">${fmtMoney(alimTutar)}</th>
+          <th class="num">${satisMiktar.toLocaleString('tr-TR')}</th>
+          <th class="num">${fmtMoney(avg(satisTutar, satisMiktar))}</th>
+          <th class="num text-success">${fmtMoney(satisTutar)}</th>
+        </tr>`;
+      openModal('cariStokOzetModal');
+    }
+
+    function openHareketEvrakPreview(source, title) {
+      const stage = document.getElementById('hareketPreviewStage');
+      const titleEl = document.querySelector('#hareketPreviewModal .modal-title');
+      if (titleEl) titleEl.textContent = title || 'Evrak Önizleme';
+      if (stage) {
+        stage.innerHTML = source === 'pdf'
+          ? `<div style="text-align:center;padding:40px"><div style="font-size:54px;font-weight:900;color:#dc2626;margin-bottom:12px">PDF</div><div style="font-weight:800;color:#111827">Belge indirilmeden modal içinde görüntülenir.</div><div style="margin-top:8px;color:#334155;font-size:12px">HTML demo sürümünde örnek PDF önizlemesi.</div></div>`
+          : `<img src="${source}" alt="${title || 'Evrak'}">`;
+      }
+      openModal('hareketPreviewModal');
+    }
+
+    function hareketEvrakEkle(input) {
+      const files = Array.from(input.files || []);
+      const list = document.getElementById('hareketEvrakList');
+      if (!list || !files.length) return;
+      files.forEach(file => {
+        const isImage = file.type.startsWith('image/');
+        const url = URL.createObjectURL(file);
+        const item = document.createElement('div');
+        item.className = 'hareket-doc-item';
+        item.innerHTML = `
+          <div class="hareket-doc-thumb">${isImage ? `<img src="${url}" alt="${file.name}">` : 'PDF'}</div>
+          <div class="hareket-doc-meta"><div class="hareket-doc-name">${file.name}</div><div class="hareket-doc-sub">${Math.max(1, Math.round(file.size/1024))} KB · Yeni</div></div>
+          <div class="hareket-doc-actions"><button class="icon-btn" type="button" title="Görüntüle">${ICONS.eye}</button><button class="icon-btn" type="button" title="İndir">${ICONS.download}</button></div>`;
+        const buttons = item.querySelectorAll('button');
+        buttons[0].onclick = () => openHareketEvrakPreview(isImage ? url : 'pdf', file.name);
+        buttons[1].onclick = () => { const a=document.createElement('a'); a.href=url; a.download=file.name; a.click(); };
+        list.appendChild(item);
+      });
+      input.value = '';
+      toast(`${files.length} evrak eklendi`, 'success');
+    }
+
+    function openHareketDetay(belgeNo) {
+      const h = cariHareketDetaylari[belgeNo];
+      if (!h) return;
+      document.getElementById('hareketBelgeNo').textContent = belgeNo;
+      document.getElementById('hareketTur').textContent = h.tur;
+      document.getElementById('hareketTarih').textContent = h.tarih;
+      document.getElementById('hareketBorc').textContent = h.borc ? fmtMoney(h.borc) : '-';
+      document.getElementById('hareketAlacak').textContent = h.alacak ? fmtMoney(h.alacak) : '-';
+      document.getElementById('hareketBakiye').textContent = fmtMoney(h.bakiye);
+      document.getElementById('hareketAciklama').textContent = h.aciklama;
+      const ekKart = document.getElementById('hareketEkDetayKart');
+      const ekBaslik = document.getElementById('hareketEkDetayBaslik');
+      const ekIcerik = document.getElementById('hareketEkDetayIcerik');
+      if (ekKart && ekIcerik) {
+        if (h.cekDetay) {
+          ekKart.style.display = '';
+          ekBaslik.textContent = 'Çek Tahsilatı Detayları';
+          ekIcerik.innerHTML = `
+            <div class="stat-row"><span class="stat-label">Çek No</span><span class="stat-value mono">${h.cekDetay.cekNo}</span></div>
+            <div class="stat-row"><span class="stat-label">Banka</span><span class="stat-value">${h.cekDetay.banka}</span></div>
+            <div class="stat-row"><span class="stat-label">Keşideci</span><span class="stat-value">${h.cekDetay.kesideci}</span></div>
+            <div class="stat-row"><span class="stat-label">Vade Tarihi</span><span class="stat-value">${h.cekDetay.vade}</span></div>
+            <div class="stat-row"><span class="stat-label">Tahsilat Tarihi</span><span class="stat-value">${h.cekDetay.tahsilatTarihi}</span></div>
+            <div class="stat-row"><span class="stat-label">Durum</span><span class="stat-value"><span class="badge badge-success">${h.cekDetay.durum}</span></span></div>
+          `;
+        } else {
+          ekKart.style.display = 'none';
+          ekIcerik.innerHTML = '';
+        }
+      }
+      const urunKart = document.getElementById('hareketUrunKart');
+      const isUrunluHareket = Array.isArray(h.urunler) && h.urunler.length > 0 && ['Satış Faturası','Alış Faturası','Sipariş'].includes(h.tur);
+      if (urunKart) urunKart.style.display = isUrunluHareket ? '' : 'none';
+      renderHareketUrunler(isUrunluHareket ? h.urunler : []);
+      openModal('hareketDetayModal');
+    }
+  </script>
+</body>
+</html>

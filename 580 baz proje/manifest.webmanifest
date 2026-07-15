@@ -1,0 +1,45 @@
+{
+  "name": "Tcr3WEB Ön Muhasebe ERP",
+  "short_name": "Tcr3WEB",
+  "description": "Tcr3WEB kurumsal ön muhasebe ve ERP yönetim paneli.",
+  "start_url": "./index.html?pwa=1&v=697",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#081528",
+  "theme_color": "#10243f",
+  "categories": [
+    "business",
+    "productivity",
+    "finance"
+  ],
+  "icons": [
+    {
+      "src": "assets/icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "assets/icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "assets/icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "assets/icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ],
+  "prefer_related_applications": false,
+  "lang": "tr-TR",
+  "dir": "ltr"
+}

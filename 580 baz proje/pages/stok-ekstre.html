@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="tr"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1.0"/><title>Tcr3WEB · Stok Ekstresi</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="../assets/css/style.css?v=20260712-653" />
+  <link rel="stylesheet" href="../assets/css/responsive-master.css?v=20260713-591" />
+  <link rel="stylesheet" href="../assets/css/performance.css?v=20260711-700" />
+  <link rel="stylesheet" href="../assets/css/tcr-table.css?v=20260713-583" />
+  <link rel="stylesheet" href="../assets/css/kpi-standard.css?v=20260712-694" />
+  <link rel="stylesheet" href="../assets/css/ekstre.css?v=20260712-662" />  <link rel="stylesheet" href="../assets/css/text-readability.css?v=20260712-657" />
+<style>
+  #stokHareketDetayModal .modal-dialog{max-width:min(1080px,calc(100vw - 32px))}
+  #stokHareketDetayModal .modal-body{padding:0;overflow:hidden}
+  .stok-detail-layout{display:grid;grid-template-columns:240px minmax(0,1fr);height:auto;max-height:calc(100vh - 170px);min-height:0}
+  .stok-detail-docs{border-right:1px solid #dbe4ee;background:#f8fafc;padding:14px;overflow:auto}
+  .stok-detail-doc-item{display:grid;grid-template-columns:54px minmax(0,1fr) auto;align-items:center;gap:8px;padding:8px;border:1px solid #dbe4ee;border-radius:10px;background:#fff;margin-top:9px}
+  .stok-detail-thumb{width:54px;height:46px;border-radius:8px;overflow:hidden;background:#eef2f7;display:grid;place-items:center;font-size:10px;font-weight:800;color:#dc2626}
+  .stok-detail-thumb img{width:100%;height:100%;object-fit:cover}
+  .stok-detail-doc-name{font-size:11px;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .stok-detail-doc-sub{font-size:10px;color:#334155;margin-top:3px}
+  .stok-detail-main{padding:14px;overflow:auto;min-width:0;max-height:calc(100vh - 170px)}
+  .stok-detail-main .card{box-shadow:none}
+  .stok-detail-table-wrap{overflow:hidden!important;width:100%}
+  .stok-detail-line-table{width:100%!important;min-width:0!important;table-layout:fixed!important}
+  .stok-detail-line-table th,.stok-detail-line-table td{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;padding-left:9px!important;padding-right:9px!important}
+  .stok-detail-line-table .col-code{width:17%}
+  .stok-detail-line-table .col-name{width:31%}
+  .stok-detail-line-table .col-qty{width:10%}
+  .stok-detail-line-table .col-unit{width:10%}
+  .stok-detail-line-table .col-warehouse{width:18%}
+  .stok-detail-line-table .col-type{width:14%}
+  .stok-detail-doc-item .stok-doc-actions{display:flex;align-items:center;gap:5px;margin-left:auto}
+  .stok-detail-doc-item .stok-doc-actions .icon-btn{width:32px;height:32px;min-width:32px}
+  @media(max-width:820px){#stokHareketDetayModal .modal-body{overflow:auto}.stok-detail-layout{grid-template-columns:1fr;height:auto;min-height:0}.stok-detail-docs{border-right:0;border-bottom:1px solid #dbe4ee;max-height:220px}.stok-detail-main{overflow:visible}}
+
+
+    /* 598 · Evraklı detay modalları: tablet/mobilde evraklar üstte */
+    @media (max-width:1199px){
+      #hareketDetayModal .modal-dialog,
+      #stokHareketDetayModal .modal-dialog{max-width:min(980px,calc(100vw - 20px))!important}
+      #hareketDetayModal .modal-body,
+      #stokHareketDetayModal .modal-body{overflow:auto!important}
+      #hareketDetayModal .hareket-detail-layout,
+      #stokHareketDetayModal .stok-detail-layout{
+        display:flex!important;
+        flex-direction:column!important;
+        height:auto!important;
+        max-height:none!important;
+        min-height:0!important;
+      }
+      #hareketDetayModal .hareket-doc-panel,
+      #stokHareketDetayModal .stok-detail-docs{
+        order:0!important;
+        width:100%!important;
+        max-height:none!important;
+        border-right:0!important;
+        border-bottom:1px solid #dbe4ee!important;
+        overflow:visible!important;
+      }
+      #hareketDetayModal .hareket-doc-list{
+        display:grid!important;
+        grid-template-columns:repeat(2,minmax(0,1fr))!important;
+        overflow:visible!important;
+      }
+      #stokHareketDetayModal .stok-detail-docs{
+        display:grid!important;
+        grid-template-columns:repeat(2,minmax(0,1fr))!important;
+        gap:9px!important;
+      }
+      #stokHareketDetayModal .stok-detail-docs>.strong{grid-column:1/-1}
+      #stokHareketDetayModal .stok-detail-doc-item{margin-top:0!important}
+      #hareketDetayModal .hareket-detail-main,
+      #stokHareketDetayModal .stok-detail-main{
+        order:1!important;
+        width:100%!important;
+        max-height:none!important;
+        overflow:visible!important;
+      }
+    }
+    @media (max-width:640px){
+      #hareketDetayModal .hareket-doc-list,
+      #stokHareketDetayModal .stok-detail-docs{grid-template-columns:1fr!important}
+    }
+
+    /* 598 · Ürün kalemleri sığmadığında iki satırlı kompakt görünüm */
+    @media (max-width:1199px){
+      #hareketDetayModal .hareket-detail-table-wrap,
+      #stokHareketDetayModal .stok-detail-table-wrap{overflow:visible!important}
+      #hareketDetayModal .hareket-urun-table,
+      #stokHareketDetayModal .stok-detail-line-table{
+        display:block!important;
+        min-width:0!important;
+        width:100%!important;
+        table-layout:auto!important;
+      }
+      #hareketDetayModal .hareket-urun-table colgroup,
+      #stokHareketDetayModal .stok-detail-line-table colgroup,
+      #hareketDetayModal .hareket-urun-table thead,
+      #stokHareketDetayModal .stok-detail-line-table thead{display:none!important}
+      #hareketDetayModal .hareket-urun-table tbody,
+      #stokHareketDetayModal .stok-detail-line-table tbody{display:block!important}
+      #hareketDetayModal .hareket-urun-table tbody tr,
+      #stokHareketDetayModal .stok-detail-line-table tbody tr{
+        display:grid!important;
+        grid-template-columns:minmax(100px,.9fr) minmax(0,2.1fr) repeat(2,minmax(80px,1fr))!important;
+        gap:0!important;
+        margin:0 0 8px!important;
+        border:1px solid #dbe4ee!important;
+        border-radius:10px!important;
+        overflow:hidden!important;
+        background:#fff!important;
+      }
+      #hareketDetayModal .hareket-urun-table tbody td,
+      #stokHareketDetayModal .stok-detail-line-table tbody td{
+        width:auto!important;
+        min-width:0!important;
+        border:0!important;
+        padding:8px 10px!important;
+        white-space:nowrap!important;
+        overflow:hidden!important;
+        text-overflow:ellipsis!important;
+        text-align:left!important;
+        background:#fff!important;
+      }
+      #hareketDetayModal .hareket-urun-table tbody td:nth-child(1),
+      #stokHareketDetayModal .stok-detail-line-table tbody td:nth-child(1){
+        grid-column:1/2;grid-row:1;font-weight:800;background:#f8fafc!important
+      }
+      #hareketDetayModal .hareket-urun-table tbody td:nth-child(2),
+      #stokHareketDetayModal .stok-detail-line-table tbody td:nth-child(2){
+        grid-column:2/5;grid-row:1;font-weight:700;white-space:normal!important;background:#f8fafc!important
+      }
+      #hareketDetayModal .hareket-urun-table tbody td:nth-child(n+3),
+      #stokHareketDetayModal .stok-detail-line-table tbody td:nth-child(n+3){
+        grid-row:2;border-top:1px solid #e5e7eb!important
+      }
+      #hareketDetayModal .hareket-urun-table tbody td:nth-child(3),
+      #stokHareketDetayModal .stok-detail-line-table tbody td:nth-child(3){grid-column:1}
+      #hareketDetayModal .hareket-urun-table tbody td:nth-child(4),
+      #stokHareketDetayModal .stok-detail-line-table tbody td:nth-child(4){grid-column:2}
+      #hareketDetayModal .hareket-urun-table tbody td:nth-child(5),
+      #stokHareketDetayModal .stok-detail-line-table tbody td:nth-child(5){grid-column:3}
+      #hareketDetayModal .hareket-urun-table tbody td:nth-child(6),
+      #stokHareketDetayModal .stok-detail-line-table tbody td:nth-child(6){grid-column:4}
+
+      #hareketDetayModal .hareket-urun-table tbody td:nth-child(3)::before{content:'Miktar: ';font-weight:700;color:#475569}
+      #hareketDetayModal .hareket-urun-table tbody td:nth-child(4)::before{content:'Birim: ';font-weight:700;color:#475569}
+      #hareketDetayModal .hareket-urun-table tbody td:nth-child(5)::before{content:'İskonto: ';font-weight:700;color:#475569}
+      #hareketDetayModal .hareket-urun-table tbody td:nth-child(6)::before{content:'Tutar: ';font-weight:700;color:#475569}
+
+      #stokHareketDetayModal .stok-detail-line-table tbody td:nth-child(3)::before{content:'Miktar: ';font-weight:700;color:#475569}
+      #stokHareketDetayModal .stok-detail-line-table tbody td:nth-child(4)::before{content:'Birim: ';font-weight:700;color:#475569}
+      #stokHareketDetayModal .stok-detail-line-table tbody td:nth-child(5)::before{content:'Depo: ';font-weight:700;color:#475569}
+      #stokHareketDetayModal .stok-detail-line-table tbody td:nth-child(6)::before{content:'İşlem: ';font-weight:700;color:#475569}
+
+      #hareketDetayModal .hareket-urun-table tfoot{display:block!important}
+      #hareketDetayModal .hareket-urun-table tfoot tr{display:flex!important;justify-content:flex-end!important;gap:10px;padding:4px 8px}
+      #hareketDetayModal .hareket-urun-table tfoot th{display:block!important;width:auto!important;padding:4px!important}
+    }
+    @media (max-width:620px){
+      #hareketDetayModal .hareket-urun-table tbody tr,
+      #stokHareketDetayModal .stok-detail-line-table tbody tr{
+        grid-template-columns:1fr 1fr!important;
+      }
+      #hareketDetayModal .hareket-urun-table tbody td:nth-child(1),
+      #stokHareketDetayModal .stok-detail-line-table tbody td:nth-child(1){grid-column:1;grid-row:1}
+      #hareketDetayModal .hareket-urun-table tbody td:nth-child(2),
+      #stokHareketDetayModal .stok-detail-line-table tbody td:nth-child(2){grid-column:2;grid-row:1}
+      #hareketDetayModal .hareket-urun-table tbody td:nth-child(3),
+      #stokHareketDetayModal .stok-detail-line-table tbody td:nth-child(3){grid-column:1;grid-row:2}
+      #hareketDetayModal .hareket-urun-table tbody td:nth-child(4),
+      #stokHareketDetayModal .stok-detail-line-table tbody td:nth-child(4){grid-column:2;grid-row:2}
+      #hareketDetayModal .hareket-urun-table tbody td:nth-child(5),
+      #stokHareketDetayModal .stok-detail-line-table tbody td:nth-child(5){grid-column:1;grid-row:3}
+      #hareketDetayModal .hareket-urun-table tbody td:nth-child(6),
+      #stokHareketDetayModal .stok-detail-line-table tbody td:nth-child(6){grid-column:2;grid-row:3}
+    }
+</style></head><body><div id="app" class="app"></div>  <script src="../assets/js/app.js?v=20260712-653"></script>
+  <script src="../assets/js/tcr-actions.js?v=20260713-600"></script>
+  <script src="../assets/js/master-init.js?v=20260713-583"></script>
+  <script src="../assets/js/tcr-table.js?v=20260713-587"></script>
+<script>
+document.documentElement.classList.add('tcr-ekstre-page');
+const __EKSTRE_STABILITY_KEY='tcr3:ekstre-stability-v608';
+if(!sessionStorage.getItem(__EKSTRE_STABILITY_KEY)){Object.keys(localStorage).filter(k=>k.includes('table-sort:')&&k.includes('ekstre')).forEach(k=>localStorage.removeItem(k));sessionStorage.setItem(__EKSTRE_STABILITY_KEY,'1');}
+
+const STOK_PARAMS=new URLSearchParams(location.search);
+const SELECTED_STOK_KOD=STOK_PARAMS.get('stokKod')||'ST1042';
+const SELECTED_STOK_AD=STOK_PARAMS.get('stokAd')||'Endüstriyel Temizleyici 42';
+const EKSTRE_ROWS=[["2026-07-12", "STG20260712001", "Alış Girişi", "Ana Depo", 120, 0, 1542], ["2026-07-10", "STC20260710004", "Satış Çıkışı", "Ana Depo", 0, 35, 1422], ["2026-07-08", "VRM20260708002", "Depo Virmanı", "Metal Depo", 50, 0, 1457], ["2026-07-04", "SYM20260704001", "Sayım Fişi", "Ana Depo", 20, 0, 1407], ["2026-06-28", "STC20260628007", "Satış Çıkışı", "Ana Depo", 0, 48, 1387], ["2026-06-15", "STG20260615003", "Alış Girişi", "Ana Depo", 200, 0, 1435], ["2026-05-20", "STC20260520009", "Satış Çıkışı", "Şube Depo", 0, 65, 1235], ["2026-04-09", "STG20260409006", "Açılış Fişi", "Ana Depo", 1300, 0, 1300]];
+bootPage('stok-ekstre',()=>`<div class="page-head"><div><div class="breadcrumb"><a href="dashboard.html">Genel</a><span>›</span><a href="#">Stok</a><span>›</span><span>Stok Ekstresi</span></div><h1 class="page-title">Stok Ekstresi · ${SELECTED_STOK_AD}</h1><div class="page-sub">${SELECTED_STOK_KOD} · Ürün bazında giriş, çıkış ve kalan miktar hareketleri</div></div><div class="page-actions ekstre-actions"><button class="btn btn-ghost" onclick="location.href='stok.html'">${ICONS.arrow_left||ICONS.chevron_left} Stok Kartlara Dön</button><button class="btn btn-ghost" onclick="ekstreOutput('whatsapp')">${ICONS.whatsapp} WhatsApp</button><button class="btn btn-ghost" onclick="ekstreOutput('email')">${ICONS.mail} E-posta</button><button class="btn btn-ghost" onclick="window.print()">${ICONS.print} Yazdır</button><button class="btn btn-ghost" onclick="ekstreOutput('pdf')">${ICONS.file_text} PDF</button></div></div>
+<div class="tcr-ac-grid"><button class="tcr-action-card tcr-ac-blue ekstre-period-card" onclick="setPeriod('daily',this)"><span class="tcr-ac-icon">${ICONS.calendar}</span><span class="tcr-ac-content"><span class="tcr-ac-title">Günlük</span><span class="tcr-ac-desc" id="kpiDaily">0,00 ₺</span></span></button><button class="tcr-action-card tcr-ac-green ekstre-period-card" onclick="setPeriod('weekly',this)"><span class="tcr-ac-icon">${ICONS.trend_up}</span><span class="tcr-ac-content"><span class="tcr-ac-title">Haftalık</span><span class="tcr-ac-desc" id="kpiWeekly">0,00 ₺</span></span></button><button class="tcr-action-card tcr-ac-orange ekstre-period-card" onclick="setPeriod('monthly',this)"><span class="tcr-ac-icon">${ICONS.chart}</span><span class="tcr-ac-content"><span class="tcr-ac-title">Aylık</span><span class="tcr-ac-desc" id="kpiMonthly">0,00 ₺</span></span></button><button class="tcr-action-card tcr-ac-purple ekstre-period-card" onclick="setPeriod('yearly',this)"><span class="tcr-ac-icon">${ICONS.file_text}</span><span class="tcr-ac-content"><span class="tcr-ac-title">Yıllık</span><span class="tcr-ac-desc" id="kpiYearly">0,00 ₺</span></span></button></div>
+<div class="card ekstre-filter-card"><div class="card-body"><div class="ekstre-filter-row"><div class="form-field ekstre-entity-field"><label class="form-label">Stok Kartı</label><div class="ekstre-picker-row"><input class="form-input" id="entitySelect" value="${SELECTED_STOK_AD}" readonly /><input type="hidden" id="entityId" value="${SELECTED_STOK_KOD}" /><button class="btn btn-primary ekstre-picker-btn" type="button" onclick="openPickerFor('stok','entitySelect','entityId',onEkstreEntitySelected)">Stok Seç</button></div></div><div class="form-field"><label class="form-label">Başlangıç Tarihi</label><input class="form-input" id="dateFrom" type="date" value="2026-07-01"/></div><div class="form-field"><label class="form-label">Bitiş Tarihi</label><input class="form-input" id="dateTo" type="date" value="2026-07-12"/></div><div class="ekstre-filter-action"><button class="btn btn-primary" onclick="applyEkstreFilter()">${ICONS.filter} Listele</button></div></div></div></div>
+<div class="card"><div class="card-head"><div class="card-title">Hareket Listesi</div><span class="text-soft" id="rangeInfo"></span></div><div class="card-body" style="padding:0"><div class="table-wrap"><table class="data" id="ekstreTable" data-no-record-lock="true" data-tcr-sort="off" data-tcr-pagination="off" data-tcr-search="off"><thead><tr><th class="">Tarih</th><th class="">Fiş No</th><th class="">İşlem Türü</th><th class="">Depo</th><th class="num">Giriş</th><th class="num">Çıkış</th><th class="num">Kalan</th><th class="tcr-action-column" style="width:56px"></th></tr></thead><tbody id="ekstreBody"></tbody></table></div><div class="ekstre-summary"><span>Toplam Giriş: <strong class="ekstre-positive" id="sumIn">0,00 ₺</strong></span><span>Toplam Çıkış: <strong class="ekstre-negative" id="sumOut">0,00 ₺</strong></span><span>Son Bakiye/Kalan: <strong id="sumBalance">0,00</strong></span></div></div></div>
+${modalHtml('stokHareketDetayModal','Stok Hareket Detayı',`
+  <div class="stok-detail-layout">
+    <aside class="stok-detail-docs">
+      <div class="strong">Resim ve Evraklar</div>
+      <div class="stok-detail-doc-item"><div class="stok-detail-thumb"><img src="../assets/img/tcr3web-logo-wide.png" alt="Stok evrakı"></div><div><div class="stok-detail-doc-name">Stok Hareket Evrakı.jpg</div><div class="stok-detail-doc-sub">128 KB · Yüklü</div></div><div class="stok-doc-actions"><button class="icon-btn" title="Görüntüle" onclick="openDocumentPreview('../assets/img/tcr3web-logo-wide.png','Stok Hareket Evrakı.jpg','image/png')">${ICONS.eye}</button><button class="icon-btn" title="İndir" onclick="toast('Evrak indirmeye hazırlandı','info')">${ICONS.download}</button></div></div>
+      <div class="stok-detail-doc-item"><div class="stok-detail-thumb">PDF</div><div><div class="stok-detail-doc-name">Stok Fişi.pdf</div><div class="stok-detail-doc-sub">84 KB · Yüklü</div></div><div class="stok-doc-actions"><button class="icon-btn" title="Görüntüle" onclick="openDocumentPreview('../assets/img/tcr3web-logo-wide.png','Stok Fişi.pdf','image/png')">${ICONS.eye}</button><button class="icon-btn" title="İndir" onclick="toast('PDF indirmeye hazırlandı','info')">${ICONS.download}</button></div></div>
+    </aside>
+    <section class="stok-detail-main">
+      <div class="grid-2 mb-4">
+        <div class="card"><div class="card-body"><div class="text-soft mb-2">Hareket Bilgileri</div><div class="stat-row"><span class="stat-label">Stok Kodu</span><span class="stat-value mono" id="sdKod">-</span></div><div class="stat-row"><span class="stat-label">Stok Adı</span><span class="stat-value" id="sdAd">-</span></div><div class="stat-row"><span class="stat-label">Tarih</span><span class="stat-value" id="sdTarih">-</span></div><div class="stat-row"><span class="stat-label">Fiş No</span><span class="stat-value mono" id="sdFis">-</span></div></div></div>
+        <div class="card"><div class="card-body"><div class="text-soft mb-2">Miktar Bilgileri</div><div class="stat-row"><span class="stat-label">İşlem Türü</span><span class="stat-value" id="sdTur">-</span></div><div class="stat-row"><span class="stat-label">Depo</span><span class="stat-value" id="sdDepo">-</span></div><div class="stat-row"><span class="stat-label">Giriş</span><span class="stat-value text-success" id="sdGiris">-</span></div><div class="stat-row"><span class="stat-label">Çıkış</span><span class="stat-value text-danger" id="sdCikis">-</span></div><div class="stat-row"><span class="stat-label">Kalan</span><span class="stat-value" id="sdKalan">-</span></div></div></div>
+      </div>
+      <div class="card"><div class="card-body"><div class="text-soft mb-2">Ürün Hareket Kalemi</div><div class="table-wrap stok-detail-table-wrap"><table class="data stok-detail-line-table" data-no-record-lock="true" data-tcr-sort="off" data-tcr-pagination="off" data-tcr-search="off"><colgroup><col class="col-code"><col class="col-name"><col class="col-qty"><col class="col-unit"><col class="col-warehouse"><col class="col-type"></colgroup><thead><tr><th class="col-code">Ürün Kodu</th><th class="col-name">Ürün/Hizmet</th><th class="num col-qty">Miktar</th><th class="col-unit">Birim</th><th class="col-warehouse">Depo</th><th class="col-type">İşlem Türü</th></tr></thead><tbody id="sdLineBody"></tbody></table></div></div></div>
+    </section>
+  </div>
+`, `<button class="btn btn-ghost" onclick="window.print()">${ICONS.print} Yazdır</button><button class="btn btn-danger" data-action="close" onclick="closeModal('stokHareketDetayModal')">${ICONS.close} Kapat</button>`, 'xl')}
+`);
+
+function onEkstreEntitySelected(id,ad){const el=document.getElementById('entitySelect');if(el&&ad)el.value=ad;toast((ad||'Kayıt')+' seçildi','success');applyEkstreFilter();}
+function money(v){return Number(v||0).toLocaleString('tr-TR',{minimumFractionDigits:2,maximumFractionDigits:2})+' ₺'}
+function qty(v){return Number(v||0).toLocaleString('tr-TR')}
+function rowHtml(r,i){const stock=true;return `<tr class="clickable-row" onclick="openStokHareketDetay(${i})"><td>${fmtDate(r[0])}</td><td class="mono strong">${r[1]}</td><td><span class="badge badge-info">${r[2]}</span></td><td>${r[3]}</td><td class="num ekstre-positive">${r[4]?qty(r[4]):'-'}</td><td class="num ekstre-negative">${r[5]?qty(r[5]):'-'}</td><td class="num strong">${qty(r[6])}</td><td class="tcr-action-column"><div class="tcr-action-buttons"><button class="icon-btn tcr-action-blue" onclick="event.stopPropagation();openStokHareketDetay(${i})" title="Hareket Detayı">${ICONS.eye}</button></div></td></tr>`}
+function applyEkstreFilter(){const f=document.getElementById('dateFrom').value,t=document.getElementById('dateTo').value;const rows=EKSTRE_ROWS.filter(r=>(!f||r[0]>=f)&&(!t||r[0]<=t));document.getElementById('ekstreBody').innerHTML=rows.length?rows.map((r,i)=>rowHtml(r,i)).join(''):'<tr><td colspan="8" class="ekstre-empty">Seçilen tarih aralığında kayıt bulunamadı.</td></tr>';const si=rows.reduce((s,r)=>s+Number(r[4]||0),0),so=rows.reduce((s,r)=>s+Number(r[5]||0),0),bal=rows.length?rows[0][6]:0,stock='stok-ekstre'==='stok-ekstre';document.getElementById('sumIn').textContent=stock?qty(si):money(si);document.getElementById('sumOut').textContent=stock?qty(so):money(so);document.getElementById('sumBalance').textContent=stock?qty(bal):money(bal);document.getElementById('rangeInfo').textContent=(f?fmtDate(f):'İlk kayıt')+' - '+(t?fmtDate(t):'Bugün');}
+function setPeriod(p,el){document.querySelectorAll('.ekstre-period-card').forEach(x=>x.classList.remove('is-active'));el.classList.add('is-active');const end='2026-07-12',d=new Date(end+'T12:00:00');if(p==='daily'){}else if(p==='weekly')d.setDate(d.getDate()-6);else if(p==='monthly')d.setMonth(d.getMonth()-1);else d.setFullYear(d.getFullYear()-1);document.getElementById('dateFrom').value=d.toISOString().slice(0,10);document.getElementById('dateTo').value=end;applyEkstreFilter();}
+function updateKpis(){const end=new Date('2026-07-12T12:00:00');[['Daily',0],['Weekly',6],['Monthly',30],['Yearly',365]].forEach(([id,days])=>{const start=new Date(end);start.setDate(start.getDate()-days);const total=EKSTRE_ROWS.filter(r=>new Date(r[0]+'T12:00:00')>=start).reduce((s,r)=>s+Number(r[4]||0)-Number(r[5]||0),0);document.getElementById('kpi'+id).textContent='stok-ekstre'==='stok-ekstre'?qty(total):money(total);})}
+
+function openStokHareketDetay(i){
+  const f=document.getElementById('dateFrom').value,t=document.getElementById('dateTo').value;
+  const rows=EKSTRE_ROWS.filter(r=>(!f||r[0]>=f)&&(!t||r[0]<=t));
+  const r=rows[i]; if(!r)return;
+  document.getElementById('sdKod').textContent=SELECTED_STOK_KOD;
+  document.getElementById('sdAd').textContent=SELECTED_STOK_AD;
+  document.getElementById('sdTarih').textContent=fmtDate(r[0]);
+  document.getElementById('sdFis').textContent=r[1];
+  document.getElementById('sdTur').textContent=r[2];
+  document.getElementById('sdDepo').textContent=r[3];
+  document.getElementById('sdGiris').textContent=r[4]?qty(r[4]):'-';
+  document.getElementById('sdCikis').textContent=r[5]?qty(r[5]):'-';
+  document.getElementById('sdKalan').textContent=qty(r[6]);
+  const hareketMiktar=Number(r[4]||r[5]||0);
+  document.getElementById('sdLineBody').innerHTML=`<tr><td class="mono strong col-code">${SELECTED_STOK_KOD}</td><td class="col-name">${SELECTED_STOK_AD}</td><td class="num col-qty">${qty(hareketMiktar)}</td><td class="col-unit">Adet</td><td class="col-warehouse">${r[3]}</td><td class="col-type"><span class="badge badge-info">${r[2]}</span></td></tr>`;
+  openModal('stokHareketDetayModal');
+}
+
+function ekstreOutput(type){const labels={whatsapp:'WhatsApp paylaşımı hazırlandı',email:'E-posta gönderimi hazırlandı',pdf:'PDF dosyası hazırlandı'};toast(labels[type]||'İşlem tamamlandı','success')}
+setTimeout(()=>{updateKpis();applyEkstreFilter();},80);
+</script></body></html>

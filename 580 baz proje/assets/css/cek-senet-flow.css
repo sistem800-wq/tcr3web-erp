@@ -1,0 +1,831 @@
+/* TCR3WEB Çek/Senet iş akışı — paket 652 */
+.flow-rule-note{display:flex;align-items:flex-start;gap:12px;padding:12px 14px;margin:0 0 16px;border:1px solid #bfdbfe;border-left:6px solid #2563eb;border-radius:12px;background:#eff6ff;color:#172554;font-size:13px;line-height:1.45}
+.flow-rule-note svg{flex:0 0 auto;margin-top:1px;color:#1d4ed8}
+.bulk-list{border:1px solid #dbe3ef;border-radius:12px;overflow:hidden;background:#fff}
+.bulk-row{display:grid;grid-template-columns:34px minmax(110px,.75fr) minmax(170px,1.5fr) minmax(110px,.8fr) minmax(120px,.85fr);align-items:center;gap:10px;padding:10px 12px;border-bottom:1px solid #edf1f7;cursor:pointer}
+.bulk-row:last-child{border-bottom:0}.bulk-row:hover{background:#f5f8ff}.bulk-row input{width:17px;height:17px;cursor:pointer}.bulk-row-head{font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.03em;background:#f1f5f9;color:#0f172a;cursor:default}.bulk-summary{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin-top:12px}.bulk-summary-item{padding:10px 12px;border:1px solid #dbe3ef;border-radius:10px;background:#f8fafc}.bulk-summary-label{font-size:11px;font-weight:700;color:#334155}.bulk-summary-value{font-size:15px;font-weight:800;color:#0f2747;margin-top:3px}.balance-impact{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-top:12px}.balance-impact>div{padding:11px 12px;border-radius:10px;border:1px solid #dbe3ef}.balance-impact strong{display:block;color:#0f172a;font-size:12px}.balance-impact span{display:block;color:#334155;font-size:11px;margin-top:3px}.flow-actions{display:flex;gap:8px;flex-wrap:wrap}.flow-action{font-size:11px!important;padding:5px 8px!important}.ciro-target{display:flex;gap:8px}.ciro-target input{flex:1}.ciro-target .btn{white-space:nowrap}
+@media(max-width:760px){.bulk-row{grid-template-columns:30px 1fr 1fr}.bulk-row>*:nth-child(4),.bulk-row>*:nth-child(5){display:none}.bulk-summary,.balance-impact{grid-template-columns:1fr 1fr}}
+
+/* Paket 651 · Toplu ciro modalı cari bakiye ve footer toplamı */
+#ciroModal .modal-head{gap:14px}
+#ciroModal .modal-title{display:flex;align-items:center;justify-content:space-between;gap:18px;flex:1;min-width:0}
+.ciro-head-balance{margin-left:auto;display:flex;flex-direction:column;align-items:flex-end;line-height:1.05;white-space:nowrap;padding:7px 11px;border-radius:10px;background:#eff6ff;border:1px solid #bfdbfe}
+.ciro-head-balance small{font-size:10px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;color:#334155}
+.ciro-head-balance strong{margin-top:4px;font-size:20px;font-weight:900;color:#0f2747;font-variant-numeric:tabular-nums}
+.ciro-head-balance.is-debt{background:#fff1f2;border-color:#fecdd3}.ciro-head-balance.is-debt strong{color:#b91c1c}
+.ciro-head-balance.is-credit{background:#ecfdf5;border-color:#bbf7d0}.ciro-head-balance.is-credit strong{color:#047857}
+#ciroModal .modal-foot{justify-content:space-between;align-items:center;gap:14px}
+.ciro-footer-total{display:flex;flex-direction:column;align-items:flex-start;line-height:1.05;margin-right:auto}
+.ciro-footer-total span{font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.04em;color:#334155}
+.ciro-footer-total strong{margin-top:5px;font-size:24px;font-weight:900;color:#0f2747;font-variant-numeric:tabular-nums}
+.ciro-footer-actions{display:flex;align-items:center;gap:8px}
+@media(max-width:760px){#ciroModal .modal-title{align-items:flex-start;flex-direction:column;gap:8px}.ciro-head-balance{margin-left:0;align-items:flex-start}.ciro-head-balance strong{font-size:18px}#ciroModal .modal-foot{align-items:stretch;flex-direction:column}.ciro-footer-total{width:100%}.ciro-footer-actions{width:100%}.ciro-footer-actions .btn{flex:1}.ciro-footer-total strong{font-size:21px}}
+
+
+/* 650 - Yeni çek / senet kayıt modalı */
+.instrument-modal-title{display:flex;align-items:center;gap:16px;width:100%}
+.instrument-head-balance{margin-left:auto;display:flex;flex-direction:column;align-items:flex-end;line-height:1.05;white-space:nowrap;padding:7px 11px;border-radius:10px;background:#f8fafc;border:1px solid #cbd5e1}
+.instrument-head-balance small{font-size:10px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;color:#334155}
+.instrument-head-balance strong{margin-top:4px;font-size:20px;font-weight:900;color:#0f2747;font-variant-numeric:tabular-nums}
+.instrument-head-balance.is-debt{background:#fff1f2;border-color:#fecdd3}.instrument-head-balance.is-debt strong{color:#b91c1c}
+.instrument-head-balance.is-credit{background:#ecfdf5;border-color:#bbf7d0}.instrument-head-balance.is-credit strong{color:#047857}
+.instrument-entry-layout{display:grid;grid-template-columns:minmax(250px,320px) minmax(0,1fr);gap:20px;align-items:start}
+.instrument-upload-panel{border:1px solid #dbe4ee;border-radius:14px;background:#f8fafc;padding:16px;min-width:0}
+.instrument-upload-title{font-size:14px;font-weight:800;color:#111827;margin-bottom:5px}
+.instrument-upload-desc{font-size:12px;line-height:1.45;color:#334155;margin-bottom:14px}
+.instrument-upload-panel .ekler-zone{min-height:150px;background:#fff}
+.instrument-upload-panel .ekler-list{max-height:240px;overflow:auto;margin-top:12px}
+.instrument-form-panel{min-width:0}
+.instrument-cari-picker{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:10px;align-items:center}
+.instrument-cari-picker .btn{white-space:nowrap}
+.instrument-cari-note{margin-top:7px;font-size:11px;line-height:1.45;color:#334155}
+@media(max-width:840px){.instrument-entry-layout{grid-template-columns:1fr}.instrument-upload-panel .ekler-zone{min-height:110px}.instrument-head-balance{margin-left:0;align-items:flex-start}.instrument-modal-title{align-items:flex-start;flex-direction:column;gap:8px}.instrument-head-balance strong{font-size:18px}}
+@media(max-width:560px){.instrument-cari-picker{grid-template-columns:1fr}.instrument-cari-picker .btn{width:100%}}
+
+
+/* 649 · Modal kapatma, kalan tahsil günü ve ciro evrak görünümü */
+.modal-head > .icon-btn{color:#dc2626!important;border-color:#fecaca!important;background:#fff1f2!important}
+.modal-head > .icon-btn:hover,.modal-head > .icon-btn:focus-visible{color:#fff!important;border-color:#dc2626!important;background:#dc2626!important;box-shadow:0 6px 16px rgba(220,38,38,.22)}
+.bulk-row{grid-template-columns:34px minmax(92px,.72fr) minmax(145px,1.25fr) minmax(102px,.76fr) minmax(86px,.65fr) minmax(112px,.82fr) minmax(76px,.58fr)}
+.remaining-days{display:inline-flex;align-items:center;justify-content:center;justify-self:start;min-width:64px;padding:4px 7px;border-radius:999px;font-size:11px;font-weight:800;white-space:nowrap}
+.remaining-days.is-normal{color:#075985;background:#e0f2fe}.remaining-days.is-near{color:#9a3412;background:#ffedd5}.remaining-days.is-overdue{color:#b91c1c;background:#fee2e2}
+.ciro-view-btn{display:inline-flex!important;align-items:center;gap:5px;white-space:nowrap}.ciro-view-btn svg{width:15px;height:15px}
+.ciro-evrak-head{display:flex;align-items:center;justify-content:space-between;gap:18px;padding:12px 14px;margin-bottom:14px;border:1px solid #dbe4ee;border-radius:12px;background:#f8fafc}
+.ciro-evrak-head>div{display:flex;flex-direction:column}.ciro-evrak-head small{font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.04em;color:#475569}.ciro-evrak-head strong{margin-top:4px;font-size:17px;font-weight:900;color:#0f2747}
+.ciro-evrak-gallery{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}.ciro-evrak-gallery>.ciro-evrak-list{grid-column:1/-1}
+.ciro-document-card{appearance:none;border:1px solid #dbe4ee;border-radius:14px;background:#fff;padding:12px;text-align:left;cursor:pointer;transition:border-color .18s ease,box-shadow .18s ease,transform .18s ease}.ciro-document-card:hover{border-color:#2563eb;box-shadow:0 10px 24px rgba(15,39,71,.13);transform:translateY(-1px)}
+.ciro-document-preview{display:block;overflow:hidden;border-radius:10px;background:#f1f5f9}.ciro-document-preview svg{display:block;width:100%;height:auto}.ciro-document-info{display:flex;flex-direction:column;padding:10px 3px 2px}.ciro-document-info strong{font-size:13px;color:#111827}.ciro-document-info small{margin-top:3px;font-size:11px;color:#334155}
+@media(max-width:900px){.bulk-row{grid-template-columns:30px minmax(88px,.7fr) minmax(135px,1.2fr) minmax(96px,.7fr) minmax(78px,.6fr) minmax(106px,.8fr) minmax(70px,.55fr)}}
+@media(max-width:760px){.bulk-row{grid-template-columns:30px 1fr 1fr}.bulk-row>*:nth-child(4),.bulk-row>*:nth-child(5),.bulk-row>*:nth-child(6){display:none}.bulk-row>*:nth-child(7){display:flex}.ciro-evrak-gallery{grid-template-columns:1fr}.ciro-evrak-head{align-items:flex-start;flex-direction:column}}
+
+/* 648 · Toplu ciro modalı arama, sıralama ve sabit alt bilgi alanı */
+#ciroModal .modal-body{display:flex;flex-direction:column;min-height:0}
+#ciroModal .modal-body>.form-grid-2{display:flex;flex-direction:column;min-height:0;gap:12px}
+.ciro-list-field{min-height:0;display:flex;flex-direction:column}
+.ciro-list-toolbar{display:flex;align-items:center;gap:10px;margin:0 0 10px}
+.ciro-search-wrap{position:relative;flex:1;min-width:0}
+.ciro-search-wrap svg{position:absolute;left:12px;top:50%;width:17px;height:17px;transform:translateY(-50%);color:#334155;pointer-events:none}
+.ciro-search-wrap .form-input{padding-left:38px;width:100%}
+.ciro-sort-select{width:min(220px,34%);flex:0 0 auto}
+.bulk-list{max-height:310px;overflow:auto}
+.bulk-row-head{position:sticky;top:0;z-index:2}
+.bulk-row-head button{appearance:none;border:0;background:transparent;color:inherit;font:inherit;text-align:left;padding:0;cursor:pointer;text-transform:uppercase;letter-spacing:inherit}
+.bulk-row-head button:hover,.bulk-row-head button:focus-visible{color:#1d4ed8;outline:none}
+.ciro-sticky-panel{position:sticky;bottom:0;z-index:4;margin:0 -2px -2px;padding:12px 2px 2px;background:linear-gradient(180deg,rgba(255,255,255,.92),#fff 18%);box-shadow:0 -12px 24px rgba(15,39,71,.07)}
+.ciro-sticky-panel .bulk-summary{margin-top:0}
+.ciro-sticky-description{margin-top:10px}
+.ciro-sticky-panel .balance-impact{margin-top:10px}
+@media(max-width:760px){.ciro-list-toolbar{align-items:stretch;flex-direction:column}.ciro-sort-select{width:100%}.bulk-list{max-height:270px}.ciro-sticky-panel{position:static;box-shadow:none;background:#fff}}
+
+/* 647 · Yeni çek/senet modal footer bakiyesi ve seçilebilir evrak kartları */
+#cekModal .modal-foot,#senetModal .modal-foot{justify-content:space-between;align-items:center;gap:16px}
+.instrument-footer-balance{display:flex;flex-direction:column;align-items:flex-start;margin-right:auto;line-height:1.05;padding:0}
+.instrument-footer-balance small{font-size:10px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;color:#334155}
+.instrument-footer-balance strong{margin-top:6px;font-size:24px;font-weight:900;color:#0f2747;font-variant-numeric:tabular-nums}
+.instrument-footer-balance strong em{font-style:normal;font-size:15px;font-weight:800;margin-left:6px;color:#475569}
+.instrument-footer-balance.is-debt strong,.instrument-footer-balance.is-debt strong em{color:#b91c1c}
+.instrument-footer-balance.is-credit strong,.instrument-footer-balance.is-credit strong em{color:#047857}
+.instrument-footer-actions{display:flex;align-items:center;gap:8px}
+.instrument-ekler-toolbar{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 0 2px}
+.instrument-ekler-toolbar>span{font-size:11px;font-weight:700;color:#334155}
+.instrument-upload-panel .ekler-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;max-height:300px;overflow:auto;padding:2px}
+.instrument-upload-panel .ekler-empty{grid-column:1/-1}
+.instrument-upload-panel .instrument-ek-card{position:relative;display:flex;flex-direction:column;align-items:stretch;gap:8px;padding:10px;min-width:0}
+.instrument-ek-select{display:flex;align-items:center;gap:6px;justify-content:flex-start;font-size:10px;font-weight:800;color:#334155}
+.instrument-ek-select span{display:inline}
+.instrument-ek-preview{width:100%;height:112px;border-radius:10px;background:#f1f5f9;overflow:hidden;display:grid;place-items:center}
+.instrument-ek-preview .ek-thumb{width:100%;height:100%;object-fit:contain;border-radius:0}
+.instrument-ek-preview .ek-icon{width:62px;height:62px}
+.instrument-ek-info{min-width:0;text-align:center}
+.instrument-ek-info .ek-item-name{max-width:100%;font-weight:700;color:#111827}
+.instrument-ek-actions{display:flex;justify-content:center;gap:7px;padding-top:7px;border-top:1px solid #e2e8f0}
+.instrument-ek-actions .icon-btn{width:34px;height:32px}
+.instrument-ek-actions .icon-btn.is-danger{color:#dc2626;border-color:#fecaca}
+@media(max-width:760px){#cekModal .modal-foot,#senetModal .modal-foot{align-items:stretch;flex-direction:column}.instrument-footer-balance{width:100%}.instrument-footer-actions{width:100%}.instrument-footer-actions .btn{flex:1}.instrument-footer-balance strong{font-size:21px}}
+@media(max-width:520px){.instrument-upload-panel .ekler-list{grid-template-columns:1fr}.instrument-ek-preview{height:150px}}
+
+
+/* 646 · Toplu ciro footer bakiyesi ve portföy listesi görünürlük düzeltmesi */
+#ciroModal .modal-title{display:block!important}
+#ciroModal .modal-foot{justify-content:space-between;align-items:center;gap:16px}
+.ciro-footer-info{display:flex;align-items:center;gap:26px;min-width:0;margin-right:auto}
+.ciro-footer-balance,.ciro-footer-total{display:flex;flex-direction:column;align-items:flex-start;line-height:1.05}
+.ciro-footer-balance span,.ciro-footer-total span{font-size:10px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;color:#334155}
+.ciro-footer-balance strong,.ciro-footer-total strong{margin-top:6px;font-size:22px;font-weight:900;color:#0f2747;font-variant-numeric:tabular-nums;white-space:nowrap}
+.ciro-footer-balance strong em{font-style:normal;font-size:13px;font-weight:800;margin-left:5px;color:#475569}
+.ciro-footer-balance.is-debt strong,.ciro-footer-balance.is-debt strong em{color:#b91c1c}
+.ciro-footer-balance.is-credit strong,.ciro-footer-balance.is-credit strong em{color:#047857}
+#ciroModal .ciro-list-field{flex:1 1 auto;min-height:220px}
+#ciroModal .bulk-list{display:block!important;min-height:190px;max-height:310px;overflow:auto;background:#fff}
+#ciroModal .bulk-row[hidden]{display:none!important}
+#ciroModal .bulk-row:not([hidden]){display:grid}
+@media(max-width:760px){#ciroModal .modal-foot{align-items:stretch;flex-direction:column}.ciro-footer-info{width:100%;justify-content:space-between;gap:12px}.ciro-footer-actions{width:100%}.ciro-footer-actions .btn{flex:1}.ciro-footer-balance strong,.ciro-footer-total strong{font-size:18px}}
+
+/* 645 · Çek/Senet evrak kartı sade görünüm */
+.instrument-upload-panel .instrument-document-list{
+  display:grid;
+  grid-template-columns:1fr;
+  gap:12px;
+  max-height:330px;
+  overflow:auto;
+  padding:2px;
+  margin-top:12px;
+}
+.instrument-ek-card-simple{
+  display:flex;
+  flex-direction:column;
+  gap:8px;
+  min-width:0;
+  padding:10px;
+  border:1px solid #dbe4ee;
+  border-radius:12px;
+  background:#fff;
+  overflow:hidden;
+}
+.instrument-ek-card-simple .instrument-ek-preview{
+  width:100%;
+  height:148px;
+  min-height:148px;
+  display:grid;
+  place-items:center;
+  overflow:hidden;
+  border-radius:10px;
+  background:#f1f5f9;
+}
+.instrument-ek-card-simple .instrument-ek-preview .ek-thumb{
+  display:block;
+  width:100%;
+  height:100%;
+  max-width:100%;
+  max-height:100%;
+  object-fit:contain;
+  object-position:center;
+}
+.instrument-ek-card-simple .instrument-ek-preview .ek-icon{
+  width:64px;
+  height:64px;
+}
+.instrument-ek-card-simple .instrument-ek-info{
+  min-width:0;
+  text-align:left;
+}
+.instrument-ek-card-simple .ek-item-name{
+  overflow:hidden;
+  white-space:nowrap;
+  text-overflow:ellipsis;
+  font-size:12px;
+  font-weight:700;
+  color:#111827;
+}
+.instrument-ek-card-simple .ek-item-meta{
+  margin-top:3px;
+  font-size:10px;
+  color:#334155;
+}
+.instrument-ek-actions-simple{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:8px;
+  padding-top:8px;
+  border-top:1px solid #e2e8f0;
+}
+.instrument-ek-actions-simple .btn{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  gap:6px;
+  min-width:0;
+  width:100%;
+}
+.instrument-ek-actions-simple .btn svg{width:15px;height:15px}
+.instrument-ek-actions-simple .disabled{pointer-events:none;opacity:.45}
+.ciro-evrak-list{
+  display:grid!important;
+  grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  gap:14px!important;
+  max-height:58vh;
+  overflow:auto;
+}
+.ciro-evrak-list .instrument-ek-card-simple .instrument-ek-preview{height:190px;min-height:190px}
+@media(max-width:760px){
+  .ciro-evrak-list{grid-template-columns:1fr!important}
+  .ciro-evrak-list .instrument-ek-card-simple .instrument-ek-preview{height:170px;min-height:170px}
+}
+
+
+/* 644 · Sade evrak yükleme ve normal ciro alt bilgi akışı */
+.instrument-upload-panel .instrument-upload-title{
+  margin-bottom:8px;
+  font-size:13px;
+  font-weight:800;
+  color:#111827;
+}
+.instrument-upload-panel .instrument-upload-desc{display:none!important}
+.instrument-upload-panel .ekler-zone{
+  min-height:74px!important;
+  padding:10px 12px!important;
+  gap:6px!important;
+  border-radius:10px!important;
+}
+.instrument-upload-panel .ekler-zone-icon svg{width:22px!important;height:22px!important}
+.instrument-upload-panel .ekler-zone-text{font-size:12px!important;font-weight:800!important}
+.instrument-upload-panel .ekler-zone-sub{display:none!important}
+.instrument-upload-panel .instrument-document-list{
+  margin-top:10px!important;
+  gap:10px!important;
+  max-height:340px!important;
+}
+.instrument-ek-card-simple{padding:8px!important;gap:7px!important}
+.instrument-ek-card-simple .instrument-ek-preview{
+  height:130px!important;
+  min-height:130px!important;
+}
+.instrument-ek-actions-simple{gap:7px!important;padding-top:7px!important}
+.instrument-ek-actions-simple .btn{min-height:32px!important;padding:6px 8px!important}
+
+#ciroModal .ciro-sticky-panel{
+  position:static!important;
+  bottom:auto!important;
+  z-index:auto!important;
+  margin:0!important;
+  padding:0!important;
+  background:transparent!important;
+  box-shadow:none!important;
+}
+#ciroModal .modal-body>.form-grid-2{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;overflow:visible!important}
+#ciroModal .ciro-list-field,#ciroModal .ciro-sticky-panel{grid-column:1/-1!important}
+#ciroModal .modal-body{display:block!important;overflow:auto!important}
+#ciroModal .ciro-footer-info{gap:0!important}
+#ciroModal .ciro-footer-total{display:none!important}
+@media(max-width:760px){
+  #ciroModal .modal-body>.form-grid-2{grid-template-columns:1fr!important}
+  .instrument-ek-card-simple .instrument-ek-preview{height:145px!important;min-height:145px!important}
+}
+
+
+/* 643 · Yeni yükleme önizlemesi sade kart standardı */
+.instrument-pending-box{
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+  min-width:0;
+}
+.instrument-pending-grid{
+  display:grid;
+  grid-template-columns:1fr;
+  gap:10px;
+}
+.instrument-pending-card{
+  display:flex;
+  flex-direction:column;
+  gap:7px;
+  min-width:0;
+  padding:8px;
+  border:1px solid #dbe4ee;
+  border-radius:12px;
+  background:#fff;
+  overflow:hidden;
+}
+.instrument-pending-preview{
+  width:100%;
+  height:130px;
+  min-height:130px;
+  display:grid;
+  place-items:center;
+  overflow:hidden;
+  border-radius:10px;
+  background:#f1f5f9;
+}
+.instrument-pending-preview .ek-thumb{
+  display:block;
+  width:100%;
+  height:100%;
+  max-width:100%;
+  max-height:100%;
+  object-fit:contain;
+  object-position:center;
+}
+.instrument-pending-preview .ek-icon{width:60px;height:60px}
+.instrument-pending-info{min-width:0}
+.instrument-pending-info .ek-item-name{
+  overflow:hidden;
+  white-space:nowrap;
+  text-overflow:ellipsis;
+  font-size:12px;
+  font-weight:700;
+  color:#111827;
+}
+.instrument-pending-info .ek-item-meta{margin-top:3px;font-size:10px;color:#334155}
+.instrument-pending-info .ek-progress{margin-top:6px}
+.instrument-pending-actions{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:7px;
+  padding-top:7px;
+  border-top:1px solid #e2e8f0;
+}
+.instrument-pending-actions .btn{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  gap:6px;
+  width:100%;
+  min-width:0;
+  min-height:32px;
+  padding:6px 8px;
+}
+.instrument-pending-actions .btn svg{width:15px;height:15px}
+.instrument-pending-footer{
+  display:flex;
+  justify-content:flex-end;
+  gap:8px;
+  padding-top:2px;
+}
+@media(max-width:760px){
+  .instrument-pending-preview{height:145px;min-height:145px}
+  .instrument-pending-footer .btn{flex:1}
+}
+
+/* 642 · Evrak galerisi: iki sütun, küçük önizleme */
+.instrument-upload-panel .instrument-document-list,
+.instrument-pending-grid{
+  display:grid!important;
+  grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  gap:10px!important;
+  align-items:start;
+}
+.instrument-ek-card-simple,
+.instrument-pending-card{
+  min-width:0!important;
+  padding:7px!important;
+  gap:6px!important;
+  border-radius:10px!important;
+}
+.instrument-ek-card-simple .instrument-ek-preview,
+.instrument-pending-preview{
+  width:100%!important;
+  height:82px!important;
+  min-height:82px!important;
+  border-radius:8px!important;
+}
+.instrument-ek-card-simple .instrument-ek-preview .ek-thumb,
+.instrument-pending-preview .ek-thumb{
+  width:100%!important;
+  height:100%!important;
+  object-fit:cover!important;
+}
+.instrument-ek-card-simple .instrument-ek-preview .ek-icon,
+.instrument-pending-preview .ek-icon{
+  width:42px!important;
+  height:42px!important;
+}
+.instrument-ek-card-simple .ek-item-name,
+.instrument-pending-info .ek-item-name{
+  font-size:11px!important;
+}
+.instrument-ek-card-simple .ek-item-meta,
+.instrument-pending-info .ek-item-meta{
+  font-size:9px!important;
+}
+.instrument-ek-actions-simple,
+.instrument-pending-actions{
+  grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  gap:5px!important;
+  padding-top:6px!important;
+}
+.instrument-ek-actions-simple .btn,
+.instrument-pending-actions .btn{
+  min-height:29px!important;
+  padding:5px 4px!important;
+  font-size:10px!important;
+  gap:4px!important;
+}
+.instrument-ek-actions-simple .btn svg,
+.instrument-pending-actions .btn svg{
+  width:13px!important;
+  height:13px!important;
+}
+.instrument-upload-panel .instrument-document-list{
+  max-height:350px!important;
+  overflow-y:auto!important;
+  overflow-x:hidden!important;
+}
+.ciro-evrak-list{
+  grid-template-columns:repeat(2,minmax(0,1fr))!important;
+}
+@media(max-width:420px){
+  .instrument-upload-panel .instrument-document-list,
+  .instrument-pending-grid,
+  .ciro-evrak-list{
+    grid-template-columns:repeat(2,minmax(0,1fr))!important;
+    gap:7px!important;
+  }
+  .instrument-ek-card-simple .instrument-ek-preview,
+  .instrument-pending-preview{
+    height:72px!important;
+    min-height:72px!important;
+  }
+}
+
+/* 641 · Evrak kartları sabit ölçü + ciro sıralama görünürlük düzeltmesi */
+.instrument-upload-panel .instrument-document-list,
+.instrument-pending-grid,
+.ciro-evrak-list{
+  grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  grid-auto-rows:178px!important;
+  align-items:stretch!important;
+}
+.instrument-ek-card-simple,
+.instrument-pending-card,
+.ciro-evrak-card{
+  width:100%!important;
+  height:178px!important;
+  min-height:178px!important;
+  max-height:178px!important;
+  overflow:hidden!important;
+  display:grid!important;
+  grid-template-rows:82px minmax(30px,1fr) 32px!important;
+  align-content:stretch!important;
+  box-sizing:border-box!important;
+}
+.instrument-ek-card-simple .instrument-ek-preview,
+.instrument-pending-preview,
+.ciro-evrak-card .instrument-ek-preview{
+  height:82px!important;
+  min-height:82px!important;
+  max-height:82px!important;
+  overflow:hidden!important;
+}
+.instrument-ek-card-simple .instrument-ek-info,
+.instrument-pending-info,
+.ciro-evrak-card .instrument-ek-info{
+  min-width:0!important;
+  overflow:hidden!important;
+  padding:0 1px!important;
+}
+.instrument-ek-card-simple .ek-item-name,
+.instrument-pending-info .ek-item-name,
+.ciro-evrak-card .ek-item-name{
+  display:block!important;
+  white-space:nowrap!important;
+  overflow:hidden!important;
+  text-overflow:ellipsis!important;
+  line-height:1.25!important;
+}
+.instrument-ek-card-simple .ek-item-meta,
+.instrument-pending-info .ek-item-meta,
+.ciro-evrak-card .ek-item-meta{
+  display:block!important;
+  white-space:nowrap!important;
+  overflow:hidden!important;
+  text-overflow:ellipsis!important;
+}
+.instrument-ek-actions-simple,
+.instrument-pending-actions,
+.ciro-evrak-card .instrument-ek-actions-simple{
+  align-self:end!important;
+  height:32px!important;
+  min-height:32px!important;
+  overflow:hidden!important;
+  padding-top:3px!important;
+}
+.instrument-ek-actions-simple .btn,
+.instrument-pending-actions .btn,
+.ciro-evrak-card .instrument-ek-actions-simple .btn{
+  height:29px!important;
+  min-height:29px!important;
+  line-height:1!important;
+  overflow:hidden!important;
+  white-space:nowrap!important;
+}
+.ciro-list-toolbar{
+  display:flex!important;
+  align-items:center!important;
+  gap:10px!important;
+  margin-bottom:10px!important;
+  overflow:visible!important;
+}
+.ciro-sort-field{
+  display:flex!important;
+  align-items:center!important;
+  gap:7px!important;
+  flex:0 0 auto!important;
+}
+.ciro-sort-label{
+  color:#111827!important;
+  font-size:12px!important;
+  font-weight:800!important;
+  white-space:nowrap!important;
+}
+.ciro-sort-select{
+  display:block!important;
+  visibility:visible!important;
+  opacity:1!important;
+  width:210px!important;
+  min-width:210px!important;
+  height:40px!important;
+  color:#111827!important;
+  background-color:#fff!important;
+  border:1px solid #cbd5e1!important;
+  cursor:pointer!important;
+}
+.bulk-row-head button::after{
+  content:'↕';
+  display:inline-block;
+  margin-left:5px;
+  color:#1d4ed8;
+  font-size:11px;
+  font-weight:900;
+}
+@media(max-width:760px){
+  .ciro-sort-field{width:100%!important}
+  .ciro-sort-select{width:100%!important;min-width:0!important}
+}
+
+/* 640 · Evrak yükleme sistemi temiz yeniden tasarım */
+.instrument-upload-panel{
+  padding:14px!important;
+  overflow:hidden!important;
+}
+.instrument-upload-panel .ekler-zone{
+  min-height:72px!important;
+  height:72px!important;
+  border:1.5px dashed #b8c6d9!important;
+  border-radius:12px!important;
+  background:#fff!important;
+  display:flex!important;
+  flex-direction:row!important;
+  align-items:center!important;
+  justify-content:center!important;
+  gap:9px!important;
+  margin-bottom:12px!important;
+  cursor:pointer!important;
+}
+.instrument-upload-panel .ekler-zone:hover{
+  border-color:#2563eb!important;
+  background:#f8fbff!important;
+}
+.instrument-upload-panel .ekler-zone-icon{
+  width:34px!important;
+  height:34px!important;
+  border-radius:10px!important;
+  background:#eff6ff!important;
+  color:#2563eb!important;
+  display:grid!important;
+  place-items:center!important;
+}
+.instrument-upload-panel .ekler-zone-text{
+  font-size:13px!important;
+  font-weight:800!important;
+  color:#0f172a!important;
+}
+.instrument-upload-panel .instrument-document-list{
+  display:flex!important;
+  flex-direction:column!important;
+  gap:8px!important;
+  max-height:330px!important;
+  overflow-y:auto!important;
+  overflow-x:hidden!important;
+  padding:0 3px 0 0!important;
+}
+.instrument-file-row{
+  display:grid!important;
+  grid-template-columns:64px minmax(0,1fr) auto!important;
+  align-items:center!important;
+  gap:10px!important;
+  min-height:68px!important;
+  padding:7px!important;
+  border:1px solid #dbe4ee!important;
+  border-radius:11px!important;
+  background:#fff!important;
+  box-sizing:border-box!important;
+  overflow:hidden!important;
+}
+.instrument-file-row.is-pending{
+  border-color:#93c5fd!important;
+  background:#f8fbff!important;
+}
+.instrument-file-thumb{
+  width:64px!important;
+  height:52px!important;
+  border-radius:8px!important;
+  background:#eef2f7!important;
+  overflow:hidden!important;
+  display:grid!important;
+  place-items:center!important;
+}
+.instrument-file-thumb img,
+.instrument-file-thumb svg,
+.instrument-file-thumb .ek-thumb{
+  width:100%!important;
+  height:100%!important;
+  max-width:100%!important;
+  max-height:100%!important;
+  object-fit:cover!important;
+  display:block!important;
+}
+.instrument-file-main{
+  min-width:0!important;
+  overflow:hidden!important;
+}
+.instrument-file-name{
+  color:#111827!important;
+  font-size:12px!important;
+  font-weight:800!important;
+  white-space:nowrap!important;
+  overflow:hidden!important;
+  text-overflow:ellipsis!important;
+}
+.instrument-file-meta{
+  margin-top:4px!important;
+  color:#334155!important;
+  font-size:10px!important;
+  font-weight:600!important;
+  white-space:nowrap!important;
+  overflow:hidden!important;
+  text-overflow:ellipsis!important;
+}
+.instrument-file-actions{
+  display:flex!important;
+  align-items:center!important;
+  gap:6px!important;
+  flex:0 0 auto!important;
+}
+.instrument-file-actions .btn{
+  min-width:62px!important;
+  height:32px!important;
+  padding:0 8px!important;
+  display:inline-flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  gap:5px!important;
+  white-space:nowrap!important;
+}
+.instrument-file-actions svg{width:15px!important;height:15px!important}
+.instrument-pending-box{
+  border:0!important;
+  background:transparent!important;
+  padding:0!important;
+  margin:0 0 10px!important;
+}
+.instrument-pending-list{
+  display:flex!important;
+  flex-direction:column!important;
+  gap:8px!important;
+}
+.instrument-pending-footer{
+  display:flex!important;
+  justify-content:flex-end!important;
+  gap:8px!important;
+  padding:10px 0 2px!important;
+  border:0!important;
+  background:transparent!important;
+}
+@media(max-width:560px){
+  .instrument-file-row{grid-template-columns:54px minmax(0,1fr)!important;gap:8px!important}
+  .instrument-file-thumb{width:54px!important;height:48px!important}
+  .instrument-file-actions{grid-column:1/-1!important;justify-content:flex-end!important}
+}
+
+
+/* 639 · Evrak satırı ikon aksiyon standardı */
+.instrument-file-actions-icons{
+  display:flex!important;
+  align-items:center!important;
+  justify-content:flex-end!important;
+  gap:6px!important;
+  flex:0 0 auto!important;
+}
+.instrument-file-actions-icons .icon-only{
+  width:34px!important;
+  min-width:34px!important;
+  height:34px!important;
+  min-height:34px!important;
+  padding:0!important;
+  display:inline-flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  border-radius:9px!important;
+}
+.instrument-file-actions-icons .icon-only svg{
+  width:17px!important;
+  height:17px!important;
+  pointer-events:none!important;
+}
+.instrument-file-actions-icons .btn-danger{
+  color:#dc2626!important;
+  border-color:#ef4444!important;
+  background:#fff!important;
+}
+.instrument-file-actions-icons .btn-danger:hover{
+  color:#fff!important;
+  background:#dc2626!important;
+  border-color:#dc2626!important;
+}
+@media(max-width:700px){
+  .instrument-file-actions-icons{gap:4px!important}
+  .instrument-file-actions-icons .icon-only{width:31px!important;min-width:31px!important;height:31px!important;min-height:31px!important}
+}
+
+/* 638 · Evrak aksiyonları yalnızca SVG ikon + title hint */
+.instrument-file-actions-icons .icon-only .tcr-action-label,
+.instrument-file-actions-icons [data-icon-only] .tcr-action-label{
+  display:none!important;
+}
+.instrument-file-actions-icons .icon-only,
+.instrument-file-actions-icons [data-icon-only]{
+  font-size:0!important;
+  overflow:visible!important;
+}
+.instrument-file-actions-icons .icon-only svg,
+.instrument-file-actions-icons [data-icon-only] svg{
+  display:block!important;
+  flex:0 0 auto!important;
+}
+
+/* 635 · Yeni çek/senet modalında sabit evrak paneli ve bağımsız form scroll */
+@media (min-width: 841px){
+  #cekModal .modal,
+  #senetModal .modal{
+    height:min(88vh,820px)!important;
+    max-height:min(88vh,820px)!important;
+    display:flex!important;
+    flex-direction:column!important;
+    overflow:hidden!important;
+  }
+  #cekModal .modal-body,
+  #senetModal .modal-body{
+    flex:1 1 auto!important;
+    min-height:0!important;
+    max-height:none!important;
+    overflow:hidden!important;
+    padding-top:16px!important;
+    padding-bottom:16px!important;
+  }
+  #cekModal .instrument-entry-layout,
+  #senetModal .instrument-entry-layout{
+    height:100%!important;
+    min-height:0!important;
+    align-items:stretch!important;
+    grid-template-columns:minmax(280px,320px) minmax(0,1fr)!important;
+  }
+  #cekModal .instrument-upload-panel,
+  #senetModal .instrument-upload-panel{
+    position:sticky!important;
+    top:0!important;
+    height:100%!important;
+    min-height:0!important;
+    display:flex!important;
+    flex-direction:column!important;
+    overflow:hidden!important;
+  }
+  #cekModal .instrument-upload-panel .ekler-zone,
+  #senetModal .instrument-upload-panel .ekler-zone{
+    flex:0 0 auto!important;
+  }
+  #cekModal .instrument-upload-panel .instrument-document-list,
+  #senetModal .instrument-upload-panel .instrument-document-list,
+  #cekModal .instrument-upload-panel .ekler-list,
+  #senetModal .instrument-upload-panel .ekler-list{
+    flex:1 1 auto!important;
+    min-height:0!important;
+    max-height:none!important;
+    overflow-y:auto!important;
+    overflow-x:hidden!important;
+    scrollbar-gutter:stable!important;
+  }
+  #cekModal .instrument-form-panel,
+  #senetModal .instrument-form-panel{
+    min-height:0!important;
+    height:100%!important;
+    overflow-y:auto!important;
+    overflow-x:hidden!important;
+    padding-right:8px!important;
+    scrollbar-gutter:stable!important;
+  }
+}
+
+@media (max-width:840px){
+  #cekModal .modal-body,
+  #senetModal .modal-body{overflow-y:auto!important;}
+  #cekModal .instrument-upload-panel,
+  #senetModal .instrument-upload-panel{height:auto!important;position:static!important;}
+  #cekModal .instrument-form-panel,
+  #senetModal .instrument-form-panel{overflow:visible!important;height:auto!important;}
+}
+
+
+/* 633 · Uygulama içi evrak önizleme */
+html.tcr-preview-open,body.tcr-preview-open{overflow:hidden!important;overscroll-behavior:none!important}
+.tcr-doc-preview-overlay{position:fixed;inset:0;z-index:12050;display:none;align-items:center;justify-content:center;padding:24px;background:rgba(15,39,71,.72);backdrop-filter:blur(4px)}
+.tcr-doc-preview-overlay.is-open{display:flex}
+.tcr-doc-preview-dialog{width:min(1120px,96vw);height:min(820px,92vh);display:grid;grid-template-rows:auto minmax(0,1fr) auto;background:#fff;border-radius:18px;box-shadow:0 28px 80px rgba(15,23,42,.32);overflow:hidden}
+.tcr-doc-preview-header{display:flex;align-items:center;justify-content:space-between;gap:20px;padding:18px 22px;border-bottom:1px solid #dbe4ee;background:#fff}
+.tcr-doc-preview-header>div{min-width:0;display:flex;flex-direction:column;gap:3px}.tcr-doc-preview-header strong{font-size:18px;font-weight:900;color:#0f172a;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.tcr-doc-preview-header small{font-size:12px;font-weight:600;color:#334155}
+.tcr-doc-preview-close{width:42px;height:42px;display:inline-flex;align-items:center;justify-content:center;flex:0 0 auto;border:1px solid #fecaca;border-radius:12px;background:#fff1f2;color:#dc2626;cursor:pointer}.tcr-doc-preview-close:hover{background:#dc2626;color:#fff;border-color:#dc2626}.tcr-doc-preview-close svg{width:20px;height:20px}
+.tcr-doc-preview-body{min-height:0;overflow:auto;display:flex;align-items:center;justify-content:center;padding:18px;background:#eef2f7}
+.tcr-doc-preview-image{display:block;max-width:100%;max-height:100%;width:auto;height:auto;object-fit:contain;border-radius:10px;background:#fff;box-shadow:0 8px 30px rgba(15,23,42,.16)}
+.tcr-doc-preview-frame{width:100%;height:100%;min-height:560px;border:0;border-radius:10px;background:#fff}
+.tcr-doc-preview-footer{display:flex;align-items:center;justify-content:flex-end;gap:10px;padding:14px 22px;border-top:1px solid #dbe4ee;background:#fff}
+.tcr-doc-preview-unsupported{max-width:500px;text-align:center;color:#0f172a}.tcr-doc-preview-unsupported>div svg{width:52px;height:52px;color:#1d4ed8}.tcr-doc-preview-unsupported strong{display:block;margin-top:12px;font-size:18px}.tcr-doc-preview-unsupported p{margin:8px 0 18px;color:#334155}
+@media(max-width:760px){.tcr-doc-preview-overlay{padding:8px}.tcr-doc-preview-dialog{width:100%;height:96vh;border-radius:14px}.tcr-doc-preview-header{padding:14px 16px}.tcr-doc-preview-body{padding:8px}.tcr-doc-preview-footer{padding:12px 16px}.tcr-doc-preview-frame{min-height:420px}}

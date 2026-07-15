@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#10243f" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-title" content="Tcr3WEB" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <link rel="manifest" href="../manifest.webmanifest?v=20260711-699" />
+  <link rel="icon" type="image/png" href="../assets/icons/favicon-64.png" />
+  <link rel="apple-touch-icon" href="../assets/icons/icon-180.png" />
+  <title>Tcr3WEB · Cari Kart</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../assets/css/style.css?v=20260712-653" />
+  <link rel="stylesheet" href="../assets/css/responsive-master.css?v=20260713-591" />
+  <link rel="stylesheet" href="../assets/css/performance.css?v=20260711-700" />
+  <link rel="stylesheet" href="../assets/css/tcr-table.css?v=20260713-583" />
+  <link rel="stylesheet" href="../assets/css/text-readability.css?v=20260712-657" />
+  <link rel="stylesheet" href="../assets/css/cari-amount-status.css?v=20260712-621" />
+</head>
+<body>
+  <div id="app" class="app"></div>
+  <script src="../assets/js/app.js?v=20260712-653"></script>
+  <script src="../assets/js/tcr-actions.js?v=20260713-600"></script>
+  <script src="../assets/js/master-init.js?v=20260713-583"></script>
+  <script src="../assets/js/tcr-table.js?v=20260713-587"></script>
+  <script>
+    const TURKIYE_ILLERI = ['Adana','Adıyaman','Afyonkarahisar','Ağrı','Aksaray','Amasya','Ankara','Antalya','Ardahan','Artvin','Aydın','Balıkesir','Bartın','Batman','Bayburt','Bilecik','Bingöl','Bitlis','Bolu','Burdur','Bursa','Çanakkale','Çankırı','Çorum','Denizli','Diyarbakır','Düzce','Edirne','Elazığ','Erzincan','Erzurum','Eskişehir','Gaziantep','Giresun','Gümüşhane','Hakkâri','Hatay','Iğdır','Isparta','İstanbul','İzmir','Kahramanmaraş','Karabük','Karaman','Kars','Kastamonu','Kayseri','Kırıkkale','Kırklareli','Kırşehir','Kilis','Kocaeli','Konya','Kütahya','Malatya','Manisa','Mardin','Mersin','Muğla','Muş','Nevşehir','Niğde','Ordu','Osmaniye','Rize','Sakarya','Samsun','Siirt','Sinop','Sivas','Şanlıurfa','Şırnak','Tekirdağ','Tokat','Trabzon','Tunceli','Uşak','Van','Yalova','Yozgat','Zonguldak'];
+    const ilOptions = (selected='') => '<option value="">İl Seçiniz</option>' + TURKIYE_ILLERI.map(il => `<option value="${il}" ${il===selected?'selected':''}>${il}</option>`).join('');
+    const editId = new URLSearchParams(location.search).get('id');
+
+    bootPage('cari', () => {
+      const kariKod = editId || 'CR0009';
+      const title = editId ? `Cari Düzenle · ${editId}` : 'Yeni Cari Kartı';
+      const rec = editId ? MOCK.cari.find(c => c.kod === editId) : null;
+
+      return `
+      <div class="page-head">
+        <div>
+          <div class="breadcrumb">
+            <a href="dashboard.html">Genel</a><span>›</span>
+            <a href="cari.html">Cari Kartlar</a><span>›</span>
+            <span>${title}</span>
+          </div>
+          <h1 class="page-title">${ICONS.users} ${title}</h1>
+        </div>
+        <div class="page-actions">
+          <a href="cari.html" class="btn btn-danger">${ICONS.close} Vazgeç</a>
+          <button class="btn btn-success" onclick="cariKaydet()">${ICONS.check} Kaydet</button>
+        </div>
+      </div>
+
+      <div class="form-page-grid">
+        <div style="display:flex;flex-direction:column;gap:var(--s-4)">
+
+          <!-- Kimlik Bilgileri -->
+          <div class="card" style="overflow:hidden">
+            <div class="form-compact-head">
+              <div class="form-field">
+                <label class="form-label">Cari Kodu</label>
+                <input class="form-input mono" value="${kariKod}" readonly />
+              </div>
+              <div class="form-field">
+                <label class="form-label">Cari Tipi</label>
+                <select class="form-input" id="cf-tip">
+                  <option ${rec?.tip==='Müşteri'?'selected':''}>Müşteri</option>
+                  <option ${rec?.tip==='Tedarikçi'?'selected':''}>Tedarikçi</option>
+                  <option>Her İkisi</option>
+                </select>
+              </div>
+              <div class="form-field">
+                <label class="form-label">Durum</label>
+                <select class="form-input">
+                  <option ${rec?.durum==='Aktif'||!rec?'selected':''}>Aktif</option>
+                  <option ${rec?.durum==='Pasif'?'selected':''}>Pasif</option>
+                </select>
+              </div>
+              <div class="form-field">
+                <label class="form-label">Vade (gün)</label>
+                <input type="number" class="form-input" value="${rec?.vade||30}" />
+              </div>
+              <div class="form-field span2">
+                <label class="form-label">Ünvan / Ad</label>
+                <input class="form-input" placeholder="Örn: Marmara Tekstil A.Ş." value="${rec?.ad||''}" />
+              </div>
+              <div class="form-field">
+                <label class="form-label">Yetkili Kişi</label>
+                <input class="form-input" placeholder="Ad Soyad" value="${rec?.yetkili||''}" />
+              </div>
+              <div class="form-field">
+                <label class="form-label">Vergi No</label>
+                <input class="form-input mono" placeholder="1234567890" />
+              </div>
+            </div>
+            <div class="form-compact-body">
+              <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:var(--s-3)">
+                <div class="form-field">
+                  <label class="form-label">Telefon</label>
+                  <input class="form-input" placeholder="0xxx xxx xx xx" value="${rec?.telefon||''}" />
+                </div>
+                <div class="form-field">
+                  <label class="form-label">E-posta</label>
+                  <input class="form-input" placeholder="ornek@sirket.com" value="${rec?.email||''}" />
+                </div>
+                <div class="form-field">
+                  <label class="form-label">SmsNo</label>
+                  <input class="form-input" placeholder="0xxx xxx xx xx" value="${rec?.smsNo||rec?.telefon||''}" />
+                </div>
+                <div class="form-field">
+                  <label class="form-label">Şehir</label>
+                  <select class="form-input" id="cf-sehir">${ilOptions(rec?.sehir||'')}</select>
+                </div>
+                <div class="form-field" style="grid-column:span 2">
+                  <label class="form-label">Adres</label>
+                  <input class="form-input" placeholder="Açık adres" />
+                </div>
+                <div class="form-field">
+                  <label class="form-label">Web Sitesi</label>
+                  <input class="form-input" placeholder="www.sirket.com" />
+                </div>
+                <div class="form-field">
+                  <label class="form-label">Özel Grup 1</label>
+                  <select class="form-input">
+                    <option>Seçiniz</option><option>Plasiyer Grubu</option><option>VIP Müşteri</option><option>Bayi</option>
+                  </select>
+                </div>
+                <div class="form-field">
+                  <label class="form-label">Özel Grup 2</label>
+                  <select class="form-input">
+                    <option>Seçiniz</option><option>İstanbul Bölge</option><option>Ankara Bölge</option><option>Ege Bölge</option>
+                  </select>
+                </div>
+                <div class="form-field">
+                  <label class="form-label">Özel Grup 3</label>
+                  <select class="form-input">
+                    <option>Seçiniz</option><option>Riskli Cari</option><option>Düzenli Ödeme</option><option>Yeni Cari</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Finansal Bilgiler -->
+          <div class="card">
+            <div class="card-head"><div class="card-title">Finansal Bilgiler</div></div>
+            <div class="card-body">
+              <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:var(--s-3)">
+                <div class="form-field">
+                  <label class="form-label">Açılış Bakiyesi</label>
+                  <input type="number" class="form-input" value="0" />
+                </div>
+                <div class="form-field">
+                  <label class="form-label">Risk Limiti</label>
+                  <input type="number" class="form-input" value="0" />
+                </div>
+                <div class="form-field">
+                  <label class="form-label">Para Birimi</label>
+                  <select class="form-input">
+                    <option>TRY (₺)</option><option>USD ($)</option><option>EUR (€)</option>
+                  </select>
+                </div>
+                <div class="form-field">
+                  <label class="form-label">Banka</label>
+                  <input class="form-input" placeholder="Banka adı" />
+                </div>
+                <div class="form-field">
+                  <label class="form-label">IBAN</label>
+                  <input class="form-input mono" placeholder="TR00 0000 0000 0000 0000 0000 00" />
+                </div>
+                <div class="form-field" style="grid-column:1 / -1">
+                  <label class="form-label">Kontroller</label>
+                  <div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:var(--s-3);padding:12px;border:1px solid var(--border);border-radius:var(--r-lg);background:var(--bg-soft)">
+                    <label class="checkbox"><input type="checkbox" /> SMS Onay</label>
+                    <label class="checkbox"><input type="checkbox" /> Email Onay</label>
+                    <label class="checkbox"><input type="checkbox" /> Limit Kontrol</label>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Sidebar -->
+        <div class="form-page-side">
+          <div class="card">
+            <div class="card-head"><div class="card-title">Cari Özeti</div></div>
+            <div class="card-body">
+              <div class="sum-row"><span class="sum-row-label">Cari Tipi</span><span class="sum-row-val" style="font-size:13px" id="cf-tip-label">Müşteri</span></div>
+              <div class="sum-row"><span class="sum-row-label">Durum</span><span class="sum-row-val"><span class="badge badge-success">Aktif</span></span></div>
+              <div class="sum-row"><span class="sum-row-label">SMS Onay</span><span class="sum-row-val"><span class="badge badge-warning">Bekliyor</span></span></div>
+              <div class="sum-row"><span class="sum-row-label">Email Onay</span><span class="sum-row-val"><span class="badge badge-warning">Bekliyor</span></span></div>
+              <div class="sum-row total"><span class="sum-row-label">Vade</span><span class="sum-row-val">30 gün</span></div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-head"><div class="card-title">İşlemler</div></div>
+            <div class="card-body" style="display:flex;flex-direction:column;gap:var(--s-2)">
+              <button class="btn btn-success" style="width:100%" onclick="cariKaydet()">${ICONS.check} Kaydet</button>
+              <button class="btn btn-ghost" style="width:100%" onclick="printDoc()">${ICONS.print} Yazdır</button>
+              <button class="btn btn-whatsapp" style="width:100%" onclick="shareWhatsApp('${kariKod}','Cari Kart',0,document.querySelector('[placeholder=\\'Örn: Marmara Tekstil A.Ş.\\']')?.value||'')">${ICONS.whatsapp} WhatsApp</button>
+              <a href="cari.html" class="btn btn-danger" style="width:100%;text-align:center">${ICONS.close} Vazgeç</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <nav class="cari-form-mobile-nav" aria-label="Cari kartı işlemleri">
+        <a href="cari.html">${ICONS.users}<span>Cari Listesi</span></a>
+        <button type="button" onclick="printDoc()">${ICONS.print}<span>Yazdır</span></button>
+        <button type="button" class="save" onclick="cariKaydet()">${ICONS.check}<span>Kaydet</span></button>
+        <a href="cari.html" class="cancel">${ICONS.close}<span>Vazgeç</span></a>
+      </nav>
+      `;
+    });
+
+    function cariKaydet() {
+      toast('Cari kartı kaydedildi', 'success');
+      setTimeout(() => window.location.href = 'cari.html', 1000);
+    }
+  </script>
+</body>
+</html>

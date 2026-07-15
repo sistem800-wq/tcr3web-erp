@@ -1,0 +1,2008 @@
+/* TCR3WEB MASTER DataTable Framework - 711 */
+.data.tcr-sortable thead th[data-tcr-sortable="true"] {
+  position: relative;
+  padding-right: 34px;
+  cursor: pointer;
+  user-select: none;
+  touch-action: manipulation;
+}
+.data.tcr-sortable thead th[data-tcr-sortable="true"]:hover,
+.data.tcr-sortable thead th[data-tcr-sortable="true"]:focus-visible {
+  color: #17365f;
+  background: #eef3f8;
+  outline: none;
+}
+.tcr-sort-indicator {
+  position: absolute;
+  top: 50%;
+  right: 10px;
+  width: 16px;
+  height: 16px;
+  transform: translateY(-50%);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: #8291a5;
+  pointer-events: none;
+}
+.tcr-sort-indicator svg {
+  width: 15px;
+  height: 15px;
+  stroke: currentColor;
+  stroke-width: 2;
+  fill: none;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.data.tcr-sortable thead th[aria-sort="ascending"],
+.data.tcr-sortable thead th[aria-sort="descending"] {
+  color: #10243f;
+  background: #e7edf4;
+}
+.data.tcr-sortable thead th[aria-sort="ascending"] .tcr-sort-indicator,
+.data.tcr-sortable thead th[aria-sort="descending"] .tcr-sort-indicator {
+  color: #1f5f9f;
+}
+.data.tcr-sortable tbody tr.tcr-sort-moving { opacity: .72; }
+@media (max-width: 767.98px) {
+  .data.tcr-sortable thead th[data-tcr-sortable="true"] { padding-right: 29px; }
+  .tcr-sort-indicator { right: 7px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .data.tcr-sortable tbody tr { transition: none !important; }
+}
+
+/* TCR3WEB MASTER DataTable Pagination Header - 711 */
+.tcr-table-page-size {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  flex: 0 0 auto;
+}
+.tcr-table-page-size-label {
+  font-size: 12px;
+  font-weight: 700;
+  color: #64748b;
+  white-space: nowrap;
+}
+.tcr-table-page-size-select {
+  min-width: 82px;
+  height: 38px;
+  padding: 0 30px 0 12px;
+  border: 1px solid #cbd5e1;
+  border-radius: 10px;
+  background-color: #fff;
+  color: #17365f;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  outline: none;
+}
+.tcr-table-page-size-select:hover,
+.tcr-table-page-size-select:focus {
+  border-color: #1f5f9f;
+  box-shadow: 0 0 0 3px rgba(31,95,159,.10);
+}
+.tcr-table-generated-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+.tcr-table-pagination-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 10px 2px 0;
+  font-size: 12px;
+  color: #64748b;
+}
+.tcr-table-pagination-buttons {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.tcr-table-page-btn {
+  width: 34px;
+  height: 34px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid #cbd5e1;
+  border-radius: 9px;
+  background: #fff;
+  color: #17365f;
+  cursor: pointer;
+}
+.tcr-table-page-btn:hover:not(:disabled) { background: #eef3f8; border-color: #1f5f9f; }
+.tcr-table-page-btn:disabled { opacity: .38; cursor: not-allowed; }
+.tcr-table-page-btn svg { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+@media (max-width: 767.98px) {
+  .tcr-table-page-size-label { display: none; }
+  .tcr-table-page-size-select { min-width: 76px; height: 36px; }
+  .tcr-table-pagination-footer { flex-wrap: wrap; }
+}
+
+
+/* 711 — Responsive form, depot operation and service layout repairs */
+.app-main, .main-content, .page-content, .content, .card, .card-body,
+.form-page-grid, .form-page-main, .form-page-side, .table-wrap,
+.dop-panel, .dop-panel-body, .dop-table-wrap { min-width: 0; }
+
+.table-wrap, .dop-table-wrap { max-width: 100%; overflow-x: auto; overflow-y: visible; }
+.data, .dop-table { width: 100%; }
+
+/* Form pages must never push the right information column outside the viewport. */
+.form-page-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(260px, 320px);
+  gap: 16px;
+  align-items: start;
+}
+@media (max-width: 1450px) {
+  .form-page-grid { grid-template-columns: minmax(0, 1fr); }
+  .form-page-side { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 14px; }
+}
+@media (max-width: 900px) {
+  .form-page-side { grid-template-columns: minmax(0,1fr); }
+}
+
+/* Depot overview cards: preserve readable text on every accent background. */
+.depo-grid .card, .warehouse-grid .card { overflow: hidden; }
+.depo-grid .card *, .warehouse-grid .card * { text-shadow: none; }
+.depo-grid .card h3, .depo-grid .card strong,
+.warehouse-grid .card h3, .warehouse-grid .card strong { color: #10243f !important; }
+
+/* Compact depot operation pages */
+.dop-panel { width: 100%; max-width: 100%; overflow: hidden; }
+.dop-panel-body { padding: 16px; }
+.dop-table th, .dop-table td { vertical-align: middle; }
+.dop-table td { white-space: normal; }
+.dop-table .dop-empty { height: 86px; text-align: center; }
+
+/* Service job rows: prevent technician, status and buttons from overlapping. */
+.service-job-card {
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 14px;
+}
+.service-job-card .job-main {
+  min-width: 0;
+  display: grid !important;
+  grid-template-columns: minmax(135px, .9fr) minmax(150px, 1.1fr) minmax(145px, 1fr) minmax(135px, .9fr);
+  gap: 12px;
+  align-items: center;
+}
+.service-job-card .job-main > * { min-width: 0; }
+.service-job-card .job-main strong,
+.service-job-card .job-main span { overflow-wrap: anywhere; }
+.service-job-card .job-actions { display:flex; flex-wrap:wrap; justify-content:flex-end; gap:7px; }
+@media (max-width: 1250px) {
+  .service-job-card { grid-template-columns: minmax(0,1fr); }
+  .service-job-card .job-actions { justify-content:flex-start; }
+}
+@media (max-width: 850px) {
+  .service-job-card .job-main { grid-template-columns: repeat(2,minmax(0,1fr)); }
+}
+@media (max-width: 560px) {
+  .service-job-card .job-main { grid-template-columns: minmax(0,1fr); }
+}
+
+/* Pagination starts consistently and remains visually attached to the table. */
+.tcr-table-generated-toolbar { padding: 0 0 10px; }
+.tcr-table-page-size-select { min-width: 84px; }
+.tcr-table-pagination-footer { min-height: 46px; }
+
+/* 671 — Kalıcı tablo metin standardı
+   Ana tablo başlıkları ve veri hücreleri açık gri kullanmaz. */
+table.data thead th,
+.data thead th,
+.dop-table thead th,
+.service-table thead th,
+.pos-table-card .data thead th,
+.hs-cart-table thead th,
+.form-line-table thead th {
+  color: #111827 !important;
+  font-weight: 700 !important;
+}
+
+table.data tbody td,
+.data tbody td,
+.dop-table tbody td,
+.service-table tbody td,
+.pos-table-card .data tbody td,
+.hs-cart-table tbody td,
+.form-line-table tbody td {
+  color: #111827 !important;
+  font-weight: 500;
+}
+
+/* Hücre içindeki yardımcı metinler de griye düşmez; durum rozetleri ve butonlar korunur. */
+table.data tbody td :is(span, small, strong, b, a):not(.badge):not(.status):not(.chip):not(.tag):not(.btn):not([class*="badge"]):not([class*="status"]):not([class*="text-"]),
+.data tbody td :is(span, small, strong, b, a):not(.badge):not(.status):not(.chip):not(.tag):not(.btn):not([class*="badge"]):not([class*="status"]):not([class*="text-"]),
+.dop-table tbody td :is(span, small, strong, b, a):not(.badge):not(.status):not(.chip):not(.tag):not(.btn):not([class*="badge"]):not([class*="status"]):not([class*="text-"]) {
+  color: #111827 !important;
+}
+
+.data.tcr-sortable thead th[data-tcr-sortable="true"],
+.data.tcr-sortable thead th[aria-sort="ascending"],
+.data.tcr-sortable thead th[aria-sort="descending"] {
+  color: #111827 !important;
+}
+
+/* 664 — Tablo satırı etkileşim imleci standardı */
+.data tbody tr,
+.dop-table tbody tr,
+.table tbody tr,
+table tbody tr{
+  cursor:pointer!important;
+}
+
+/* 663 — Sekme imleci ve sayfa başına kayıt konumu */
+.tabs .tab,
+.tabs button.tab,
+[role="tab"],
+.tab-count {
+  cursor: pointer !important;
+}
+
+/* Otomatik oluşturulan Göster seçimini tablo kartının içine düzgün hizala. */
+.tcr-table-generated-toolbar {
+  width: 100%;
+  min-height: 58px;
+  margin: 0;
+  padding: 12px 18px 10px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  box-sizing: border-box;
+}
+.tcr-table-generated-toolbar .tcr-table-page-size {
+  margin: 0;
+  align-self: center;
+}
+.tcr-table-page-size-label {
+  color: #374151;
+  font-weight: 700;
+}
+@media (max-width: 767.98px) {
+  .tcr-table-generated-toolbar {
+    min-height: 52px;
+    padding: 9px 12px 8px;
+  }
+}
+
+/* 661 — Durum sekmeleri, arama temizleme ve seçili sıralama standardı */
+.tabs .tab,
+.tabs button.tab,
+[role="tab"] {
+  --tcr-tab-color: #334155;
+  --tcr-tab-soft: #f1f5f9;
+  color: var(--tcr-tab-color) !important;
+  border-bottom-color: transparent;
+  transition: color .16s ease, background-color .16s ease, border-color .16s ease;
+}
+.tabs .tab .tab-count,
+.tabs button.tab .tab-count,
+[role="tab"] .tab-count {
+  color: var(--tcr-tab-color) !important;
+  background: var(--tcr-tab-soft) !important;
+  border: 1px solid color-mix(in srgb, var(--tcr-tab-color) 18%, transparent);
+}
+.tabs .tab:hover,
+.tabs button.tab:hover,
+[role="tab"]:hover {
+  color: var(--tcr-tab-color) !important;
+  background: var(--tcr-tab-soft);
+}
+.tabs .tab.active,
+.tabs button.tab.active,
+[role="tab"].active,
+[role="tab"][aria-selected="true"] {
+  color: var(--tcr-tab-color) !important;
+  border-bottom-color: var(--tcr-tab-color) !important;
+  font-weight: 700 !important;
+}
+.tcr-tab-tone-primary { --tcr-tab-color:#1d4ed8 !important; --tcr-tab-soft:#eff6ff !important; }
+.tcr-tab-tone-info    { --tcr-tab-color:#0369a1 !important; --tcr-tab-soft:#f0f9ff !important; }
+.tcr-tab-tone-success { --tcr-tab-color:#15803d !important; --tcr-tab-soft:#f0fdf4 !important; }
+.tcr-tab-tone-warning { --tcr-tab-color:#b45309 !important; --tcr-tab-soft:#fffbeb !important; }
+.tcr-tab-tone-danger  { --tcr-tab-color:#dc2626 !important; --tcr-tab-soft:#fef2f2 !important; }
+.tcr-tab-tone-purple  { --tcr-tab-color:#7e22ce !important; --tcr-tab-soft:#faf5ff !important; }
+.tcr-tab-tone-neutral { --tcr-tab-color:#475569 !important; --tcr-tab-soft:#f8fafc !important; }
+
+/* Arama alanının hemen yanında Lucide uyumlu fırça ikonlu temizleme butonu. */
+.tcr-search-clear-btn {
+  height: 38px;
+  min-width: 94px;
+  padding: 0 13px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  flex: 0 0 auto;
+  border: 1px solid #cbd5e1;
+  border-radius: 10px;
+  background: #fff;
+  color: #334155;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background-color .16s ease, border-color .16s ease, color .16s ease;
+}
+.tcr-search-clear-btn svg {
+  width: 16px;
+  height: 16px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.tcr-search-clear-btn:hover,
+.tcr-search-clear-btn:focus-visible {
+  background: #1d4ed8;
+  border-color: #1d4ed8;
+  color: #fff;
+  outline: none;
+}
+.toolbar,
+.table-toolbar,
+.filter-toolbar,
+.tcr-table-generated-toolbar {
+  align-items: center;
+}
+
+/* Aktif sıralama sütunu: kurumsal lacivert zemin, beyaz yazı ve belirgin ok. */
+.data.tcr-sortable thead th[aria-sort="ascending"],
+.data.tcr-sortable thead th[aria-sort="descending"] {
+  color: #ffffff !important;
+  background: #17365f !important;
+  border-color: #17365f !important;
+  font-weight: 800 !important;
+}
+.data.tcr-sortable thead th[aria-sort="ascending"]:hover,
+.data.tcr-sortable thead th[aria-sort="descending"]:hover,
+.data.tcr-sortable thead th[aria-sort="ascending"]:focus-visible,
+.data.tcr-sortable thead th[aria-sort="descending"]:focus-visible {
+  color: #ffffff !important;
+  background: #17365f !important;
+}
+.data.tcr-sortable thead th[aria-sort="ascending"] .tcr-sort-indicator,
+.data.tcr-sortable thead th[aria-sort="descending"] .tcr-sort-indicator {
+  color: #ffffff !important;
+}
+
+@media (max-width: 767.98px) {
+  .tcr-search-clear-btn {
+    min-width: 42px;
+    width: 42px;
+    padding: 0;
+  }
+  .tcr-search-clear-btn span { display:none; }
+}
+
+
+/* 631 — Çek / Senet durum sekmeleri */
+.instrument-status-tabs{
+  display:flex;
+  align-items:center;
+  gap:6px;
+  overflow-x:auto;
+  padding:4px 2px 7px;
+  scrollbar-width:thin;
+}
+.instrument-status-tabs .tab{
+  flex:0 0 auto;
+  min-height:38px;
+  padding:8px 12px!important;
+  border:1px solid transparent!important;
+  border-radius:10px!important;
+  display:inline-flex;
+  align-items:center;
+  gap:7px;
+  font-weight:700!important;
+}
+.instrument-status-tabs .tab:hover{
+  border-color:color-mix(in srgb,var(--tcr-tab-color) 38%,transparent)!important;
+  background:var(--tcr-tab-soft)!important;
+}
+.instrument-status-tabs .tab.active{
+  color:#fff!important;
+  background:var(--tcr-tab-color)!important;
+  border-color:var(--tcr-tab-color)!important;
+  box-shadow:0 5px 14px color-mix(in srgb,var(--tcr-tab-color) 22%,transparent);
+}
+.instrument-status-tabs .tab.active .tab-count{
+  color:var(--tcr-tab-color)!important;
+  background:#fff!important;
+  border-color:#fff!important;
+}
+.instrument-empty-state{
+  padding:28px 18px!important;
+  text-align:center!important;
+  color:#334155!important;
+  font-weight:600!important;
+}
+@media(max-width:767.98px){
+  .instrument-status-tabs .tab{min-height:36px;padding:7px 10px!important;font-size:12.5px!important}
+}
+
+/* 630 — Proje geneli durum sekmesi standardı
+   Çek/Senet modülünde onaylanan dolu aktif sekme görünümü tüm .tabs yapılarına uygulanır. */
+.tabs.tcr-status-tabs,
+.tcr-status-tabs {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  overflow-x: auto;
+  max-width: 100%;
+  padding-top: 4px !important;
+  padding-bottom: 7px !important;
+  scrollbar-width: thin;
+  scroll-behavior: smooth;
+}
+
+.tabs.tcr-status-tabs .tab,
+.tcr-status-tabs .tab,
+.tcr-status-tabs [role="tab"] {
+  flex: 0 0 auto;
+  min-height: 38px;
+  padding: 8px 12px !important;
+  border: 1px solid transparent !important;
+  border-radius: 10px !important;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  color: var(--tcr-tab-color) !important;
+  background: transparent !important;
+  font-weight: 700 !important;
+  line-height: 1.15;
+  white-space: nowrap;
+  cursor: pointer;
+  user-select: none;
+  text-decoration: none;
+  box-shadow: none;
+  transition: background-color .16s ease, border-color .16s ease, color .16s ease, box-shadow .16s ease;
+}
+
+.tabs.tcr-status-tabs .tab:hover,
+.tcr-status-tabs .tab:hover,
+.tcr-status-tabs [role="tab"]:hover {
+  color: var(--tcr-tab-color) !important;
+  background: var(--tcr-tab-soft) !important;
+  border-color: color-mix(in srgb, var(--tcr-tab-color) 38%, transparent) !important;
+}
+
+.tabs.tcr-status-tabs .tab.active,
+.tabs.tcr-status-tabs .tab[aria-selected="true"],
+.tcr-status-tabs .tab.active,
+.tcr-status-tabs .tab[aria-selected="true"],
+.tcr-status-tabs [role="tab"].active,
+.tcr-status-tabs [role="tab"][aria-selected="true"] {
+  color: #fff !important;
+  background: var(--tcr-tab-color) !important;
+  border-color: var(--tcr-tab-color) !important;
+  box-shadow: 0 5px 14px color-mix(in srgb, var(--tcr-tab-color) 22%, transparent);
+}
+
+.tabs.tcr-status-tabs .tab .tab-count,
+.tcr-status-tabs .tab .tab-count,
+.tcr-status-tabs [role="tab"] .tab-count {
+  min-width: 22px;
+  height: 22px;
+  padding: 0 6px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  color: var(--tcr-tab-color) !important;
+  background: var(--tcr-tab-soft) !important;
+  border: 1px solid color-mix(in srgb, var(--tcr-tab-color) 18%, transparent) !important;
+  font-size: 11px;
+  font-weight: 800;
+  line-height: 1;
+}
+
+.tabs.tcr-status-tabs .tab.active .tab-count,
+.tabs.tcr-status-tabs .tab[aria-selected="true"] .tab-count,
+.tcr-status-tabs .tab.active .tab-count,
+.tcr-status-tabs .tab[aria-selected="true"] .tab-count,
+.tcr-status-tabs [role="tab"].active .tab-count,
+.tcr-status-tabs [role="tab"][aria-selected="true"] .tab-count {
+  color: var(--tcr-tab-color) !important;
+  background: #fff !important;
+  border-color: #fff !important;
+}
+
+@media (max-width: 767.98px) {
+  .tabs.tcr-status-tabs .tab,
+  .tcr-status-tabs .tab,
+  .tcr-status-tabs [role="tab"] {
+    min-height: 36px;
+    padding: 7px 10px !important;
+    font-size: 12.5px !important;
+  }
+}
+
+/* TCR3WEB bakiye durum renk standardı */
+table.data td.tcr-balance-debit,
+table.data td.tcr-balance-debit strong,
+table.data .tcr-balance-debit {
+  color: #dc2626 !important;
+  font-weight: 700 !important;
+}
+
+table.data td.tcr-balance-credit,
+table.data td.tcr-balance-credit strong,
+table.data .tcr-balance-credit {
+  color: #16a34a !important;
+  font-weight: 700 !important;
+}
+
+table.data td.tcr-balance-neutral,
+table.data .tcr-balance-neutral {
+  color: #111827 !important;
+  font-weight: 600 !important;
+}
+
+/* Cari son işlem günleri */
+#cariTable .activity-day-head {
+  min-width: 82px;
+  text-align: center;
+  line-height: 1.15;
+  white-space: nowrap;
+}
+#cariTable .activity-day-head small {
+  font-size: 10px;
+  font-weight: 700;
+  opacity: .88;
+}
+#cariTable .activity-day-cell {
+  text-align: center;
+  font-weight: 700;
+  color: #111827;
+  white-space: nowrap;
+}
+
+/* TCR3WEB — Ana liste tabloları kolon seçimi standardı (620) */
+#content table.data.tcr-column-managed > thead > tr > th.tcr-column-selector-head {
+  position: sticky;
+  right: 0;
+  z-index: 8;
+  width: 54px;
+  min-width: 54px;
+  max-width: 54px;
+  padding: 7px 9px !important;
+  text-align: right !important;
+  overflow: visible !important;
+  background: #f1f5f9;
+  box-shadow: -8px 0 12px -12px rgba(15, 23, 42, .55);
+}
+#content table.data.tcr-column-managed > tbody > tr > td.tcr-column-selector-cell {
+  position: sticky;
+  right: 0;
+  z-index: 2;
+  width: 54px;
+  min-width: 54px;
+  max-width: 54px;
+  padding: 0 !important;
+  background: inherit;
+  box-shadow: -8px 0 12px -12px rgba(15, 23, 42, .35);
+}
+.tcr-column-selector-wrap { position: relative; display: flex; justify-content: flex-end; }
+.tcr-column-selector-btn {
+  width: 34px;
+  height: 34px;
+  display: inline-grid;
+  place-items: center;
+  border: 1px solid #9fb1c9;
+  border-radius: 9px;
+  background: #fff;
+  color: #173c72;
+  cursor: pointer;
+  transition: background-color .16s ease, color .16s ease, border-color .16s ease;
+}
+.tcr-column-selector-btn svg { width: 18px; height: 18px; stroke-width: 2; }
+.tcr-column-selector-btn:hover,
+.tcr-column-selector-btn[aria-expanded="true"] { background: #173c72; border-color: #173c72; color: #fff; }
+.tcr-column-selector-menu {
+  display: none;
+  position: absolute;
+  top: calc(100% + 7px);
+  right: 0;
+  z-index: 10020;
+  width: 230px;
+  max-height: min(420px, 65vh);
+  overflow: auto;
+  padding: 9px;
+  border: 1px solid #cbd5e1;
+  border-radius: 12px;
+  background: #fff;
+  box-shadow: 0 18px 45px rgba(15, 23, 42, .2);
+  text-align: left;
+}
+.tcr-column-selector-menu.open { display: grid; gap: 4px; }
+.tcr-column-selector-title {
+  padding: 4px 6px 9px;
+  margin-bottom: 3px;
+  border-bottom: 1px solid #e2e8f0;
+  color: #0f172a;
+  font-size: 12px;
+  font-weight: 800;
+}
+.tcr-column-selector-menu label {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  min-height: 34px;
+  padding: 7px 8px;
+  border-radius: 8px;
+  color: #111827;
+  font-size: 13px;
+  font-weight: 650;
+  cursor: pointer;
+}
+.tcr-column-selector-menu label:hover { background: #eff6ff; }
+.tcr-column-selector-menu input { width: 15px; height: 15px; accent-color: #173c72; cursor: pointer; }
+#content table.data .tcr-col-hidden { display: none !important; }
+@media (max-width: 767.98px) {
+  .tcr-column-selector-menu { position: fixed; top: 76px; right: 12px; left: 12px; width: auto; max-height: calc(100vh - 96px); }
+}
+
+/* 618 — Mobil/tablet filtre yerleşimi ve zorunlu alan etiketleri */
+.tcr-search-action-group{
+  flex:1 1 420px;
+  min-width:260px;
+  max-width:470px;
+}
+.tcr-search-action-row{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  width:100%;
+}
+.tcr-search-action-row .toolbar-search,
+.tcr-search-action-row .search-box,
+.tcr-search-action-row .filter-search,
+.tcr-search-action-row .input-icon{
+  flex:1 1 auto;
+  width:auto;
+  min-width:0;
+  max-width:none;
+}
+.tcr-responsive-label{
+  display:none;
+  margin:0 0 6px;
+  color:#111827;
+  font-size:12px;
+  line-height:1.2;
+  font-weight:700;
+}
+.tcr-filter-field{
+  display:flex;
+  flex-direction:column;
+  min-width:150px;
+}
+.tcr-filter-field > select,
+.tcr-filter-field > input{
+  width:100%;
+}
+
+@media (max-width:1180px){
+  .tcr-responsive-label{display:block!important;}
+  .tcr-search-action-group{
+    width:100%;
+    max-width:none;
+    min-width:0;
+    grid-column:1 / -1;
+  }
+  .tcr-search-action-row{
+    display:grid;
+    grid-template-columns:minmax(0,1fr) 42px;
+    gap:8px;
+  }
+  .tcr-search-action-row .toolbar-search,
+  .tcr-search-action-row .search-box,
+  .tcr-search-action-row .filter-search,
+  .tcr-search-action-row .input-icon,
+  .tcr-search-action-row input{
+    width:100%!important;
+    min-width:0!important;
+    max-width:none!important;
+  }
+  .tcr-search-action-row .tcr-search-clear-btn{
+    width:42px!important;
+    min-width:42px!important;
+    height:38px!important;
+    padding:0!important;
+    align-self:end;
+  }
+  .tcr-filter-field{
+    width:100%;
+    min-width:0;
+  }
+  .toolbar,
+  .finance-toolbar,
+  .filter-toolbar,
+  .table-toolbar{
+    align-items:end!important;
+  }
+}
+
+/* 615 — Ana liste tablolarında ortak kompakt header standardı
+   Yalnızca kolon seçimi etkin ana tabloları hedefler; modal ve form içi tablolar etkilenmez. */
+#content table.data.tcr-column-managed > thead > tr {
+  height: 44px !important;
+}
+#content table.data.tcr-column-managed > thead > tr > th {
+  height: 44px !important;
+  min-height: 44px !important;
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
+  padding-left: 10px !important;
+  padding-right: 10px !important;
+  vertical-align: middle !important;
+  line-height: 1.15 !important;
+  font-size: 11px !important;
+  font-weight: 700 !important;
+  white-space: nowrap;
+  box-sizing: border-box;
+}
+#content table.data.tcr-column-managed > thead > tr > th[data-tcr-sortable="true"] {
+  padding-right: 30px !important;
+}
+#content table.data.tcr-column-managed > thead > tr > th.tcr-column-selector-head {
+  height: 44px !important;
+  min-height: 44px !important;
+  width: 54px !important;
+  min-width: 54px !important;
+  max-width: 54px !important;
+  padding: 4px 9px !important;
+  vertical-align: middle !important;
+}
+#content table.data.tcr-column-managed .tcr-column-selector-wrap {
+  height: 36px;
+  align-items: center;
+}
+#content table.data.tcr-column-managed .tcr-column-selector-btn {
+  width: 36px !important;
+  height: 36px !important;
+  min-width: 36px !important;
+  min-height: 36px !important;
+  border-radius: 10px !important;
+}
+#content table.data.tcr-column-managed > thead .tcr-sort-indicator {
+  right: 8px;
+  width: 15px;
+  height: 15px;
+}
+#content table.data.tcr-column-managed > thead .tcr-sort-indicator svg {
+  width: 14px;
+  height: 14px;
+}
+
+
+/* 605 — Global pagination footer standard
+   Sol: ileri/geri ve sayfa; Sağ: kayıt aralığı. */
+.tcr-table-pagination-footer {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  width: 100%;
+  gap: 14px;
+  min-height: 48px;
+  padding: 10px 2px 2px !important;
+  font-size: 14px !important;
+  font-weight: 600;
+  color: #1f2937 !important;
+}
+.tcr-table-pagination-buttons {
+  order: 1;
+  margin-right: auto;
+  display: inline-flex !important;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 8px;
+}
+.tcr-table-pagination-info {
+  order: 2;
+  margin-left: auto;
+  text-align: right;
+  white-space: nowrap;
+  font-size: 14px !important;
+  font-weight: 600;
+  color: #1f2937 !important;
+}
+.tcr-table-page-text {
+  min-width: 42px;
+  text-align: center;
+  font-size: 14px;
+  font-weight: 700;
+  color: #17365f;
+}
+.tcr-table-page-btn {
+  width: 36px;
+  height: 36px;
+}
+
+/* Ana tablo işlem hücreleri her zaman sağa yaslanır. */
+table.data thead th:last-child,
+table.data tbody td:last-child {
+  text-align: right;
+}
+table.data tbody td:last-child .actions,
+table.data tbody td:last-child .table-actions,
+table.data tbody td:last-child .action-buttons,
+table.data tbody td:last-child .row-actions {
+  justify-content: flex-end !important;
+  margin-left: auto;
+}
+
+@media (max-width: 767.98px) {
+  .tcr-table-pagination-footer {
+    flex-wrap: nowrap !important;
+    font-size: 13px !important;
+  }
+  .tcr-table-pagination-info,
+  .tcr-table-page-text { font-size: 13px !important; }
+}
+
+/* 604 · Tüm proje tablolarında İşlem/İşlemler kolonu kesin sağ hizalama */
+table.data th.tcr-action-column,
+table.data td.tcr-action-column{
+  text-align:right!important;
+  white-space:nowrap!important;
+}
+table.data td.tcr-action-column{
+  padding-right:12px!important;
+}
+table.data td.tcr-action-column>div,
+table.data td.tcr-action-column>.actions,
+table.data td.tcr-action-column>.table-actions,
+table.data td.tcr-action-column>.action-buttons,
+table.data td.tcr-action-column>.row-actions,
+table.data td.tcr-action-column>.finance-actions{
+  display:flex!important;
+  align-items:center!important;
+  justify-content:flex-end!important;
+  width:100%!important;
+  margin-left:auto!important;
+  gap:6px;
+}
+table.data td.tcr-action-column>.icon-btn,
+table.data td.tcr-action-column>button{
+  margin-left:auto;
+}
+
+
+/* 602 · Gerçek global işlem kolonu hizalama düzeltmesi */
+table.data th.tcr-action-column,
+table.data td.tcr-action-column{
+  text-align:right!important;
+  white-space:nowrap!important;
+  width:1%!important;
+  min-width:132px;
+  padding-left:8px!important;
+  padding-right:12px!important;
+}
+table.data td.tcr-action-column{
+  vertical-align:middle!important;
+}
+table.data td.tcr-action-column > .actions,
+table.data td.tcr-action-column > .table-actions,
+table.data td.tcr-action-column > .action-buttons,
+table.data td.tcr-action-column > .row-actions,
+table.data td.tcr-action-column > .finance-actions{
+  display:flex!important;
+  align-items:center!important;
+  justify-content:flex-end!important;
+  flex-wrap:nowrap!important;
+  gap:6px!important;
+  width:100%!important;
+  margin:0 0 0 auto!important;
+}
+table.data td.tcr-action-column > button,
+table.data td.tcr-action-column > a,
+table.data td.tcr-action-column > .icon-btn{
+  flex:0 0 auto!important;
+}
+table.data th.tcr-column-selector-head,
+table.data td.tcr-column-selector-cell{
+  width:54px!important;
+  min-width:54px!important;
+  max-width:54px!important;
+  padding-left:6px!important;
+  padding-right:6px!important;
+}
+
+/* 601 · Cari Kartlar referanslı ortak işlem kolonu standardı */
+#content table.data th.tcr-action-column.tcr-column-selector-head{
+  width:54px!important;
+  min-width:54px!important;
+  max-width:54px!important;
+  padding:5px 7px!important;
+  text-align:right!important;
+}
+#content table.data td.tcr-action-column{
+  text-align:right!important;
+  padding-left:8px!important;
+  padding-right:8px!important;
+  white-space:nowrap!important;
+}
+#content table.data td.tcr-action-column > :is(.flex,.actions,.table-actions,.action-buttons,.row-actions,.finance-actions,.tcr-action-buttons){
+  display:flex!important;
+  align-items:center!important;
+  justify-content:flex-end!important;
+  flex-wrap:nowrap!important;
+  gap:6px!important;
+  width:100%!important;
+  margin-left:auto!important;
+}
+#content table.data td.tcr-action-column > :is(button,a,.btn,.icon-btn,.tcr-action,.tcr-table-action){
+  display:inline-flex!important;
+  float:none!important;
+  margin-left:6px!important;
+}
+#content table.data .tcr-column-selector-wrap{
+  display:flex!important;
+  justify-content:flex-end!important;
+  align-items:center!important;
+  width:100%!important;
+}
+
+
+/* 600 · Kalıcı standart tablo işlem butonları */
+#content table.data td.tcr-action-column,
+#content table.data tbody td:last-child{
+  text-align:right!important;
+}
+#content table.data td.tcr-action-column > :is(.flex,.actions,.table-actions,.action-buttons,.row-actions,.finance-actions,.tcr-action-buttons),
+#content table.data tbody td:last-child > :is(.flex,.actions,.table-actions,.action-buttons,.row-actions,.finance-actions,.tcr-action-buttons){
+  display:flex!important;
+  align-items:center!important;
+  justify-content:flex-end!important;
+  flex-wrap:nowrap!important;
+  gap:6px!important;
+  width:100%!important;
+  margin-left:auto!important;
+}
+#content table.data td.tcr-action-column :is(button,a,.btn,.icon-btn,.mini-action,.tcr-action,.tcr-table-action),
+#content table.data tbody td:last-child :is(button,a,.btn,.icon-btn,.mini-action,.tcr-action,.tcr-table-action){
+  --tcr-action:#2563eb;
+  width:32px!important;
+  min-width:32px!important;
+  height:32px!important;
+  padding:0!important;
+  display:inline-flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  flex:0 0 32px!important;
+  border:1px solid var(--tcr-action)!important;
+  border-radius:8px!important;
+  background:#fff!important;
+  color:var(--tcr-action)!important;
+  box-shadow:none!important;
+}
+#content table.data :is(.tcr-action-blue){--tcr-action:#2563eb!important}
+#content table.data :is(.tcr-action-green){--tcr-action:#16a34a!important}
+#content table.data :is(.tcr-action-red){--tcr-action:#dc2626!important}
+#content table.data :is(.tcr-action-amber){--tcr-action:#d97706!important}
+#content table.data :is(.tcr-action-purple){--tcr-action:#7c3aed!important}
+#content table.data :is(.tcr-action-cyan,.tcr-action-turquoise){--tcr-action:#0891b2!important}
+#content table.data :is(.tcr-action-navy){--tcr-action:#17365f!important}
+#content table.data :is(.tcr-action-slate){--tcr-action:#475569!important}
+#content table.data td.tcr-action-column :is(button,a,.btn,.icon-btn,.mini-action,.tcr-action,.tcr-table-action):is(:hover,:focus-visible),
+#content table.data tbody td:last-child :is(button,a,.btn,.icon-btn,.mini-action,.tcr-action,.tcr-table-action):is(:hover,:focus-visible){
+  background:#1e3a5f!important;
+  border-color:#1e3a5f!important;
+  color:#fff!important;
+  outline:none!important;
+  box-shadow:0 4px 10px rgba(30,58,95,.2)!important;
+}
+#content table.data td.tcr-action-column :is(button,a,.btn,.icon-btn,.mini-action,.tcr-action,.tcr-table-action) svg,
+#content table.data tbody td:last-child :is(button,a,.btn,.icon-btn,.mini-action,.tcr-action,.tcr-table-action) svg{
+  width:15px!important;
+  height:15px!important;
+  stroke:currentColor!important;
+}
+
+
+/* 599 · Cari referanslı işlem butonu ölçüsü + ekstre temizliği */
+#content table.data td.tcr-action-column,
+#content table.data tbody td:last-child{
+  text-align:right!important;
+}
+#content table.data td.tcr-action-column > :is(.flex,.actions,.table-actions,.action-buttons,.row-actions,.finance-actions,.tcr-action-buttons),
+#content table.data tbody td:last-child > :is(.flex,.actions,.table-actions,.action-buttons,.row-actions,.finance-actions,.tcr-action-buttons){
+  display:flex!important;
+  width:100%!important;
+  justify-content:flex-end!important;
+  align-items:center!important;
+  flex-wrap:nowrap!important;
+  margin-left:auto!important;
+  gap:6px!important;
+}
+#content table.data td.tcr-action-column :is(button,a,.btn,.icon-btn,.mini-action,.tcr-action,.tcr-table-action),
+#content table.data tbody td:last-child :is(button,a,.btn,.icon-btn,.mini-action,.tcr-action,.tcr-table-action){
+  width:34px!important;
+  min-width:34px!important;
+  height:34px!important;
+  min-height:34px!important;
+  flex:0 0 34px!important;
+  padding:0!important;
+}
+#content table.data td.tcr-action-column :is(button,a,.btn,.icon-btn,.mini-action,.tcr-action,.tcr-table-action) svg,
+#content table.data tbody td:last-child :is(button,a,.btn,.icon-btn,.mini-action,.tcr-action,.tcr-table-action) svg{
+  width:16px!important;
+  height:16px!important;
+}
+html.tcr-ekstre-page :is(.tcr-search-action-group,.tcr-search-action-row,.toolbar-search,.search-box,.filter-search,.tcr-search-clear-btn){
+  display:none!important;
+}
+html.tcr-ekstre-page .ekstre-filter-card .tcr-search-clear-btn{display:none!important;}
+
+
+/* 595 — Mobilde tüm ana tablolar: yatay kaydırmasız, tam iki satırlı kayıt görünümü */
+@media (max-width: 767.98px) {
+  :is(.table-wrap,.grid-table-wrap,.service-table-wrap,.dop-table-wrap,.pos-table-card,.hs-cart-table-wrap,.form-line-table-wrap) {
+    width: 100% !important;
+    max-width: 100% !important;
+    overflow-x: clip !important;
+  }
+
+  table.data.tcr-mobile-two-row {
+    display: block !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: 100% !important;
+    table-layout: fixed !important;
+    border-collapse: separate !important;
+    border-spacing: 0 !important;
+  }
+  table.data.tcr-mobile-two-row > thead { display: none !important; }
+  table.data.tcr-mobile-two-row > tbody { display: block !important; width: 100% !important; }
+  table.data.tcr-mobile-two-row > tbody > tr {
+    display: grid !important;
+    grid-template-columns: repeat(var(--tcr-mobile-columns, 3), minmax(0, 1fr)) !important;
+    grid-template-rows: repeat(2, minmax(52px, auto)) !important;
+    grid-auto-flow: column !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    margin: 0 0 10px !important;
+    padding: 6px !important;
+    overflow: hidden !important;
+    border: 1px solid #d6e0eb !important;
+    border-left: 5px solid #1f5f9f !important;
+    border-radius: 12px !important;
+    background: #fff !important;
+    box-shadow: 0 3px 10px rgba(15,35,62,.07) !important;
+  }
+  table.data.tcr-mobile-two-row > tbody > tr[hidden] { display: none !important; }
+  table.data.tcr-mobile-two-row > tbody > tr > td {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    justify-content: center !important;
+    min-width: 0 !important;
+    width: auto !important;
+    min-height: 52px !important;
+    padding: 6px 7px !important;
+    overflow: hidden !important;
+    border: 0 !important;
+    border-right: 1px solid #edf1f5 !important;
+    border-bottom: 1px solid #edf1f5 !important;
+    background: transparent !important;
+    text-align: left !important;
+    white-space: normal !important;
+    font-size: 11.5px !important;
+    line-height: 1.25 !important;
+  }
+  table.data.tcr-mobile-two-row > tbody > tr > td::before {
+    content: attr(data-tcr-mobile-label);
+    display: block !important;
+    width: 100% !important;
+    margin-bottom: 3px !important;
+    overflow: hidden !important;
+    color: #52677f !important;
+    font-size: 8.5px !important;
+    font-weight: 800 !important;
+    line-height: 1 !important;
+    letter-spacing: .02em !important;
+    text-overflow: ellipsis !important;
+    text-transform: uppercase !important;
+    white-space: nowrap !important;
+  }
+  table.data.tcr-mobile-two-row > tbody > tr > td > * { max-width: 100% !important; }
+  table.data.tcr-mobile-two-row > tbody > tr > td :is(span,small,strong,b,a):not(.btn):not(.badge):not(.status) {
+    overflow-wrap: anywhere !important;
+  }
+  table.data.tcr-mobile-two-row > tbody > tr > td.tcr-action-column {
+    align-items: flex-end !important;
+    overflow: visible !important;
+    text-align: right !important;
+  }
+  table.data.tcr-mobile-two-row > tbody > tr > td.tcr-action-column::before { text-align: right !important; }
+  table.data.tcr-mobile-two-row > tbody > tr > td.tcr-action-column > :is(.flex,.actions,.table-actions,.action-buttons,.row-actions,.finance-actions,.tcr-action-buttons) {
+    display: flex !important;
+    width: 100% !important;
+    justify-content: flex-end !important;
+    flex-wrap: nowrap !important;
+    gap: 4px !important;
+  }
+  table.data.tcr-mobile-two-row > tbody > tr.tcr-mobile-empty-row { display: block !important; min-height: 70px !important; }
+  table.data.tcr-mobile-two-row > tbody > tr.tcr-mobile-empty-row > td { min-height: 58px !important; border: 0 !important; }
+  table.data.tcr-mobile-two-row > tbody > tr.tcr-mobile-empty-row > td::before { display: none !important; }
+
+  /* Tablo arama ve filtre alanları: düzenli, tek hizada, taşmasız */
+  #content .toolbar,
+  #content .tcr-table-generated-toolbar {
+    display: grid !important;
+    grid-template-columns: minmax(0,1fr) minmax(86px,auto) !important;
+    align-items: stretch !important;
+    width: 100% !important;
+    gap: 8px !important;
+    margin-bottom: 10px !important;
+    overflow: visible !important;
+  }
+  #content .toolbar > *, #content .tcr-table-generated-toolbar > * { min-width: 0 !important; }
+  #content .toolbar-search,
+  #content .toolbar-search input,
+  #content .search-box,
+  #content .filter-search,
+  #content input[type="search"] {
+    width: 100% !important;
+    max-width: none !important;
+    min-width: 0 !important;
+  }
+  #content .toolbar-search { grid-column: 1 / -1 !important; }
+  #content .toolbar-search input,
+  #content .filter-select,
+  #content .toolbar .btn,
+  #content .tcr-table-page-size-select {
+    min-height: 40px !important;
+    height: 40px !important;
+    border-radius: 9px !important;
+  }
+  #content .tcr-table-page-size { justify-content: flex-start !important; }
+  #content .toolbar-spacer { display: none !important; }
+  #content .toolbar > .btn,
+  #content .toolbar > select,
+  #content .toolbar > .filter-select { width: 100% !important; }
+}
+
+@media (max-width: 430px) {
+  table.data.tcr-mobile-two-row > tbody > tr {
+    padding: 5px !important;
+    grid-template-rows: repeat(2, minmax(48px, auto)) !important;
+  }
+  table.data.tcr-mobile-two-row > tbody > tr > td {
+    min-height: 48px !important;
+    padding: 5px !important;
+    font-size: 10.5px !important;
+  }
+  table.data.tcr-mobile-two-row > tbody > tr > td::before { font-size: 8px !important; }
+}
+
+/* 594 — Mobil tabloda 3+ işlem butonu için üçüncü satır */
+@media (max-width: 767.98px) {
+  table.data.tcr-mobile-two-row > tbody > tr.tcr-mobile-actions-third-row {
+    grid-template-rows: repeat(2, minmax(52px, auto)) minmax(50px, auto) !important;
+  }
+  table.data.tcr-mobile-two-row > tbody > tr.tcr-mobile-actions-third-row > td.tcr-mobile-action-expanded {
+    grid-column: 1 / -1 !important;
+    grid-row: 3 !important;
+    width: 100% !important;
+    min-height: 50px !important;
+    padding: 7px 8px !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    gap: 10px !important;
+    overflow: visible !important;
+    border-right: 0 !important;
+    border-bottom: 0 !important;
+  }
+  table.data.tcr-mobile-two-row > tbody > tr.tcr-mobile-actions-third-row > td.tcr-mobile-action-expanded::before {
+    width: auto !important;
+    margin: 0 !important;
+    flex: 0 0 auto !important;
+    text-align: left !important;
+  }
+  table.data.tcr-mobile-two-row > tbody > tr.tcr-mobile-actions-third-row > td.tcr-mobile-action-expanded > :is(.flex,.actions,.table-actions,.action-buttons,.row-actions,.finance-actions,.tcr-action-buttons) {
+    width: auto !important;
+    max-width: calc(100% - 68px) !important;
+    margin-left: auto !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: flex-end !important;
+    flex-wrap: wrap !important;
+    gap: 5px !important;
+  }
+  table.data.tcr-mobile-two-row > tbody > tr.tcr-mobile-actions-third-row > td.tcr-mobile-action-expanded > :is(button,a,.btn,.icon-btn,.mini-action,.tcr-action,.tcr-table-action) {
+    margin-left: auto !important;
+  }
+}
+@media (max-width: 430px) {
+  table.data.tcr-mobile-two-row > tbody > tr.tcr-mobile-actions-third-row {
+    grid-template-rows: repeat(2, minmax(48px, auto)) minmax(48px, auto) !important;
+  }
+}
+
+
+/* 591 — Mobil 3. işlem satırı açıklamasız + sayfalama/arama/temizle tek satır */
+@media (max-width: 767.98px) {
+  table.data.tcr-mobile-two-row > tbody > tr.tcr-mobile-actions-third-row > td.tcr-mobile-action-expanded::before {
+    content: none !important;
+    display: none !important;
+  }
+  table.data.tcr-mobile-two-row > tbody > tr.tcr-mobile-actions-third-row > td.tcr-mobile-action-expanded {
+    justify-content: flex-end !important;
+    padding: 6px 8px !important;
+  }
+  table.data.tcr-mobile-two-row > tbody > tr.tcr-mobile-actions-third-row > td.tcr-mobile-action-expanded > :is(.flex,.actions,.table-actions,.action-buttons,.row-actions,.finance-actions,.tcr-action-buttons) {
+    width: 100% !important;
+    max-width: 100% !important;
+    margin-left: 0 !important;
+    justify-content: flex-end !important;
+  }
+
+  #content .tcr-search-action-group {
+    width: 100% !important;
+    min-width: 0 !important;
+  }
+  #content .tcr-search-action-row {
+    display: grid !important;
+    grid-template-columns: 106px minmax(0, 1fr) 42px !important;
+    align-items: center !important;
+    gap: 8px !important;
+    width: 100% !important;
+    min-width: 0 !important;
+  }
+  #content .tcr-search-action-row > .tcr-table-page-size {
+    grid-column: 1 !important;
+    display: block !important;
+    width: 106px !important;
+    min-width: 0 !important;
+    margin: 0 !important;
+  }
+  #content .tcr-search-action-row > .tcr-table-page-size .tcr-table-page-size-label {
+    display: none !important;
+  }
+  #content .tcr-search-action-row > .tcr-table-page-size .tcr-table-page-size-select {
+    width: 100% !important;
+    height: 42px !important;
+    min-height: 42px !important;
+    margin: 0 !important;
+  }
+  #content .tcr-search-action-row > :is(.toolbar-search,.input-icon,.search-box,.filter-search,input) {
+    grid-column: 2 !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    margin: 0 !important;
+  }
+  #content .tcr-search-action-row input {
+    width: 100% !important;
+    height: 42px !important;
+    min-height: 42px !important;
+    margin: 0 !important;
+  }
+  #content .tcr-search-action-row > .tcr-search-clear-btn {
+    grid-column: 3 !important;
+    width: 42px !important;
+    min-width: 42px !important;
+    height: 42px !important;
+    min-height: 42px !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    display: inline-grid !important;
+    place-items: center !important;
+  }
+  #content .tcr-search-action-row > .tcr-search-clear-btn span {
+    display: none !important;
+  }
+}
+
+@media (max-width: 430px) {
+  #content .tcr-search-action-row {
+    grid-template-columns: 90px minmax(0, 1fr) 40px !important;
+    gap: 6px !important;
+  }
+  #content .tcr-search-action-row > .tcr-table-page-size { width: 90px !important; }
+  #content .tcr-search-action-row > .tcr-search-clear-btn {
+    width: 40px !important;
+    min-width: 40px !important;
+  }
+}
+
+
+/* 590 — Temizle butonları yalnız simge + 3. işlem satırı sola hizalı */
+.tcr-search-clear-btn{
+  width:42px!important;
+  min-width:42px!important;
+  padding:0!important;
+  font-size:0!important;
+  line-height:0!important;
+  display:inline-grid!important;
+  place-items:center!important;
+}
+.tcr-search-clear-btn span,
+.tcr-search-clear-btn .label,
+.tcr-search-clear-btn .btn-label{display:none!important}
+.tcr-search-clear-btn svg{width:18px!important;height:18px!important;display:block!important}
+
+@media (max-width:1180px){
+  table.data.tcr-mobile-two-row > tbody > tr.tcr-mobile-actions-third-row > td.tcr-mobile-action-expanded{
+    justify-content:flex-start!important;
+    text-align:left!important;
+  }
+  table.data.tcr-mobile-two-row > tbody > tr.tcr-mobile-actions-third-row > td.tcr-mobile-action-expanded > :is(.flex,.actions,.table-actions,.action-buttons,.row-actions,.finance-actions,.tcr-action-buttons){
+    width:100%!important;
+    max-width:100%!important;
+    margin-left:0!important;
+    margin-right:auto!important;
+    justify-content:flex-start!important;
+    align-items:center!important;
+  }
+  table.data.tcr-mobile-two-row > tbody > tr.tcr-mobile-actions-third-row > td.tcr-mobile-action-expanded > :is(button,a,.btn,.icon-btn,.mini-action,.tcr-action,.tcr-table-action){
+    margin-left:0!important;
+    margin-right:0!important;
+  }
+}
+
+/* 589 — Mobil/tablet üçüncü işlem satırı kesin sol hizalama */
+@media (max-width:1180px){
+  #content table.data.tcr-mobile-two-row > tbody > tr.tcr-mobile-actions-third-row > td.tcr-mobile-action-expanded{
+    display:flex!important;
+    flex-direction:row!important;
+    align-items:center!important;
+    justify-content:flex-start!important;
+    text-align:left!important;
+    gap:6px!important;
+    padding-left:8px!important;
+    padding-right:8px!important;
+  }
+  #content table.data.tcr-mobile-two-row > tbody > tr.tcr-mobile-actions-third-row > td.tcr-mobile-action-expanded > :is(.flex,.actions,.table-actions,.action-buttons,.row-actions,.finance-actions,.tcr-action-buttons){
+    display:flex!important;
+    flex:0 1 auto!important;
+    width:auto!important;
+    max-width:100%!important;
+    margin:0 auto 0 0!important;
+    padding:0!important;
+    justify-content:flex-start!important;
+    align-items:center!important;
+    align-content:flex-start!important;
+    flex-wrap:wrap!important;
+    gap:6px!important;
+  }
+  #content table.data.tcr-mobile-two-row > tbody > tr.tcr-mobile-actions-third-row > td.tcr-mobile-action-expanded > :is(button,a,.btn,.icon-btn,.mini-action,.tcr-action,.tcr-table-action){
+    flex:0 0 auto!important;
+    margin:0!important;
+    inset:auto!important;
+    transform:none!important;
+  }
+}
+
+/* 588 — Cari Kartlar mobil/tablet özel 3 satır yerleşimi
+   1: Durum / Kod / Ünvan
+   2: Bilgi / Tip / Şehir / Vade / Bakiye
+   3: İşlem butonları sola dayalı */
+@media (max-width:1180px){
+  #content #cariTable.data.tcr-mobile-two-row > tbody > tr:not(.tcr-mobile-empty-row){
+    display:grid!important;
+    grid-template-columns:minmax(48px,.65fr) minmax(62px,.85fr) minmax(62px,1fr) minmax(62px,.9fr) minmax(78px,1.15fr)!important;
+    grid-template-rows:minmax(54px,auto) minmax(58px,auto) minmax(48px,auto)!important;
+    width:100%!important;
+    max-width:none!important;
+    overflow:hidden!important;
+  }
+  /* DOM sırasından bağımsız, istenen kesin yerleşim */
+  #content #cariTable.data.tcr-mobile-two-row > tbody > tr > td[data-col="durum"]{
+    grid-column:1!important;grid-row:1!important;
+  }
+  #content #cariTable.data.tcr-mobile-two-row > tbody > tr > td[data-col="kod"]{
+    grid-column:2!important;grid-row:1!important;
+  }
+  #content #cariTable.data.tcr-mobile-two-row > tbody > tr > td[data-col="unvan"]{
+    grid-column:3 / 6!important;grid-row:1!important;
+  }
+  #content #cariTable.data.tcr-mobile-two-row > tbody > tr > td:first-child:not([data-col]){
+    grid-column:1!important;grid-row:2!important;
+  }
+  #content #cariTable.data.tcr-mobile-two-row > tbody > tr > td[data-col="tip"]{
+    grid-column:2!important;grid-row:2!important;
+  }
+  #content #cariTable.data.tcr-mobile-two-row > tbody > tr > td[data-col="sehir"]{
+    grid-column:3!important;grid-row:2!important;
+  }
+  #content #cariTable.data.tcr-mobile-two-row > tbody > tr > td[data-col="vade"]{
+    grid-column:4!important;grid-row:2!important;
+  }
+  #content #cariTable.data.tcr-mobile-two-row > tbody > tr > td[data-col="bakiye"]{
+    grid-column:5!important;grid-row:2!important;
+  }
+  /* İstenen mobil özette Yetkili gösterilmez. */
+  #content #cariTable.data.tcr-mobile-two-row > tbody > tr > td[data-col="yetkili"]{
+    display:none!important;
+  }
+  #content #cariTable.data.tcr-mobile-two-row > tbody > tr > td.tcr-action-column,
+  #content #cariTable.data.tcr-mobile-two-row > tbody > tr > td.tcr-mobile-action-expanded{
+    grid-column:1 / 6!important;
+    grid-row:3!important;
+    width:100%!important;
+    min-height:48px!important;
+    display:flex!important;
+    flex-direction:row!important;
+    align-items:center!important;
+    justify-content:flex-start!important;
+    padding:6px 8px!important;
+    overflow:visible!important;
+    border-right:0!important;
+    border-bottom:0!important;
+    text-align:left!important;
+  }
+  #content #cariTable.data.tcr-mobile-two-row > tbody > tr > td.tcr-action-column::before,
+  #content #cariTable.data.tcr-mobile-two-row > tbody > tr > td.tcr-mobile-action-expanded::before{
+    content:none!important;display:none!important;
+  }
+  #content #cariTable.data.tcr-mobile-two-row > tbody > tr > td.tcr-action-column > :is(.flex,.actions,.table-actions,.action-buttons,.row-actions,.finance-actions,.tcr-action-buttons),
+  #content #cariTable.data.tcr-mobile-two-row > tbody > tr > td.tcr-mobile-action-expanded > :is(.flex,.actions,.table-actions,.action-buttons,.row-actions,.finance-actions,.tcr-action-buttons){
+    display:flex!important;
+    width:100%!important;
+    max-width:100%!important;
+    margin:0!important;
+    justify-content:flex-start!important;
+    align-items:center!important;
+    flex-wrap:wrap!important;
+    gap:6px!important;
+  }
+  #content #cariTable.data.tcr-mobile-two-row > tbody > tr > td{
+    width:100%!important;
+    min-width:0!important;
+    box-sizing:border-box!important;
+  }
+}
+
+@media (max-width:430px){
+  #content #cariTable.data.tcr-mobile-two-row > tbody > tr:not(.tcr-mobile-empty-row){
+    grid-template-columns:minmax(45px,.62fr) minmax(58px,.82fr) minmax(58px,.95fr) minmax(56px,.82fr) minmax(74px,1.12fr)!important;
+    grid-template-rows:minmax(52px,auto) minmax(58px,auto) minmax(47px,auto)!important;
+  }
+  #content #cariTable.data.tcr-mobile-two-row > tbody > tr > td{
+    padding:5px 6px!important;
+  }
+}
+
+
+/* 587 — Cari mobil/tablet: yalnız 3 KPI, bilgi kolonu kaldırıldı, tam genişlik ve Metro alt menü */
+.cari-mobile-nav{display:none}
+@media (max-width:1180px){
+  body:has(.cari-mobile-nav){padding-bottom:78px!important}
+  #content .page-head .page-actions{display:none!important}
+  #content .tcr-ac-grid > .tcr-action-card:nth-child(-n+3){display:none!important}
+  #content .tcr-ac-grid{grid-template-columns:1fr!important;gap:10px!important}
+  #content .tcr-ac-grid > .tcr-action-card{min-height:70px!important}
+
+  .cari-mobile-nav{
+    position:fixed;z-index:1300;left:0;right:0;bottom:0;
+    display:grid;grid-template-columns:repeat(5,minmax(0,1fr));
+    background:#fff;border-top:1px solid #dbe4f0;
+    box-shadow:0 -8px 24px rgba(15,23,42,.12);
+    padding:7px max(6px,env(safe-area-inset-right)) calc(7px + env(safe-area-inset-bottom)) max(6px,env(safe-area-inset-left));
+  }
+  .cari-mobile-nav button{
+    min-width:0;border:0;background:transparent;color:#64748b;
+    display:grid;justify-items:center;align-content:center;gap:3px;
+    padding:4px 2px;font-size:10px;font-weight:800;cursor:pointer;
+  }
+  .cari-mobile-nav button svg{width:20px;height:20px}
+  .cari-mobile-nav button.active{color:#0f4f94}
+  .cari-mobile-nav button:nth-child(2){color:#059669}
+  .cari-mobile-nav button:nth-child(4){color:#dc2626}
+  .cari-mobile-nav button:nth-child(5){color:#16a34a}
+
+  #content #cariTable.data.tcr-mobile-two-row > tbody > tr:not(.tcr-mobile-empty-row){
+    grid-template-columns:minmax(64px,.8fr) minmax(72px,.9fr) minmax(0,2.6fr) minmax(0,0fr)!important;
+    grid-template-rows:minmax(58px,auto) minmax(62px,auto) minmax(48px,auto)!important;
+    width:100%!important;max-width:100%!important;
+  }
+  #content #cariTable.data.tcr-mobile-two-row > tbody > tr > td:first-child:not([data-col]){
+    display:none!important;
+  }
+  #content #cariTable.data.tcr-mobile-two-row > tbody > tr > td[data-col="durum"]{grid-column:1!important;grid-row:1!important}
+  #content #cariTable.data.tcr-mobile-two-row > tbody > tr > td[data-col="kod"]{grid-column:2!important;grid-row:1!important}
+  #content #cariTable.data.tcr-mobile-two-row > tbody > tr > td[data-col="unvan"]{grid-column:3 / 5!important;grid-row:1!important}
+  #content #cariTable.data.tcr-mobile-two-row > tbody > tr > td[data-col="tip"]{grid-column:1!important;grid-row:2!important}
+  #content #cariTable.data.tcr-mobile-two-row > tbody > tr > td[data-col="sehir"]{grid-column:2!important;grid-row:2!important}
+  #content #cariTable.data.tcr-mobile-two-row > tbody > tr > td[data-col="vade"]{grid-column:3!important;grid-row:2!important}
+  #content #cariTable.data.tcr-mobile-two-row > tbody > tr > td[data-col="bakiye"]{grid-column:4!important;grid-row:2!important}
+  #content #cariTable.data.tcr-mobile-two-row > tbody > tr > td[data-col="yetkili"]{display:none!important}
+  #content #cariTable.data.tcr-mobile-two-row > tbody > tr > td.tcr-action-column,
+  #content #cariTable.data.tcr-mobile-two-row > tbody > tr > td.tcr-mobile-action-expanded{
+    grid-column:1 / 5!important;grid-row:3!important;width:100%!important;
+  }
+  #content #cariTable.data.tcr-mobile-two-row > tbody > tr > td[data-col="bakiye"].text-danger,
+  #content #cariTable.data.tcr-mobile-two-row > tbody > tr > td[data-col="bakiye"] .text-danger,
+  #content #cariTable.data.tcr-mobile-two-row > tbody > tr > td[data-col="bakiye"].text-danger .cari-balance-hint{color:#dc2626!important;font-weight:900!important}
+  #content #cariTable.data.tcr-mobile-two-row > tbody > tr > td[data-col="bakiye"].text-success,
+  #content #cariTable.data.tcr-mobile-two-row > tbody > tr > td[data-col="bakiye"] .text-success,
+  #content #cariTable.data.tcr-mobile-two-row > tbody > tr > td[data-col="bakiye"].text-success .cari-balance-hint{color:#16a34a!important;font-weight:900!important}
+  #content .cari-list-card .card-body{padding-left:8px!important;padding-right:8px!important}
+  #content #cariTable.data.tcr-mobile-two-row{width:100%!important;max-width:100%!important}
+}
+@media (max-width:430px){
+  #content #cariTable.data.tcr-mobile-two-row > tbody > tr:not(.tcr-mobile-empty-row){
+    grid-template-columns:minmax(58px,.78fr) minmax(66px,.86fr) minmax(72px,1fr) minmax(92px,1.2fr)!important;
+  }
+}
+
+/* 586 — Cari mobil tablo kesin 3 satır yerleşimi */
+@media (max-width:1180px){
+  #content #cariTable.data.tcr-mobile-two-row > tbody > tr:not(.tcr-mobile-empty-row){
+    display:grid!important;
+    grid-template-columns:minmax(62px,.75fr) minmax(72px,.85fr) minmax(72px,.9fr) minmax(92px,1.15fr)!important;
+    grid-template-rows:minmax(58px,auto) minmax(62px,auto) minmax(50px,auto)!important;
+    width:100%!important;max-width:100%!important;overflow:hidden!important;
+  }
+  #content #cariTable.data.tcr-mobile-two-row > tbody > tr > td[data-col="bilgi"]{
+    display:none!important;
+  }
+  #content #cariTable.data.tcr-mobile-two-row > tbody > tr > td[data-col="durum"]{grid-column:1!important;grid-row:1!important}
+  #content #cariTable.data.tcr-mobile-two-row > tbody > tr > td[data-col="kod"]{grid-column:2!important;grid-row:1!important}
+  #content #cariTable.data.tcr-mobile-two-row > tbody > tr > td[data-col="unvan"]{grid-column:3 / 5!important;grid-row:1!important}
+  #content #cariTable.data.tcr-mobile-two-row > tbody > tr > td[data-col="tip"]{grid-column:1!important;grid-row:2!important}
+  #content #cariTable.data.tcr-mobile-two-row > tbody > tr > td[data-col="sehir"]{grid-column:2!important;grid-row:2!important}
+  #content #cariTable.data.tcr-mobile-two-row > tbody > tr > td[data-col="vade"]{grid-column:3!important;grid-row:2!important}
+  #content #cariTable.data.tcr-mobile-two-row > tbody > tr > td[data-col="bakiye"]{grid-column:4!important;grid-row:2!important;min-width:0!important;word-break:normal!important;overflow-wrap:anywhere!important}
+  #content #cariTable.data.tcr-mobile-two-row > tbody > tr > td[data-col="yetkili"]{display:none!important}
+  #content #cariTable.data.tcr-mobile-two-row > tbody > tr > td.tcr-action-column,
+  #content #cariTable.data.tcr-mobile-two-row > tbody > tr > td.tcr-mobile-action-expanded{
+    grid-column:1 / 5!important;grid-row:3!important;width:100%!important;max-width:100%!important;
+    display:flex!important;justify-content:flex-start!important;align-items:center!important;
+    padding:7px 8px!important;border-right:0!important;border-bottom:0!important;
+  }
+  #content #cariTable.data.tcr-mobile-two-row > tbody > tr > td.tcr-action-column > *,
+  #content #cariTable.data.tcr-mobile-two-row > tbody > tr > td.tcr-mobile-action-expanded > *{
+    margin-left:0!important;margin-right:auto!important;justify-content:flex-start!important;
+  }
+  #content #cariTable.data.tcr-mobile-two-row > tbody > tr > td[data-col="bakiye"].tcr-balance-debit,
+  #content #cariTable.data.tcr-mobile-two-row > tbody > tr > td[data-col="bakiye"].tcr-balance-debit *{
+    color:#dc2626!important;font-weight:900!important;
+  }
+  #content #cariTable.data.tcr-mobile-two-row > tbody > tr > td[data-col="bakiye"].tcr-balance-credit,
+  #content #cariTable.data.tcr-mobile-two-row > tbody > tr > td[data-col="bakiye"].tcr-balance-credit *{
+    color:#16a34a!important;font-weight:900!important;
+  }
+  #content #cariTable.data.tcr-mobile-two-row > tbody > tr > td[data-col="bakiye"].tcr-balance-neutral,
+  #content #cariTable.data.tcr-mobile-two-row > tbody > tr > td[data-col="bakiye"].tcr-balance-neutral *{
+    color:#0f172a!important;font-weight:900!important;
+  }
+}
+
+/* 585 — Cari mobil iyileştirmeleri */
+@media (max-width:1180px){
+  /* Cari listesinde toplam bakiye özeti kaldırıldıktan sonra araç çubuğunu sıkılaştır */
+  #content .cari-list-card .toolbar{margin-bottom:8px!important}
+
+  /* Cari satır yüksekliği ve bakiye görünürlüğü */
+  #content #cariTable.data.tcr-mobile-two-row > tbody > tr:not(.tcr-mobile-empty-row){
+    grid-template-rows:minmax(50px,auto) minmax(54px,auto) minmax(46px,auto)!important;
+  }
+  #content #cariTable.data.tcr-mobile-two-row > tbody > tr > td{
+    padding:5px 7px!important;min-height:0!important;
+  }
+  #content #cariTable.data.tcr-mobile-two-row > tbody > tr > td[data-col="bakiye"]{
+    font-size:15px!important;line-height:1.12!important;font-weight:900!important;
+  }
+  #content #cariTable.data.tcr-mobile-two-row > tbody > tr > td[data-col="bakiye"] .cari-balance-hint{
+    font-size:15px!important;line-height:1.12!important;font-weight:900!important;
+  }
+
+  /* Yeni Cari Kartı: metro tip sabit işlem menüsü */
+  body:has(.cari-form-mobile-nav){padding-bottom:78px!important}
+  body:has(.cari-form-mobile-nav) #content .page-head .page-actions,
+  body:has(.cari-form-mobile-nav) #content .form-page-side .card:last-child{display:none!important}
+  .cari-form-mobile-nav{
+    position:fixed;z-index:1300;left:0;right:0;bottom:0;
+    display:grid;grid-template-columns:repeat(4,minmax(0,1fr));
+    background:#fff;border-top:1px solid #dbe4f0;
+    box-shadow:0 -8px 24px rgba(15,23,42,.14);
+    padding:7px max(6px,env(safe-area-inset-right)) calc(7px + env(safe-area-inset-bottom)) max(6px,env(safe-area-inset-left));
+  }
+  .cari-form-mobile-nav a,.cari-form-mobile-nav button{
+    min-width:0;border:0;background:transparent;color:#2563eb;text-decoration:none;
+    display:grid;justify-items:center;align-content:center;gap:3px;
+    padding:4px 2px;font:800 10px Inter,system-ui,sans-serif;cursor:pointer;
+  }
+  .cari-form-mobile-nav svg{width:20px;height:20px}
+  .cari-form-mobile-nav .save{color:#059669}
+  .cari-form-mobile-nav .cancel{color:#dc2626}
+}
+@media (min-width:1181px){.cari-form-mobile-nav{display:none!important}}
+
+/* 584 — Cari alt modülleri mobil/tablet tablo ve işlem standardı */
+@media (max-width:1180px){
+  /* Cari İşlemler / Cari Fişler / Cari Ekstre: yatay kaydırmasız kart tablo */
+  #content :is(#cariIslemTable,#cariFisTable,#ekstreTable).data.tcr-mobile-two-row{
+    width:100%!important;max-width:100%!important;min-width:0!important;
+  }
+  #content :is(#cariIslemTable,#cariFisTable,#ekstreTable).data.tcr-mobile-two-row > tbody{
+    display:grid!important;gap:10px!important;width:100%!important;
+  }
+  #content :is(#cariIslemTable,#cariFisTable,#ekstreTable).data.tcr-mobile-two-row > tbody > tr:not(.tcr-mobile-empty-row){
+    display:grid!important;width:100%!important;max-width:100%!important;min-width:0!important;
+    grid-template-columns:repeat(4,minmax(0,1fr))!important;
+    grid-template-rows:minmax(54px,auto) minmax(58px,auto) minmax(48px,auto)!important;
+    border:1px solid #d8e2ee!important;border-left:5px solid #0f6fb5!important;border-radius:14px!important;
+    overflow:hidden!important;background:#fff!important;box-shadow:0 2px 8px rgba(15,23,42,.05)!important;
+  }
+  #content :is(#cariIslemTable,#cariFisTable,#ekstreTable).data.tcr-mobile-two-row > tbody > tr > td{
+    width:100%!important;min-width:0!important;max-width:none!important;box-sizing:border-box!important;
+    padding:6px 8px!important;white-space:normal!important;overflow-wrap:anywhere!important;
+  }
+  #content :is(#cariIslemTable,#cariFisTable,#ekstreTable).data.tcr-mobile-two-row > tbody > tr > td.tcr-action-column,
+  #content :is(#cariIslemTable,#cariFisTable,#ekstreTable).data.tcr-mobile-two-row > tbody > tr > td.tcr-mobile-action-expanded,
+  #content #ekstreTable.data.tcr-mobile-two-row > tbody > tr > td:last-child{
+    grid-column:1 / -1!important;grid-row:3!important;display:flex!important;align-items:center!important;
+    justify-content:flex-start!important;gap:6px!important;min-height:48px!important;padding:6px 8px!important;
+    border-right:0!important;border-bottom:0!important;text-align:left!important;
+  }
+  #content :is(#cariIslemTable,#cariFisTable,#ekstreTable).data.tcr-mobile-two-row > tbody > tr > td.tcr-action-column::before,
+  #content :is(#cariIslemTable,#cariFisTable,#ekstreTable).data.tcr-mobile-two-row > tbody > tr > td.tcr-mobile-action-expanded::before,
+  #content #ekstreTable.data.tcr-mobile-two-row > tbody > tr > td:last-child::before{display:none!important;content:none!important}
+  #content :is(#cariIslemTable,#cariFisTable,#ekstreTable).data.tcr-mobile-two-row > tbody > tr > td.tcr-action-column > *,
+  #content :is(#cariIslemTable,#cariFisTable,#ekstreTable).data.tcr-mobile-two-row > tbody > tr > td.tcr-mobile-action-expanded > *,
+  #content #ekstreTable.data.tcr-mobile-two-row > tbody > tr > td:last-child > *{margin:0!important;justify-content:flex-start!important}
+
+  /* Cari İşlemler: 1. satır no-tip-tarih-cari, 2. satır kanal-tutar-durum-açıklama */
+  #content #cariIslemTable > tbody > tr > td:nth-child(1){grid-column:1;grid-row:1}
+  #content #cariIslemTable > tbody > tr > td:nth-child(2){grid-column:2;grid-row:1}
+  #content #cariIslemTable > tbody > tr > td:nth-child(3){grid-column:3;grid-row:1}
+  #content #cariIslemTable > tbody > tr > td:nth-child(4){grid-column:4;grid-row:1}
+  #content #cariIslemTable > tbody > tr > td:nth-child(5){grid-column:1;grid-row:2}
+  #content #cariIslemTable > tbody > tr > td:nth-child(6){grid-column:2;grid-row:2;font-size:13px!important;font-weight:900!important}
+  #content #cariIslemTable > tbody > tr > td:nth-child(7){grid-column:3;grid-row:2}
+  #content #cariIslemTable > tbody > tr > td:nth-child(8){grid-column:4;grid-row:2}
+  #content #cariIslemTable > tbody > tr > td:nth-child(9){grid-column:1/-1;grid-row:3}
+
+  /* Cari Fişler: 1. satır fiş-tip-tarih-cari, 2. satır kalem-borç-alacak-durum; açıklama mobil özette gizli */
+  #content #cariFisTable > tbody > tr > td:nth-child(1){grid-column:1;grid-row:1}
+  #content #cariFisTable > tbody > tr > td:nth-child(2){grid-column:2;grid-row:1}
+  #content #cariFisTable > tbody > tr > td:nth-child(3){grid-column:3;grid-row:1}
+  #content #cariFisTable > tbody > tr > td:nth-child(4){grid-column:4;grid-row:1}
+  #content #cariFisTable > tbody > tr > td:nth-child(5){grid-column:1;grid-row:2}
+  #content #cariFisTable > tbody > tr > td:nth-child(6){grid-column:2;grid-row:2;color:#dc2626!important;font-size:13px!important;font-weight:900!important}
+  #content #cariFisTable > tbody > tr > td:nth-child(7){grid-column:3;grid-row:2;color:#16a34a!important;font-size:13px!important;font-weight:900!important}
+  #content #cariFisTable > tbody > tr > td:nth-child(8){grid-column:4;grid-row:2}
+  #content #cariFisTable > tbody > tr > td:nth-child(9){display:none!important}
+  #content #cariFisTable > tbody > tr > td:nth-child(10){grid-column:1/-1;grid-row:3}
+
+  /* Cari Ekstre: 1. satır tarih-fiş-tür-açıklama, 2. satır borç-alacak-bakiye; işlem üçüncü satır */
+  #content #ekstreTable > tbody > tr > td:nth-child(1){grid-column:1;grid-row:1}
+  #content #ekstreTable > tbody > tr > td:nth-child(2){grid-column:2;grid-row:1}
+  #content #ekstreTable > tbody > tr > td:nth-child(3){grid-column:3;grid-row:1}
+  #content #ekstreTable > tbody > tr > td:nth-child(4){grid-column:4;grid-row:1}
+  #content #ekstreTable > tbody > tr > td:nth-child(5){grid-column:1;grid-row:2;color:#dc2626!important;font-weight:900!important}
+  #content #ekstreTable > tbody > tr > td:nth-child(6){grid-column:2;grid-row:2;color:#16a34a!important;font-weight:900!important}
+  #content #ekstreTable > tbody > tr > td:nth-child(7){grid-column:3/5;grid-row:2;font-size:14px!important;font-weight:900!important}
+  #content #ekstreTable > tbody > tr > td:nth-child(8){grid-column:1/-1;grid-row:3}
+
+  /* Cari seç modalı: tablo kartları ve işlem alanı */
+  .picker-modal-box .table-wrap{overflow-x:hidden!important}
+  .picker-modal-box table.data.tcr-mobile-two-row{min-width:0!important;width:100%!important}
+  .picker-modal-box table.data.tcr-mobile-two-row > tbody > tr:not(.tcr-mobile-empty-row){
+    width:100%!important;max-width:100%!important;grid-template-columns:repeat(4,minmax(0,1fr))!important;
+    grid-template-rows:repeat(2,minmax(52px,auto)) minmax(46px,auto)!important;
+  }
+  .picker-modal-box table.data.tcr-mobile-two-row > tbody > tr > td:last-child{
+    grid-column:1/-1!important;grid-row:3!important;justify-content:flex-start!important;
+  }
+
+  /* Tablet üst menü: tek satır, taşmasız */
+  .topbar{flex-wrap:nowrap!important;height:64px!important;min-height:64px!important;align-content:center!important;overflow:hidden!important}
+  .main{padding-top:64px!important}
+  .topbar-weather{order:initial!important;flex:1 1 auto!important;max-width:250px!important;min-width:120px!important}
+  .topbar-actions{order:initial!important;width:auto!important;margin-left:auto!important;justify-content:flex-end!important;flex-wrap:nowrap!important;overflow:visible!important}
+  .topbar-actions > .icon-btn,.topbar-actions > .topbar-tool-btn,.topbar-logout-btn,.topbar-user{
+    width:38px!important;height:38px!important;min-width:38px!important;flex:0 0 38px!important;
+  }
+}
+
+@media (max-width:767.98px){
+  #content :is(#cariIslemTable,#cariFisTable,#ekstreTable).data.tcr-mobile-two-row > tbody > tr:not(.tcr-mobile-empty-row){
+    grid-template-columns:repeat(4,minmax(0,1fr))!important;
+  }
+  #content :is(#cariIslemTable,#cariFisTable,#ekstreTable).data.tcr-mobile-two-row > tbody > tr > td{
+    font-size:10.5px!important;padding:5px 6px!important;
+  }
+  .topbar{height:58px!important;min-height:58px!important;padding:5px 7px!important;gap:4px!important}
+  .main{padding-top:58px!important}
+  .topbar-weather{min-width:48px!important;max-width:76px!important;flex:0 0 76px!important}
+  .topbar-weather-copy{display:none!important}
+  .topbar-actions{gap:3px!important}
+  .topbar-actions > .icon-btn,.topbar-actions > .topbar-tool-btn,.topbar-logout-btn,.topbar-user{
+    width:32px!important;height:32px!important;min-width:32px!important;flex-basis:32px!important;
+  }
+}
+
+/* 583 — Cari tablet kart tablo + genel Metro işlem menüsü */
+@media (min-width:768px) and (max-width:1180px){
+  body.tcr-cari-module{padding-bottom:82px!important}
+  body.tcr-cari-module .page-head .page-actions{display:none!important}
+
+  #content .table-wrap,
+  #content .table-responsive,
+  #content .data-wrap{overflow:visible!important;max-width:100%!important}
+
+  #content #cariTable.data.tcr-mobile-two-row{
+    display:block!important;width:100%!important;min-width:0!important;max-width:100%!important;
+    table-layout:auto!important;border-collapse:separate!important;border-spacing:0 10px!important;
+  }
+  #content #cariTable.data.tcr-mobile-two-row>thead,
+  #content #cariTable.data.tcr-mobile-two-row>tfoot{display:none!important}
+  #content #cariTable.data.tcr-mobile-two-row>tbody{display:block!important;width:100%!important}
+  #content #cariTable.data.tcr-mobile-two-row>tbody>tr:not(.tcr-mobile-empty-row){
+    display:grid!important;
+    grid-template-columns:minmax(90px,.8fr) minmax(110px,.9fr) minmax(180px,2fr) minmax(100px,.9fr)!important;
+    grid-template-rows:minmax(58px,auto) minmax(62px,auto) minmax(52px,auto)!important;
+    width:100%!important;max-width:100%!important;min-width:0!important;
+    margin:0 0 10px!important;border:1px solid #d7e1ef!important;border-left:5px solid #1769aa!important;
+    border-radius:14px!important;overflow:hidden!important;background:#fff!important;box-shadow:0 2px 8px rgba(15,23,42,.05)!important;
+  }
+  #content #cariTable.data.tcr-mobile-two-row>tbody>tr>td{
+    display:flex!important;flex-direction:column!important;justify-content:center!important;
+    min-width:0!important;width:auto!important;padding:8px 10px!important;border-right:1px solid #e6edf6!important;border-bottom:1px solid #e6edf6!important;
+    white-space:normal!important;overflow-wrap:anywhere!important;word-break:normal!important;
+  }
+  #content #cariTable.data.tcr-mobile-two-row>tbody>tr>td::before{
+    content:attr(data-tcr-mobile-label)!important;display:block!important;margin-bottom:3px!important;
+    font-size:9px!important;line-height:1!important;font-weight:800!important;color:#536987!important;text-transform:uppercase!important;
+  }
+  #content #cariTable.data.tcr-mobile-two-row>tbody>tr>td[data-col="durum"]{grid-column:1!important;grid-row:1!important}
+  #content #cariTable.data.tcr-mobile-two-row>tbody>tr>td[data-col="kod"]{grid-column:2!important;grid-row:1!important}
+  #content #cariTable.data.tcr-mobile-two-row>tbody>tr>td[data-col="unvan"]{grid-column:3/5!important;grid-row:1!important}
+  #content #cariTable.data.tcr-mobile-two-row>tbody>tr>td[data-col="tip"]{grid-column:1!important;grid-row:2!important}
+  #content #cariTable.data.tcr-mobile-two-row>tbody>tr>td[data-col="sehir"]{grid-column:2!important;grid-row:2!important}
+  #content #cariTable.data.tcr-mobile-two-row>tbody>tr>td[data-col="vade"]{grid-column:3!important;grid-row:2!important}
+  #content #cariTable.data.tcr-mobile-two-row>tbody>tr>td[data-col="bakiye"]{grid-column:4!important;grid-row:2!important;font-size:16px!important;font-weight:900!important}
+  #content #cariTable.data.tcr-mobile-two-row>tbody>tr>td:first-child:not([data-col]),
+  #content #cariTable.data.tcr-mobile-two-row>tbody>tr>td[data-col="bilgi"],
+  #content #cariTable.data.tcr-mobile-two-row>tbody>tr>td[data-col="yetkili"]{display:none!important}
+  #content #cariTable.data.tcr-mobile-two-row>tbody>tr>td.tcr-action-column,
+  #content #cariTable.data.tcr-mobile-two-row>tbody>tr>td.tcr-mobile-action-expanded{
+    grid-column:1/5!important;grid-row:3!important;display:flex!important;flex-direction:row!important;
+    align-items:center!important;justify-content:flex-start!important;width:100%!important;max-width:100%!important;
+    padding:7px 10px!important;border-right:0!important;border-bottom:0!important;
+  }
+  #content #cariTable.data.tcr-mobile-two-row>tbody>tr>td.tcr-action-column::before,
+  #content #cariTable.data.tcr-mobile-two-row>tbody>tr>td.tcr-mobile-action-expanded::before{display:none!important;content:none!important}
+  #content #cariTable.data.tcr-mobile-two-row>tbody>tr>td.tcr-action-column>*{margin:0 auto 0 0!important;justify-content:flex-start!important;flex-wrap:wrap!important}
+}
+
+.tcr-metro-actions{display:none}
+@media (max-width:1180px){
+  .tcr-metro-actions{
+    position:fixed!important;left:0!important;right:0!important;bottom:0!important;z-index:1600!important;
+    display:grid!important;grid-auto-flow:column!important;grid-auto-columns:minmax(72px,1fr)!important;
+    overflow-x:auto!important;overscroll-behavior-x:contain!important;background:#fff!important;
+    border-top:1px solid #d8e2ef!important;box-shadow:0 -8px 24px rgba(15,23,42,.13)!important;
+    padding:6px max(6px,env(safe-area-inset-right)) calc(6px + env(safe-area-inset-bottom)) max(6px,env(safe-area-inset-left))!important;
+  }
+  .tcr-metro-actions>a,.tcr-metro-actions>button{
+    border:0!important;background:transparent!important;min-width:72px!important;min-height:54px!important;
+    display:flex!important;flex-direction:column!important;align-items:center!important;justify-content:center!important;
+    gap:4px!important;padding:4px 7px!important;color:#37506f!important;font-size:10px!important;font-weight:800!important;text-decoration:none!important;white-space:nowrap!important;
+  }
+  .tcr-metro-actions svg{width:21px!important;height:21px!important;flex:none!important}
+  .tcr-metro-actions .is-primary{color:#059669!important}
+  .tcr-metro-actions .is-danger{color:#dc2626!important}
+  .tcr-metro-actions .is-info{color:#1769aa!important}
+  body.tcr-cari-module{padding-bottom:78px!important}
+  body.tcr-cari-module .page-head>.page-actions{display:none!important}
+  body.tcr-cari-module .cari-mobile-nav{display:none!important}
+}
+
+/* 582 — Mobil menü sabit sol + cari tablet tabloları + tablet KPI dizilimi */
+@media (max-width:767.98px){
+  /* Hamburger her zaman header'ın en solunda kalır */
+  .topbar{
+    position:fixed!important;
+    left:0!important;right:0!important;top:0!important;
+    display:flex!important;flex-direction:row!important;flex-wrap:nowrap!important;
+    align-items:center!important;justify-content:flex-start!important;
+  }
+  .topbar > .icon-btn:first-child{
+    position:relative!important;left:auto!important;right:auto!important;top:auto!important;
+    order:-100!important;margin-left:0!important;margin-right:4px!important;
+    transform:none!important;float:none!important;flex:0 0 40px!important;
+    align-self:center!important;
+  }
+  .topbar-weather{order:-90!important;margin-left:0!important;margin-right:0!important}
+  .topbar-actions{order:100!important;margin-left:auto!important;margin-right:0!important}
+}
+
+@media (min-width:768px) and (max-width:1180px){
+  /* Cari modüllerindeki KPI kartları tablet görünümünde yan yana */
+  body.tcr-cari-module #content :is(.tcr-ac-grid,.kpi-grid,.erp-kpi-grid,.erp-mini-kpi-grid,.kpi-card-grid,.finance-kpi-grid,.summary-grid){
+    display:grid!important;
+    grid-template-columns:repeat(auto-fit,minmax(170px,1fr))!important;
+    grid-auto-flow:row!important;
+    gap:10px!important;
+    width:100%!important;
+  }
+  body.tcr-cari-module #content :is(.tcr-ac-grid,.kpi-grid,.erp-kpi-grid,.erp-mini-kpi-grid,.kpi-card-grid,.finance-kpi-grid,.summary-grid) > *{
+    width:100%!important;min-width:0!important;margin:0!important;
+  }
+
+  /* Cari İşlemler, Cari Fişler ve Cari Ekstre tablet kart-tablosu */
+  #content :is(#cariIslemTable,#cariFisTable,#ekstreTable).data.tcr-mobile-two-row{
+    display:block!important;width:100%!important;min-width:0!important;max-width:100%!important;
+    table-layout:auto!important;border-collapse:separate!important;border-spacing:0!important;
+  }
+  #content :is(#cariIslemTable,#cariFisTable,#ekstreTable).data.tcr-mobile-two-row > thead,
+  #content :is(#cariIslemTable,#cariFisTable,#ekstreTable).data.tcr-mobile-two-row > tfoot{display:none!important}
+  #content :is(#cariIslemTable,#cariFisTable,#ekstreTable).data.tcr-mobile-two-row > tbody{
+    display:grid!important;grid-template-columns:1fr!important;gap:10px!important;width:100%!important;
+  }
+  #content :is(#cariIslemTable,#cariFisTable,#ekstreTable).data.tcr-mobile-two-row > tbody > tr:not(.tcr-mobile-empty-row){
+    display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr))!important;
+    grid-template-rows:minmax(58px,auto) minmax(62px,auto) minmax(50px,auto)!important;
+    width:100%!important;min-width:0!important;max-width:100%!important;margin:0!important;
+    border:1px solid #d7e1ef!important;border-left:5px solid #1769aa!important;border-radius:14px!important;
+    overflow:hidden!important;background:#fff!important;box-shadow:0 2px 8px rgba(15,23,42,.05)!important;
+  }
+  #content :is(#cariIslemTable,#cariFisTable,#ekstreTable).data.tcr-mobile-two-row > tbody > tr > td{
+    display:flex!important;flex-direction:column!important;justify-content:center!important;
+    width:auto!important;min-width:0!important;max-width:none!important;padding:8px 10px!important;
+    border-right:1px solid #e6edf6!important;border-bottom:1px solid #e6edf6!important;
+    white-space:normal!important;overflow-wrap:anywhere!important;word-break:normal!important;
+  }
+  #content :is(#cariIslemTable,#cariFisTable,#ekstreTable).data.tcr-mobile-two-row > tbody > tr > td::before{
+    content:attr(data-tcr-mobile-label)!important;display:block!important;margin-bottom:3px!important;
+    font-size:9px!important;line-height:1!important;font-weight:800!important;color:#536987!important;text-transform:uppercase!important;
+  }
+  #content :is(#cariIslemTable,#cariFisTable,#ekstreTable).data.tcr-mobile-two-row > tbody > tr > td.tcr-action-column,
+  #content :is(#cariIslemTable,#cariFisTable,#ekstreTable).data.tcr-mobile-two-row > tbody > tr > td.tcr-mobile-action-expanded,
+  #content #ekstreTable.data.tcr-mobile-two-row > tbody > tr > td:last-child{
+    grid-column:1/-1!important;grid-row:3!important;display:flex!important;flex-direction:row!important;
+    align-items:center!important;justify-content:flex-start!important;gap:6px!important;width:100%!important;
+    padding:7px 10px!important;border-right:0!important;border-bottom:0!important;text-align:left!important;
+  }
+  #content :is(#cariIslemTable,#cariFisTable,#ekstreTable).data.tcr-mobile-two-row > tbody > tr > td.tcr-action-column::before,
+  #content :is(#cariIslemTable,#cariFisTable,#ekstreTable).data.tcr-mobile-two-row > tbody > tr > td.tcr-mobile-action-expanded::before,
+  #content #ekstreTable.data.tcr-mobile-two-row > tbody > tr > td:last-child::before{display:none!important;content:none!important}
+  #content :is(#cariIslemTable,#cariFisTable,#ekstreTable).data.tcr-mobile-two-row > tbody > tr > td.tcr-action-column > *,
+  #content :is(#cariIslemTable,#cariFisTable,#ekstreTable).data.tcr-mobile-two-row > tbody > tr > td.tcr-mobile-action-expanded > *,
+  #content #ekstreTable.data.tcr-mobile-two-row > tbody > tr > td:last-child > *{
+    margin:0 auto 0 0!important;justify-content:flex-start!important;flex-wrap:wrap!important;
+  }
+
+  /* Araç çubuklarında tablet yatay taşmasını engelle */
+  body.tcr-cari-module #content :is(.table-wrap,.table-responsive,.data-wrap){overflow-x:hidden!important;max-width:100%!important}
+}
+
+/* 581 — Cari mobil/tablet işlem tablosu ve Export Metro standardı */
+.tcr-export-popover{display:none}
+@media (max-width:1180px){
+  .tcr-export-popover{
+    position:fixed;z-index:1900;left:12px;right:12px;bottom:76px;
+    display:none;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;
+    padding:10px;background:#fff;border:1px solid #d7e1ee;border-radius:16px;
+    box-shadow:0 -10px 32px rgba(15,23,42,.18)
+  }
+  .tcr-export-popover.show{display:grid}
+  .tcr-export-popover button{border:1px solid #d9e4f1;background:#fff;border-radius:12px;min-height:64px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;font-size:10px;font-weight:800;color:#163e72}
+  .tcr-export-popover svg{width:22px;height:22px}
+  body:has(#cariIslemTable) .page-head{display:none!important}
+  body:has(#cariIslemTable) .tcr-ac-grid.cols-2{display:none!important}
+  body:has(#cariIslemTable) #cariIslemTable thead{display:none!important}
+  body:has(#cariIslemTable) .ci-table-wrap{overflow:visible!important}
+  body:has(#cariIslemTable) #cariIslemTable,
+  body:has(#cariIslemTable) #cariIslemTable tbody{display:block!important;width:100%!important}
+  body:has(#cariIslemTable) #cariIslemTable tbody tr{
+    display:grid!important;grid-template-columns:.78fr .9fr 1fr 1.65fr!important;
+    grid-template-rows:auto auto auto!important;width:100%!important;max-width:100%!important;
+    margin:0 0 10px!important;border:1px solid #d6e1ef!important;border-left:5px solid #1769aa!important;
+    border-radius:14px!important;overflow:hidden!important;background:#fff!important;box-shadow:0 3px 10px rgba(15,23,42,.05)!important
+  }
+  body:has(#cariIslemTable) #cariIslemTable tbody td{
+    display:block!important;min-width:0!important;width:auto!important;max-width:none!important;
+    padding:9px 8px!important;border-right:1px solid #e5ebf3!important;border-bottom:1px solid #e5ebf3!important;
+    white-space:normal!important;overflow-wrap:anywhere!important;font-size:12px!important;line-height:1.25!important
+  }
+  body:has(#cariIslemTable) #cariIslemTable tbody td::before{content:attr(data-tcr-mobile-label);display:block;margin-bottom:4px;font-size:8px;line-height:1;font-weight:900;color:#526986;text-transform:uppercase}
+  body:has(#cariIslemTable) #cariIslemTable tbody td[data-col="durum"]{grid-column:1;grid-row:1}
+  body:has(#cariIslemTable) #cariIslemTable tbody td[data-col="tip"]{grid-column:2;grid-row:1}
+  body:has(#cariIslemTable) #cariIslemTable tbody td[data-col="tarih"]{grid-column:3;grid-row:1}
+  body:has(#cariIslemTable) #cariIslemTable tbody td[data-col="cari"]{grid-column:4;grid-row:1;font-weight:800}
+  body:has(#cariIslemTable) #cariIslemTable tbody td[data-col="islem-no"]{grid-column:1;grid-row:2}
+  body:has(#cariIslemTable) #cariIslemTable tbody td[data-col="kasa-banka-portfoy"]{grid-column:2;grid-row:2}
+  body:has(#cariIslemTable) #cariIslemTable tbody td[data-col="aciklama"]{grid-column:3;grid-row:2}
+  body:has(#cariIslemTable) #cariIslemTable tbody td[data-col="tutar"]{grid-column:4;grid-row:2;font-size:15px!important;font-weight:900!important;text-align:left!important}
+  body:has(#cariIslemTable) #cariIslemTable tbody td.tcr-action-column,
+  body:has(#cariIslemTable) #cariIslemTable tbody td:last-child{
+    grid-column:1/5!important;grid-row:3!important;display:flex!important;align-items:center!important;justify-content:flex-start!important;
+    gap:6px!important;padding:7px 8px!important;border-right:0!important;border-bottom:0!important
+  }
+  body:has(#cariIslemTable) #cariIslemTable tbody td.tcr-action-column::before,
+  body:has(#cariIslemTable) #cariIslemTable tbody td:last-child::before{display:none!important;content:none!important}
+  body:has(#cariIslemTable) #cariIslemTable tbody td:last-child>*{margin:0!important;justify-content:flex-start!important}
+}
+@media (max-width:520px){
+  .tcr-export-popover{grid-template-columns:repeat(4,minmax(62px,1fr));overflow-x:auto}
+  body:has(#cariIslemTable) #cariIslemTable tbody tr{grid-template-columns:.72fr .85fr 1fr 1.45fr!important}
+  body:has(#cariIslemTable) #cariIslemTable tbody td{padding:8px 6px!important;font-size:11px!important}
+}
+
+/* =========================================================
+   580 · Cari İşlemleri mobil/tablet üç satır yerleşimi
+   1: Durum | Tip | Cari Ünvanı
+   2: Tarih | İşlem No | Kasa/Banka/Portföy | Tutar
+   3: İşlem butonları | sağa dayalı uzun açıklama
+   ========================================================= */
+@media (max-width:1180px){
+  body:has(#cariIslemTable) #cariIslemTable tbody tr{
+    grid-template-columns:minmax(70px,.75fr) minmax(88px,.9fr) minmax(110px,1.15fr) minmax(110px,1.25fr)!important;
+    grid-template-rows:auto auto minmax(48px,auto)!important;
+  }
+
+  body:has(#cariIslemTable) #cariIslemTable tbody td[data-col="durum"]{
+    grid-column:1!important;grid-row:1!important;
+  }
+  body:has(#cariIslemTable) #cariIslemTable tbody td[data-col="tip"]{
+    grid-column:2!important;grid-row:1!important;
+  }
+  body:has(#cariIslemTable) #cariIslemTable tbody td[data-col="cari"]{
+    grid-column:3/5!important;grid-row:1!important;
+    font-size:13px!important;font-weight:900!important;
+    min-height:52px!important;
+  }
+
+  body:has(#cariIslemTable) #cariIslemTable tbody td[data-col="tarih"]{
+    grid-column:1!important;grid-row:2!important;
+  }
+  body:has(#cariIslemTable) #cariIslemTable tbody td[data-col="islem-no"]{
+    grid-column:2!important;grid-row:2!important;
+  }
+  body:has(#cariIslemTable) #cariIslemTable tbody td[data-col="kasa-banka-portfoy"]{
+    grid-column:3!important;grid-row:2!important;
+  }
+  body:has(#cariIslemTable) #cariIslemTable tbody td[data-col="tutar"]{
+    grid-column:4!important;grid-row:2!important;
+    font-size:15px!important;font-weight:900!important;text-align:left!important;
+  }
+
+  body:has(#cariIslemTable) #cariIslemTable tbody td.tcr-action-column,
+  body:has(#cariIslemTable) #cariIslemTable tbody td:last-child{
+    grid-column:1/3!important;grid-row:3!important;
+    align-self:stretch!important;min-height:48px!important;
+    justify-content:flex-start!important;
+  }
+  body:has(#cariIslemTable) #cariIslemTable tbody td[data-col="aciklama"]{
+    grid-column:3/5!important;grid-row:3!important;
+    min-height:48px!important;text-align:right!important;
+    display:flex!important;flex-direction:column!important;
+    align-items:flex-end!important;justify-content:center!important;
+    overflow-wrap:anywhere!important;word-break:break-word!important;
+    white-space:normal!important;line-height:1.35!important;
+    border-right:0!important;border-bottom:0!important;
+  }
+  body:has(#cariIslemTable) #cariIslemTable tbody td[data-col="aciklama"]::before{
+    width:100%!important;text-align:right!important;
+  }
+}
+
+@media (max-width:520px){
+  body:has(#cariIslemTable) #cariIslemTable tbody tr{
+    grid-template-columns:minmax(64px,.72fr) minmax(82px,.88fr) minmax(94px,1.05fr) minmax(96px,1.15fr)!important;
+  }
+  body:has(#cariIslemTable) #cariIslemTable tbody td[data-col="cari"]{
+    font-size:12px!important;
+  }
+  body:has(#cariIslemTable) #cariIslemTable tbody td[data-col="aciklama"]{
+    font-size:11px!important;padding-left:8px!important;padding-right:8px!important;
+  }
+}

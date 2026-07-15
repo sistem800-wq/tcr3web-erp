@@ -1,0 +1,31 @@
+/* 621 - Cari modülü tutar renk standardı */
+:root {
+  --cari-amount-receivable: #059669;
+  --cari-amount-payable: #dc2626;
+}
+.cari-amount-in,
+.cari-amount-alacak,
+.cari-amount-tahsilat,
+#cariIslemTable tbody tr[data-tip="tahsilat"] td:nth-child(6),
+#cariIslemTable tbody tr[data-tip="alinan_cek"] td:nth-child(6),
+#cariIslemTable tbody tr[data-tip="alinan_senet"] td:nth-child(6),
+#cariFisTable tbody td:nth-child(7),
+#ekstreTable tbody td:nth-child(6) {
+  color: var(--cari-amount-receivable) !important;
+  font-weight: 800 !important;
+}
+.cari-amount-out,
+.cari-amount-borc,
+.cari-amount-odeme,
+#cariIslemTable tbody tr[data-tip="odeme"] td:nth-child(6),
+#cariIslemTable tbody tr[data-tip="verilen_cek"] td:nth-child(6),
+#cariIslemTable tbody tr[data-tip="verilen_senet"] td:nth-child(6),
+#cariFisTable tbody td:nth-child(6),
+#ekstreTable tbody td:nth-child(5) {
+  color: var(--cari-amount-payable) !important;
+  font-weight: 800 !important;
+}
+#ekstreTable tbody td:nth-child(7).is-borc,
+.cari-balance-borc { color: var(--cari-amount-payable) !important; font-weight: 800 !important; }
+#ekstreTable tbody td:nth-child(7).is-alacak,
+.cari-balance-alacak { color: var(--cari-amount-receivable) !important; font-weight: 800 !important; }

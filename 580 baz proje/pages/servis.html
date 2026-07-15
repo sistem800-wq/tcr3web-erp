@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Tcr3WEB · Servis Yönetimi MASTER</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../assets/css/style.css?v=20260712-653" />
+  <link rel="stylesheet" href="../assets/css/responsive-master.css?v=20260713-591" />
+  <link rel="stylesheet" href="../assets/css/performance.css?v=20260711-700" />
+  <link rel="stylesheet" href="../assets/css/tcr-table.css?v=20260713-583" />
+  <link rel="stylesheet" href="../assets/css/kpi-standard.css?v=20260712-694" />
+  <link rel="stylesheet" href="../assets/css/text-readability.css?v=20260712-657" />
+</head>
+<body>
+  <div id="app" class="app"></div>
+  <script src="../assets/js/app.js?v=20260712-653"></script>
+  <script src="../assets/js/tcr-actions.js?v=20260713-600"></script>
+  <script src="../assets/js/master-init.js?v=20260713-583"></script>
+  <script src="../assets/js/tcr-table.js?v=20260713-587"></script>
+  <script>
+    const serviceJobs = [
+      {no:'SRV202607080001', time:'09:30', cari:'ABC Ltd.', device:'Endüstriyel Fırın · SN-24591', fault:'Ateşleme arızası', tech:'Mehmet Usta', car:'SRV-34', priority:'Kritik', warranty:'Garanti Var', status:'Yolda', tone:'danger'},
+      {no:'SRV202607080002', time:'11:00', cari:'XYZ A.Ş.', device:'Jeneratör · SN-78122', fault:'Periyodik bakım', tech:'Ali Teknik', car:'SRV-06', priority:'Planlı', warranty:'Bakım Sözleşmesi', status:'Planlandı', tone:'info'},
+      {no:'SRV202607080003', time:'14:15', cari:'Kuzey Market', device:'Soğutucu · SN-11002', fault:'Kompresör değişimi', tech:'Servis Ekibi 2', car:'SRV-21', priority:'Parçalı', warranty:'Ücretli', status:'Tamamlandı', tone:'success'}
+    ];
+
+    bootPage('servis', () => `
+      <div class="page-head service-page-head">
+        <div>
+          <div class="breadcrumb"><a href="dashboard.html">Servis</a><span>›</span><span>Servis Yönetimi MASTER</span></div>
+          <h1 class="page-title">Servis Yönetimi</h1>
+          <div class="page-sub">Talep, randevu, iş emri, saha servis, garanti, yedek parça, tahsilat ve servis faturası tek akışta.</div>
+        </div>
+        <div class="page-actions service-top-actions">
+          <button class="btn btn-outline-primary btn-action-view" onclick="location.href='servis-havuzu.html'">${ICONS.users}<span>Servis Havuzu</span></button>
+          <button class="btn btn-outline-info btn-action-print" onclick="openServiceSignature()">${ICONS.file_text}<span>İmza Önizleme</span></button>
+          <button class="btn btn-outline-success btn-action-approve" onclick="location.href='servis-talep-form.html'">${ICONS.plus}<span>Yeni Servis Talebi</span></button>
+        </div>
+      </div>
+
+      <div class="service-flow service-flow-pro mb-5">
+        <div class="flow-step done"><strong>1</strong><span>Talep</span></div>
+        <div class="flow-line done"></div>
+        <div class="flow-step active"><strong>2</strong><span>Randevu</span></div>
+        <div class="flow-line"></div>
+        <div class="flow-step"><strong>3</strong><span>İş Emri</span></div>
+        <div class="flow-line"></div>
+        <div class="flow-step"><strong>4</strong><span>Saha Servisi</span></div>
+        <div class="flow-line"></div>
+        <div class="flow-step"><strong>5</strong><span>Tahsilat / Fatura</span></div>
+      </div>
+
+      <div class="tcr-ac-grid mb-5">
+        ${roleKpi('calendar','Bugünkü Randevu','8','3 saha · 5 merkez','')}
+        ${roleKpi('briefcase','Bekleyen İş Emri','21','6 acil öncelik','warn')}
+        ${roleKpi('alert','Açık Arıza','14','4 kritik müşteri','danger')}
+        ${roleKpi('check','Garanti Kapsamı','9','ücretsiz işlem','accent')}
+        ${roleKpi('box','Kullanılan Parça','38','bugünkü tüketim','')}
+        ${roleKpi('wallet','Servis Tahsilatı',fmtMoney(32800),'nakit + POS','accent')}
+        ${roleKpi('truck','Araçta Bekleyen','12','parça talebi','warn')}
+        ${roleKpi('clock','Tamamlanan İş','5','bugün kapandı','accent')}
+      </div>
+
+      <div class="service-master-layout mb-5">
+        <section class="card service-panel service-jobs-card">
+          <div class="card-head service-card-head">
+            <div><div class="card-title">Servis Talepleri ve İş Emirleri</div><div class="text-mute small">Çağrı merkezi → teknisyen atama → saha servis akışı</div></div>
+            <div class="segmented-tabs"><button class="active">Açık</button><button>Bugün</button><button>Garanti</button><button>Tamamlanan</button></div>
+          </div>
+          <div class="card-body service-job-list">
+            ${serviceJobs.map(j => `
+              <article class="service-job-card ${j.tone}">
+                <div class="job-main">
+                  <div class="job-code"><strong>${j.no}</strong><span>RND ${j.time}</span></div>
+                  <div class="job-customer"><strong>${j.cari}</strong><span>${j.device}</span></div>
+                  <div class="job-fault"><strong>${j.fault}</strong><span>Öncelik: ${j.priority}</span></div>
+                  <div class="job-tech"><strong>${j.tech}</strong><span>Araç: ${j.car}</span></div>
+                </div>
+                <div class="job-meta">
+                  <span class="status ${j.warranty.includes('Garanti') ? 'success' : j.warranty.includes('Bakım') ? 'info' : 'danger'}">${j.warranty}</span>
+                  <span class="status ${j.status === 'Tamamlandı' ? 'success' : j.status === 'Yolda' ? 'warn' : ''}">${j.status}</span>
+                </div>
+                <div class="job-actions">
+                  <button class="btn btn-outline-primary btn-sm btn-icon-action" title="Servis detayını görüntüle" onclick="openServiceDetail('${j.no}')">${ICONS.eye}<span>Detay</span></button>
+                  <button class="btn btn-outline-success btn-sm btn-icon-action" title="Servis iş emri oluştur" onclick="openServiceWorkOrder()">${ICONS.briefcase}<span>İş Emri</span></button>
+                  <button class="btn btn-outline-dark btn-sm btn-icon-action" title="Servis evraklarını aç" onclick="openDocumentCenter('Servis Evrakları')">${ICONS.file_text}<span>Evrak</span></button>
+                  <button class="btn btn-outline-success btn-sm btn-icon-action" title="Servis tahsilatı gir" onclick="openServiceCollection()">${ICONS.wallet}<span>Tahsilat</span></button>
+                </div>
+              </article>`).join('')}
+          </div>
+        </section>
+
+        <aside class="card service-panel service-agenda-card">
+          <div class="card-head service-card-head"><div class="card-title">Bugünkü Randevu Planı</div><span class="pill">Takvim</span></div>
+          <div class="card-body service-agenda-timeline">
+            <div class="agenda-item danger"><time>09:30</time><div><strong>ABC Ltd.</strong><span>Kritik arıza · yolda</span></div></div>
+            <div class="agenda-item info"><time>11:00</time><div><strong>XYZ A.Ş.</strong><span>Periyodik bakım</span></div></div>
+            <div class="agenda-item warn"><time>14:15</time><div><strong>Kuzey Market</strong><span>Parça değişimi</span></div></div>
+            <div class="agenda-item success"><time>16:00</time><div><strong>Nova Gıda</strong><span>Garanti kontrolü</span></div></div>
+          </div>
+        </aside>
+      </div>
+
+      <div class="service-module-grid mb-5">
+        <section class="card service-panel">
+          <div class="card-head service-card-head"><div class="card-title">Servis Fişi Componenti</div><span class="pill">Yeni</span></div>
+          <div class="card-body">
+            <div class="service-ticket-demo service-ticket-pro">
+              <div class="ticket-head"><strong>SRV-FIS-00041</strong><span class="status warn">Açık</span></div>
+              <div class="ticket-customer">ABC Ltd. · Endüstriyel Fırın</div>
+              <div class="ticket-lines">
+                <div><span>Yapılan işlem</span><strong>Ateşleme ünitesi kontrol edildi</strong></div>
+                <div><span>İşçilik</span><strong>1 saat 30 dk</strong></div>
+                <div><span>Kullanılan parça</span><strong>Ateşleme kartı x1</strong></div>
+                <div><span>Tahsilat</span><strong>${fmtMoney(4200)}</strong></div>
+              </div>
+              <button class="btn btn-outline-primary w-100" onclick="openServiceDetail('SRV-FIS-00041')">Servis Fişini Aç</button>
+            </div>
+          </div>
+        </section>
+
+        <section class="card service-panel">
+          <div class="card-head service-card-head"><div class="card-title">Araç Yedek Parça Deposu</div><span class="pill">SRV-34</span></div>
+          <div class="card-body">
+            <div class="service-vehicle-summary">
+              <div><strong>48</strong><span>Toplam Parça</span></div><div><strong>2</strong><span>Kritik</span></div><div><strong>4</strong><span>Talep</span></div>
+            </div>
+            <div class="parts-list parts-list-pro mt-3">
+              <div><strong>Ateşleme Kartı</strong><span>3 Adet</span><em>Yeterli</em></div>
+              <div><strong>Kompresör Rölesi</strong><span>1 Adet</span><em class="warn">Kritik</em></div>
+              <div><strong>Filtre Seti</strong><span>12 Takım</span><em>Yeterli</em></div>
+            </div>
+            <button class="btn btn-outline-cyan w-100 mt-4" onclick="toast('Merkez depodan parça talebi hazırlandı')">Merkez Depodan Talep</button>
+          </div>
+        </section>
+
+        <section class="card service-panel">
+          <div class="card-head service-card-head"><div class="card-title">Garanti ve Sözleşme Kontrolü</div><span class="pill">Otomatik</span></div>
+          <div class="card-body service-warranty-list">
+            <div class="warranty-card success"><strong>Garanti Devam Ediyor</strong><span>SN-24591 · Bitiş: 31.12.2026</span></div>
+            <div class="warranty-card info"><strong>Bakım Sözleşmesi</strong><span>XYZ A.Ş. · 4 bakım hakkı kaldı</span></div>
+            <div class="warranty-card danger"><strong>Ücretli Servis</strong><span>Kuzey Market · garanti süresi dolmuş</span></div>
+          </div>
+        </section>
+      </div>
+
+      <div class="service-module-grid mb-5">
+        <section class="card service-panel span-2">
+          <div class="card-head service-card-head"><div class="card-title">Servis Raporları</div><span class="pill">KPI</span></div>
+          <div class="card-body">
+            <div class="report-cards report-cards-pro">
+              <div><strong>%82</strong><span>İlk seferde çözüm</span></div>
+              <div><strong>2s 15dk</strong><span>Ortalama müdahale</span></div>
+              <div><strong>${fmtMoney(18400)}</strong><span>Garanti maliyeti</span></div>
+              <div><strong>${fmtMoney(32800)}</strong><span>Servis tahsilatı</span></div>
+            </div>
+          </div>
+        </section>
+        <section class="card service-panel">
+          <div class="card-head service-card-head"><div class="card-title">Evrak / Fotoğraf</div><span class="pill">Ortak Component</span></div>
+          <div class="card-body">
+            <div class="doc-mini-grid doc-mini-grid-pro">
+              <button onclick="openDocumentCenter('Servis Öncesi Fotoğraflar')">Öncesi Fotoğraf</button>
+              <button onclick="openDocumentCenter('Servis Sonrası Fotoğraflar')">Sonrası Fotoğraf</button>
+              <button onclick="openDocumentCenter('İmzalı Formlar')">İmzalı Form</button>
+              <button onclick="openDocumentCenter('Video / Ses Kayıtları')">Video / Ses</button>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <div class="service-actionbar">
+        <button onclick="openServiceRequest()">${ICONS.plus} Yeni Talep</button>
+        <button onclick="openServiceWorkOrder()">${ICONS.briefcase} İş Emri</button>
+        <button onclick="openServiceCollection()">${ICONS.wallet} Tahsilat</button>
+        <button onclick="openServiceCollection()">${ICONS.cash} Sanal POS</button>
+        <button onclick="openDocumentCenter('Servis Evrakları')">${ICONS.file_text} Evraklar</button>
+      </div>
+    `);
+
+    function openServiceRequest(){ location.href='servis-talep-form.html'; }
+    function openServiceWorkOrder(){ showActionModal('info','İş Emri','Teknisyen, araç, tarih, saat ve tahmini süre atama ekranı açıldı.'); }
+    function openServiceDetail(no){ showActionModal('info','Servis Fişi', no + ' servis fişi; işlem, parça, işçilik, fotoğraf ve imza alanlarıyla açıldı.'); }
+    function openServiceCollection(){ showActionModal('success','Tahsilat / Sanal POS','Servis fişine bağlı nakit, havale, çek veya sanal POS tahsilatı alınabilir.'); }
+    function openServiceSignature(){ showActionModal('info','Dijital İmza','Müşteri ve servis personeli imza alanları tablet uyumlu olarak hazırlanır.'); }
+    function openDocumentCenter(title){ showActionModal('info', title, 'Ortak evrak componenti: çoklu yükleme, önizleme, indir, isim değiştir ve WhatsApp gönder.'); }
+  </script>
+</body>
+</html>

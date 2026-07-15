@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#10243f" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-title" content="Tcr3WEB" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <link rel="manifest" href="../manifest.webmanifest?v=20260711-699" />
+  <link rel="icon" type="image/png" href="../assets/icons/favicon-64.png" />
+  <link rel="apple-touch-icon" href="../assets/icons/icon-180.png" />
+  <title>Tcr3WEB · Teklif</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../assets/css/style.css?v=20260712-653" />
+  <link rel="stylesheet" href="../assets/css/responsive-master.css?v=20260713-591" />
+  <link rel="stylesheet" href="../assets/css/performance.css?v=20260711-700" />
+  <link rel="stylesheet" href="../assets/css/tcr-table.css?v=20260713-583" />
+  <link rel="stylesheet" href="../assets/css/kpi-standard.css?v=20260712-694" />
+  <link rel="stylesheet" href="../assets/css/text-readability.css?v=20260712-657" />
+</head>
+<body>
+  <div id="app" class="app"></div>
+  <script src="../assets/js/app.js?v=20260712-653"></script>
+  <script src="../assets/js/tcr-actions.js?v=20260713-600"></script>
+  <script src="../assets/js/master-init.js?v=20260713-583"></script>
+  <script src="../assets/js/tcr-table.js?v=20260713-587"></script>
+  <script>
+    bootPage('teklif', () => {
+      const toplam = MOCK.teklif.reduce((s,x)=>s+x.tutar,0);
+      const acik = MOCK.teklif.filter(x=>x.durum==='Açık').length;
+      const kabul = MOCK.teklif.filter(x=>x.durum==='Kabul Edildi').length;
+      const ret = MOCK.teklif.filter(x=>x.durum==='Reddedildi').length;
+      const suresi = MOCK.teklif.filter(x=>x.durum==='Süresi Geçti').length;
+      const kabul_oran = Math.round((kabul / MOCK.teklif.length) * 100);
+      return `
+      <div class="page-head">
+        <div>
+          <div class="breadcrumb"><a href="dashboard.html">Genel</a><span>›</span><span>Satış</span><span>›</span><span>Teklif</span></div>
+          <h1 class="page-title">${ICONS.tag} Teklif</h1>
+          <div class="page-sub">Müşterilere gönderilen fiyat teklifleri</div>
+        </div>
+        <div class="page-actions">
+          <button class="btn btn-ghost" onclick="toast('Dışa aktarıldı (prototip)')">${ICONS.download} Dışa Aktar</button>
+          <button class="btn btn-ghost" onclick="toast('Yazdırıldı (prototip)')">${ICONS.print} Yazdır</button>
+          <button class="btn btn-primary" onclick="location.href='teklif-form.html'">${ICONS.plus} Yeni Teklif</button>
+        </div>
+      </div>
+
+      <div class="tcr-ac-grid">
+        <div class="tcr-action-card tcr-ac-blue"><span class="tcr-ac-icon">${ICONS.tag}</span><span class="tcr-ac-content"><span class="tcr-ac-title">Toplam Teklif</span><span class="tcr-ac-desc">${MOCK.teklif.length}</span></span></div>
+        <div class="tcr-action-card tcr-ac-orange"><span class="tcr-ac-icon">${ICONS.file_text}</span><span class="tcr-ac-content"><span class="tcr-ac-title">Açık Teklifler</span><span class="tcr-ac-desc">${acik}</span></span></div>
+        <div class="tcr-action-card tcr-ac-green"><span class="tcr-ac-icon">${ICONS.check}</span><span class="tcr-ac-content"><span class="tcr-ac-title">Kabul Oranı</span><span class="tcr-ac-desc">%${kabul_oran}</span></span></div>
+        <div class="tcr-action-card tcr-ac-blue"><span class="tcr-ac-icon">${ICONS.trend_up}</span><span class="tcr-ac-content"><span class="tcr-ac-title">Toplam Değer</span><span class="tcr-ac-desc">${fmtMoney(toplam)}</span></span></div>
+      </div>
+
+      <div class="grid-3 mb-6">
+        <div class="card" style="grid-column:1/-1">
+          <div class="card-head">
+            <div class="card-title">Teklif Listesi</div>
+            <div class="flex gap-2">
+              <span class="pill">${MOCK.teklif.length} kayıt</span>
+            </div>
+          </div>
+          <div>
+            <div class="tabs" style="padding:0 var(--s-5);margin-bottom:0">
+              <button class="tab active" onclick="filterTK(this,'')">Tümü <span class="tab-count">${MOCK.teklif.length}</span></button>
+              <button class="tab" onclick="filterTK(this,'Açık')">Açık <span class="tab-count">${acik}</span></button>
+              <button class="tab" onclick="filterTK(this,'Kabul Edildi')">Kabul Edildi <span class="tab-count">${kabul}</span></button>
+              <button class="tab" onclick="filterTK(this,'Reddedildi')">Reddedildi <span class="tab-count">${ret}</span></button>
+              <button class="tab" onclick="filterTK(this,'Süresi Geçti')">Süresi Geçti <span class="tab-count">${suresi}</span></button>
+            </div>
+            <div class="toolbar" style="padding:var(--s-4) var(--s-5);border-top:1px solid var(--border-soft)">
+              <div class="toolbar-search">
+                <span class="toolbar-search-icon">${ICONS.search}</span>
+                <input type="text" placeholder="Teklif no, müşteri ara..." oninput="searchTK(this.value)" />
+              </div>
+              <select class="filter-select" onchange="filterTKByDurum(this.value)">
+                <option value="">Tüm Durumlar</option>
+                <option>Açık</option><option>Kabul Edildi</option><option>Reddedildi</option><option>Süresi Geçti</option>
+              </select>
+              <div class="toolbar-spacer"></div>
+              <button class="btn btn-ghost btn-sm" onclick="toast('E-posta ile gönderildi (prototip)','success')">${ICONS.mail} Toplu Gönder</button>
+            </div>
+            <div class="table-wrap" style="border:none;border-radius:0">
+              <table class="data" id="tkTable">
+                <thead><tr>
+                  <th>Teklif No</th><th>Müşteri</th><th>Teklif Tarihi</th><th>Geçerlilik</th>
+                  <th>Ürün</th><th class="num">Tutar</th><th>Durum</th><th>İşlemler</th>
+                </tr></thead>
+                <tbody>
+                  ${MOCK.teklif.map(t => `<tr>
+                    <td class="strong mono">${t.no}</td>
+                    <td>${t.cari}</td>
+                    <td>${fmtDate(t.tarih)}</td>
+                    <td>${fmtDate(t.gecerlilik)}</td>
+                    <td class="text-center">${t.urunler}</td>
+                    <td class="num">${fmtMoney(t.tutar)}</td>
+                    <td><span class="badge ${t.durum==='Kabul Edildi'?'badge-success':t.durum==='Açık'?'badge-info':t.durum==='Reddedildi'?'badge-danger':'badge-neutral'}">${t.durum}</span></td>
+                    <td>
+                      <div class="flex gap-2">
+                        <button class="icon-btn" style="width:30px;height:30px" onclick="openModal('detayTKModal')" title="Detay">${ICONS.eye}</button>
+                        <button class="icon-btn" style="width:30px;height:30px" onclick="location.href='teklif-form.html?id=${t.no}'" title="Düzenle">${ICONS.edit}</button>
+                        <button class="icon-btn" style="width:30px;height:30px" onclick="openListEvrak('teklif','${t.no}','Teklif Evrakları','${t.cari}')" title="Evrak Yönetimi">${ICONS.file_check}</button>
+                        <button class="icon-btn" style="width:30px;height:30px" onclick="toast('Müşteriye gönderildi','success')" title="Gönder">${ICONS.mail}</button>
+                        <button class="icon-btn" style="width:30px;height:30px" onclick="toast('Siparişe dönüştürüldü','success')" title="Siparişe Dönüştür">${ICONS.inbox}</button>
+                        <button class="icon-btn" style="width:30px;height:30px" onclick="toast('Yazdırıldı')" title="Yazdır">${ICONS.print}</button>
+                      </div>
+                    </td>
+                  </tr>`).join('')}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      ${modalHtml('yeniTeklifModal', 'Yeni Teklif', `
+        <div class="form-grid-2">
+          <div class="form-field full">
+            <label class="form-label">Müşteri</label>
+            <select class="form-input">
+              ${MOCK.cari.filter(c=>c.tip==='Müşteri').map(c=>`<option>${c.ad}</option>`).join('')}
+            </select>
+          </div>
+          <div class="form-field">
+            <label class="form-label">Teklif Tarihi</label>
+            <input type="date" class="form-input" value="2026-07-04" />
+          </div>
+          <div class="form-field">
+            <label class="form-label">Geçerlilik Tarihi</label>
+            <input type="date" class="form-input" value="2026-07-18" />
+          </div>
+          <div class="form-field">
+            <label class="form-label">Belge No</label>
+            <input type="text" class="form-input" value="TK20261001" readonly />
+          </div>
+          <div class="form-field">
+            <label class="form-label">Para Birimi</label>
+            <select class="form-input"><option>TRY (₺)</option><option>USD ($)</option><option>EUR (€)</option></select>
+          </div>
+          <div class="form-field full">
+            <label class="form-label">Teklif Notu</label>
+            <textarea class="form-input" placeholder="Müşteriye iletilecek not..."></textarea>
+          </div>
+        </div>
+      `, `<button class="btn btn-ghost" onclick="closeModal('yeniTeklifModal')">İptal</button>
+          <button class="btn btn-ghost" onclick="closeModal('yeniTeklifModal');toast('Taslak kaydedildi')">${ICONS.download} Taslak Kaydet</button>
+          <button class="btn btn-primary" onclick="closeModal('yeniTeklifModal');toast('Teklif oluşturuldu ve gönderildi','success')">${ICONS.mail} Oluştur & Gönder</button>`)}
+
+      ${modalHtml('detayTKModal', 'Teklif Detayı', `
+        <div style="margin-bottom:var(--s-4)">
+          <div class="stat-row"><div class="stat-label">Teklif No</div><div class="stat-value mono">TK20261000</div></div>
+          <div class="stat-row"><div class="stat-label">Müşteri</div><div class="stat-value">Anadolu Hırdavat San.</div></div>
+          <div class="stat-row"><div class="stat-label">Teklif Tarihi</div><div class="stat-value">04.07.2026</div></div>
+          <div class="stat-row"><div class="stat-label">Geçerlilik</div><div class="stat-value">18.07.2026</div></div>
+          <div class="stat-row"><div class="stat-label">Toplam Tutar</div><div class="stat-value">145.000,00 ₺</div></div>
+          <div class="stat-row"><div class="stat-label">Durum</div><div class="stat-value"><span class="badge badge-info">Açık</span></div></div>
+        </div>
+        <table class="data">
+          <thead><tr><th>Ürün</th><th>Miktar</th><th>Birim Fiyat</th><th>İskonto</th><th class="num">Tutar</th></tr></thead>
+          <tbody>
+            <tr><td>Çelik Profil 6m</td><td>200 mt</td><td>185,00 ₺</td><td>5%</td><td class="num">35.150,00 ₺</td></tr>
+            <tr><td>Elektrik Kablosu 2.5mm</td><td>500 mt</td><td>14,20 ₺</td><td>—</td><td class="num">7.100,00 ₺</td></tr>
+            <tr><td>Boya Akrilik 5L Beyaz</td><td>80 kutu</td><td>320,00 ₺</td><td>10%</td><td class="num">23.040,00 ₺</td></tr>
+          </tbody>
+        </table>
+      `, `<button class="btn btn-ghost" onclick="closeModal('detayTKModal')">Kapat</button>
+          <button class="btn btn-ghost" onclick="closeModal('detayTKModal');toast('Müşteriye gönderildi','success')">${ICONS.mail} Yeniden Gönder</button>
+          <button class="btn btn-accent" onclick="closeModal('detayTKModal');toast('Alınan siparişe dönüştürüldü','success')">${ICONS.inbox} Siparişe Dönüştür</button>`)}
+
+
+      ${modalHtml('listeEvrakModal', 'Evrak Yönetimi', `
+        <div class="evrak-manager">
+          <div class="evrak-manager-head">
+            <div class="evrak-entity-icon cari">${ICONS.file_check}</div>
+            <div>
+              <div id="liste-evrak-title" class="evrak-entity-title">Evrak Yönetimi</div>
+              <div id="liste-evrak-sub" class="evrak-entity-sub">Ana kayıt evrakları</div>
+            </div>
+            <div class="evrak-head-spacer"></div>
+            <span class="badge badge-info">Ana Kayıt Evrakları</span>
+          </div>
+          <div class="evrak-manager-grid">
+            <label class="evrak-drop-card">
+              <input type="file" multiple accept="image/*,.pdf,.doc,.docx,.xls,.xlsx" style="display:none" onchange="handleListEvrakUpload(this)">
+              <span class="evrak-drop-icon">${ICONS.download}</span>
+              <b>Evrak Yükle</b>
+              <small>Resim, PDF, Word veya Excel dosyası seçin.</small>
+            </label>
+            <div class="evrak-list-card">
+              <div class="evrak-list-head">
+                <div>
+                  <b>Ekli Evraklar</b>
+                  <small>Seçili ana kayda bağlı dosyalar</small>
+                </div>
+                <input class="form-input evrak-search" placeholder="Evrak ara..." oninput="filterEvrakList(this,'liste-evrak-list')" />
+              </div>
+              <div class="ekler-list evrak-list-modern" id="liste-evrak-list"><div class="ekler-empty">Evrak yükleniyor…</div></div>
+            </div>
+          </div>
+        </div>
+      `, `<span class="modal-footer-info">Evraklar seçili ana kayda bağlanır.<span class="ek-selected-info" data-ekler-selected-count="liste-evrak-list">Seçili evrak yok</span></span><button class="btn btn-ghost" onclick="eklerDownloadSelected(_listEvrakType,_listEvrakId,'liste-evrak-list')">${ICONS.download} İndir</button><button class="btn btn-success" onclick="eklerWhatsappSelected(_listEvrakType,_listEvrakId,'liste-evrak-list')">${ICONS.whatsapp} WhatsApp Gönder</button><button class="btn btn-danger" onclick="closeModal('listeEvrakModal')">Kapat</button>`, 'xl')}
+      `;
+    });
+
+    function filterTK(btn, durum) {
+      btn.closest('.tabs').querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+      btn.classList.add('active');
+      document.querySelectorAll('#tkTable tbody tr').forEach(r => {
+        const d = r.querySelector('.badge')?.textContent||'';
+        r.style.display = (!durum || d===durum) ? '' : 'none';
+      });
+    }
+    function searchTK(q) {
+      q = q.toLowerCase();
+      document.querySelectorAll('#tkTable tbody tr').forEach(r => {
+        r.style.display = r.textContent.toLowerCase().includes(q) ? '' : 'none';
+      });
+    }
+    function filterTKByDurum(v) {
+      document.querySelectorAll('#tkTable tbody tr').forEach(r => {
+        const d = r.querySelector('.badge')?.textContent||'';
+        r.style.display = (!v||d===v)?'':'none';
+      });
+    }
+
+    let _listEvrakType = 'genel';
+    let _listEvrakId = 'YENI';
+    function openListEvrak(type, id, title, sub) {
+      _listEvrakType = type;
+      _listEvrakId = id;
+      openModal('listeEvrakModal');
+      const titleEl = document.getElementById('liste-evrak-title');
+      const subEl = document.getElementById('liste-evrak-sub');
+      if (titleEl) titleEl.textContent = `${title} · ${id}`;
+      if (subEl) subEl.textContent = sub || 'Ana kayıt evrakları';
+      initEkler(type, id, 'liste-evrak-list');
+    }
+    async function handleListEvrakUpload(input) {
+      await eklerUpload(input, _listEvrakType, _listEvrakId);
+      setTimeout(() => initEkler(_listEvrakType, _listEvrakId, 'liste-evrak-list'), 150);
+    }
+
+  </script>
+</body>
+</html>

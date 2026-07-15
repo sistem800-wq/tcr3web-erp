@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#10243f" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-title" content="Tcr3WEB" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <link rel="manifest" href="../manifest.webmanifest?v=20260711-699" />
+  <link rel="icon" type="image/png" href="../assets/icons/favicon-64.png" />
+  <link rel="apple-touch-icon" href="../assets/icons/icon-180.png" />
+  <title>Tcr3WEB · Cari Fişleri</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../assets/css/style.css?v=20260712-653" />
+  <link rel="stylesheet" href="../assets/css/responsive-master.css?v=20260713-591" />
+  <link rel="stylesheet" href="../assets/css/performance.css?v=20260711-700" />
+  <link rel="stylesheet" href="../assets/css/tcr-table.css?v=20260713-583" />
+  <link rel="stylesheet" href="../assets/css/kpi-standard.css?v=20260712-694" />
+  <link rel="stylesheet" href="../assets/css/text-readability.css?v=20260712-657" />
+  <link rel="stylesheet" href="../assets/css/cari-amount-status.css?v=20260712-621" />
+</head>
+<body>
+  <div id="app" class="app"></div>
+  <script src="../assets/js/app.js?v=20260712-653"></script>
+  <script src="../assets/js/tcr-actions.js?v=20260713-600"></script>
+  <script src="../assets/js/master-init.js?v=20260713-583"></script>
+  <script src="../assets/js/tcr-table.js?v=20260713-587"></script>
+  <script>
+    const CARI_FIS_TIPLERI = [
+      { id: 'acilis', label: 'Açılış Fişi', iconKey: 'inbox',      color: 'var(--c-accent-500)',  desc: 'İlk açılış cari bakiyesi' },
+      { id: 'devir',  label: 'Devir Fişi',   iconKey: 'trend-up',  color: 'var(--c-primary-500)', desc: 'Dönem başı cari devir işlemleri' },
+      { id: 'virman', label: 'Virman Fişi',  iconKey: 'send',      color: 'var(--c-danger-400)',  desc: 'Cariler arası bakiye aktarımı' },
+    ];
+
+    const MOCK_CARI_FIS = [
+      { no: 'AFIS2026070610000001', tip: 'acilis', tarih: '2026-01-01', kalem: 12, cari: '12 cari hesap', borc: 320000, alacak: 320000, durum: 'Onaylandı', aciklama: 'Açılış cari bakiyeleri' },
+      { no: 'AFIS2026070610000002', tip: 'acilis', tarih: '2026-01-01', kalem: 8, cari: '8 cari hesap', borc: 186500, alacak: 186500, durum: 'Onaylandı', aciklama: 'Tedarikçi açılış fişi' },
+      { no: 'DFIS2026070610000001', tip: 'devir',  tarih: '2026-01-01', kalem: 16, cari: '16 cari hesap', borc: 438750, alacak: 438750, durum: 'Onaylandı', aciklama: 'Önceki dönem devri' },
+      { no: 'DFIS2026070610000002', tip: 'devir',  tarih: '2026-01-01', kalem: 6, cari: '6 cari hesap', borc: 92400, alacak: 92400, durum: 'Bekliyor',  aciklama: 'Yıl sonu devir kaydı' },
+      { no: 'VFIS2026070610000001', tip: 'virman', tarih: '2026-07-05', kalem: 2, cari: 'Marmara Tekstil → Akdeniz Gıda', borc: 15000, alacak: 15000, durum: 'Taslak', aciklama: 'Cari hesaplar arası virman' },
+      { no: 'VFIS2026070610000002', tip: 'virman', tarih: '2026-07-05', kalem: 2, cari: 'Yıldız Plastik → Karadeniz Mobilya', borc: 9200, alacak: 9200, durum: 'Onaylandı', aciklama: 'Bakiye aktarımı' },
+    ];
+
+    bootPage('cari-fisleri', () => {
+      const tipCards = CARI_FIS_TIPLERI.map(t => {
+        const count = MOCK_CARI_FIS.filter(f => f.tip === t.id).length;
+        const colorClass = t.color.includes('accent') ? 'green' : t.color.includes('danger') ? 'red' : t.color.includes('primary') ? 'blue' : t.color.includes('warn') ? 'orange' : 'blue';
+        return `
+        <div class="tcr-action-card tcr-ac-${colorClass}" onclick="location.href='cari-fis-form.html?tip=${t.id}'">
+          <span class="tcr-ac-icon">${ICONS[t.iconKey]}</span>
+          <span class="tcr-ac-content">
+            <span class="tcr-ac-title">${t.label}</span>
+            <span class="tcr-ac-desc">${t.desc}</span>
+          </span>
+          <span class="tcr-ac-badge">${count}</span>
+        </div>`;
+      }).join('');
+
+      const fisRows = MOCK_CARI_FIS.map(f => {
+        const tip = CARI_FIS_TIPLERI.find(t => t.id === f.tip);
+        const durumColor = f.durum === 'Onaylandı' ? 'success' : f.durum === 'Bekliyor' ? 'warn' : '';
+        return `<tr data-tip="${f.tip}">
+          <td class="mono strong">${f.no}</td>
+          <td><span class="pill" style="background:${tip?.color||''}1a;color:${tip?.color||'var(--text-mute)'}">${tip?.label||f.tip}</span></td>
+          <td>${fmtDate(f.tarih)}</td>
+          <td class="strong">${f.cari}</td>
+          <td class="num strong">${f.kalem || 1}</td>
+          <td class="num strong">${fmtMoney(f.borc)}</td>
+          <td class="num strong">${fmtMoney(f.alacak)}</td>
+          <td><span class="badge badge-${durumColor}">${f.durum}</span></td>
+          <td class="muted">${f.aciklama}</td>
+          <td>
+            <div class="flex gap-2">
+              <button class="icon-btn" style="width:30px;height:30px" onclick="location.href='cari-fis-form.html?tip=${f.tip}&id=${f.no}'" title="Görüntüle">${ICONS.eye}</button>
+              <button class="icon-btn" style="width:30px;height:30px" onclick="location.href='cari-fis-form.html?tip=${f.tip}&id=${f.no}'" title="Düzenle">${ICONS.edit}</button>
+            </div>
+          </td>
+        </tr>`;
+      }).join('');
+
+      return `
+      <div class="page-head">
+        <div>
+          <div class="breadcrumb">
+            <a href="dashboard.html">Genel</a><span>›</span>
+            <a href="cari.html">Cari</a><span>›</span>
+            <span>Cari Fişleri</span>
+          </div>
+          <h1 class="page-title">${ICONS['file-text']} Cari Fişleri</h1>
+          <div class="page-sub">Açılış, devir ve virman fiş kayıtları</div>
+        </div>
+        <div class="page-actions">
+          <button class="btn btn-ghost" onclick="toast('Cari fiş raporu indirildi (prototip)')">${ICONS.download} Rapor</button>
+          <button class="btn btn-primary" onclick="location.href='cari-fis-form.html?tip=acilis'">${ICONS.plus} Yeni Fiş</button>
+        </div>
+      </div>
+
+      <div class="tcr-ac-grid cols-3">
+        ${tipCards}
+      </div>
+
+      <div class="card">
+        <div class="card-body" style="padding:var(--s-4)">
+          <div class="toolbar">
+            <div class="toolbar-search">
+              <span class="toolbar-search-icon">${ICONS.search}</span>
+              <input type="text" placeholder="Fiş no, cari veya açıklama ara..." oninput="filterCariFisTable(this.value)" />
+            </div>
+            <select class="filter-select" onchange="filterCariFisTip(this.value)">
+              <option value="">Tüm Tipler</option>
+              ${CARI_FIS_TIPLERI.map(t => `<option value="${t.id}">${t.label}</option>`).join('')}
+            </select>
+            <select class="filter-select" onchange="filterCariFisDurum(this.value)">
+              <option value="">Tüm Durumlar</option>
+              <option value="Onaylandı">Onaylandı</option>
+              <option value="Bekliyor">Bekliyor</option>
+              <option value="Taslak">Taslak</option>
+            </select>
+          </div>
+          <div class="table-wrap" style="border:none">
+            <table class="data" id="cariFisTable">
+              <thead><tr>
+                <th>Fiş No</th><th>Tip</th><th>Tarih</th><th>Cari / İçerik</th><th class="num">Kalem</th><th class="num">Borç</th><th class="num">Alacak</th><th>Durum</th><th>Açıklama</th><th></th>
+              </tr></thead>
+              <tbody>${fisRows}</tbody>
+            </table>
+          </div>
+        </div>
+      </div>`;
+    });
+
+    function filterCariFisTable(v) {
+      const lv = v.toLowerCase();
+      document.querySelectorAll('#cariFisTable tbody tr').forEach(r => {
+        r.style.display = r.textContent.toLowerCase().includes(lv) ? '' : 'none';
+      });
+    }
+    function filterCariFisTip(tip) {
+      document.querySelectorAll('#cariFisTable tbody tr').forEach(r => {
+        r.style.display = (!tip || r.dataset.tip === tip) ? '' : 'none';
+      });
+    }
+    function filterCariFisDurum(durum) {
+      document.querySelectorAll('#cariFisTable tbody tr').forEach(r => {
+        r.style.display = (!durum || r.textContent.includes(durum)) ? '' : 'none';
+      });
+    }
+  </script>
+</body>
+</html>

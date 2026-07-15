@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="tr"><head><meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" /><title>Tcr3WEB · Depo Akışı</title><link rel="stylesheet" href="../assets/css/style.css?v=20260712-653" /><link rel="stylesheet" href="../assets/css/responsive-master.css?v=20260713-591" />  <link rel="stylesheet" href="../assets/css/tcr-table.css?v=20260713-583" />
+  <link rel="stylesheet" href="../assets/css/text-readability.css?v=20260712-657" />
+</head>
+<body><div id="app" class="app"></div><script src="../assets/js/app.js?v=20260712-653"></script><script src="../assets/js/tcr-actions.js?v=20260713-600"></script>
+  <script src="../assets/js/master-init.js?v=20260713-583"></script>
+  <script src="../assets/js/tcr-table.js?v=20260713-587"></script><script>
+bootPage('depo', () => `
+  <div class="page-head"><div><div class="breadcrumb"><a href="dashboard.html">Genel</a><span>›</span><a href="depo-islemler.html">Depo İşlemleri</a><span>›</span><span>Ticari Belge Depo Akışı</span></div><h1 class="page-title">${ICONS.send} Ticari Belge Depo Akışı</h1><div class="page-sub">Teklif, sipariş, irsaliye ve fatura ekranlarının depo ile çalışma sırası</div></div></div>
+  <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:var(--s-4);margin-bottom:var(--s-5)">
+    <div class="card"><div class="card-body"><b>1. Teklif</b><p class="muted">Depo seçilmez. Stok hareketi ve rezervasyon oluşmaz.</p></div></div>
+    <div class="card"><div class="card-body"><b>2. Sipariş</b><p class="muted">Toplam stok ve depo dağılımı görünür. İstenirse rezervasyon yapılır.</p></div></div>
+    <div class="card"><div class="card-body"><b>3. Toplama / Virman</b><p class="muted">Ürün farklı depolardaysa toplama listesi veya virman önerisi hazırlanır.</p></div></div>
+    <div class="card"><div class="card-body"><b>4. İrsaliye / Fatura</b><p class="muted">İrsaliyede stok çıkar; faturada mali belge kesinleşir.</p></div></div>
+  </div>
+  <div class="card"><div class="card-head"><div class="card-title">Örnek Sipariş Dağılımı</div></div><div class="card-body table-wrap"><table class="data"><thead><tr><th>Ürün</th><th>İstenen</th><th>A Deposu</th><th>B Deposu</th><th>İşlem</th><th>Sonraki Adım</th></tr></thead><tbody><tr><td>Endüstriyel Yağ 20L</td><td>10 Lt</td><td>4 Lt</td><td>6 Lt</td><td><span class="badge badge-warn">Depo bölündü</span></td><td>Toplama listesi veya Merkez Depoya virman</td></tr><tr><td>Çelik Profil 6m</td><td>8 Mt</td><td>8 Mt</td><td>0</td><td><span class="badge badge-success">Tek depodan</span></td><td>İrsaliye çıkışı</td></tr></tbody></table></div></div>
+`);
+</script></body></html>

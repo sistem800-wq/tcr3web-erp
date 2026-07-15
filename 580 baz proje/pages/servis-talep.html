@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Tcr3WEB · Servis Talepleri</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../assets/css/style.css?v=20260712-653" />
+  <link rel="stylesheet" href="../assets/css/responsive-master.css?v=20260713-591" />
+  <link rel="stylesheet" href="../assets/css/performance.css?v=20260711-700" />
+  <link rel="stylesheet" href="../assets/css/tcr-table.css?v=20260713-583" />
+  <link rel="stylesheet" href="../assets/css/kpi-standard.css?v=20260712-694" />
+  <link rel="stylesheet" href="../assets/css/text-readability.css?v=20260712-657" />
+</head>
+<body>
+  <div id="app" class="app"></div>
+  <script src="../assets/js/app.js?v=20260712-653"></script>
+  <script src="../assets/js/tcr-actions.js?v=20260713-600"></script>
+  <script src="../assets/js/master-init.js?v=20260713-583"></script>
+  <script src="../assets/js/tcr-table.js?v=20260713-587"></script>
+
+  <script>
+    const serviceRequests = [
+      {no:'STL202607080001', date:'08.07.2026 09:12', cari:'ABC Ltd.', contact:'Murat Kaya', phone:'0532 000 11 22', device:'Endüstriyel Fırın · SN-24591', fault:'Ateşleme arızası', priority:'Kritik', status:'Randevu Bekliyor', warranty:'Garanti Var', city:'Diyarbakır', tone:'danger'},
+      {no:'STL202607080002', date:'08.07.2026 10:35', cari:'XYZ A.Ş.', contact:'Selin Demir', phone:'0544 222 33 44', device:'Jeneratör · SN-78122', fault:'Periyodik bakım', priority:'Planlı', status:'İş Emrine Döndü', warranty:'Bakım Sözleşmesi', city:'Mardin', tone:'info'},
+      {no:'STL202607080003', date:'08.07.2026 11:20', cari:'Kuzey Market', contact:'Ahmet Kuzey', phone:'0533 555 66 77', device:'Soğutucu · SN-11002', fault:'Kompresör sesi', priority:'Acil', status:'Ön İnceleme', warranty:'Ücretli', city:'Batman', tone:'warn'},
+      {no:'STL202607080004', date:'08.07.2026 13:45', cari:'Nova Gıda', contact:'Ebru Can', phone:'0555 111 22 33', device:'Paketleme Makinesi · SN-89200', fault:'Sensör kalibrasyonu', priority:'Normal', status:'Tamamlandı', warranty:'Garanti Var', city:'Diyarbakır', tone:'success'}
+    ];
+    function reqStatusClass(s){ return s.includes('Tamam') ? 'success' : s.includes('İş') ? 'info' : s.includes('Ön') ? 'warn' : 'danger'; }
+    bootPage('servis-talep', () => `
+      <div class="page-head service-request-head">
+        <div>
+          <div class="breadcrumb"><a href="dashboard.html">Genel</a><span>›</span><a href="servis.html">Servis</a><span>›</span><span>Servis Talepleri</span></div>
+          <h1 class="page-title">Servis Talepleri</h1>
+          <div class="page-sub">Çağrı merkezi, müşteri talebi, cihaz, garanti ve teknisyen atama öncesi servis kayıtları.</div>
+        </div>
+        <div class="page-actions">
+          <button class="btn btn-outline-info" onclick="showActionModal('info','Dışa Aktar','Servis talep listesi Excel/PDF için hazırlandı.')">${ICONS.download} Dışa Aktar</button>
+          <button class="btn btn-success" onclick="location.href='servis-talep-form.html'">${ICONS.plus} Yeni Servis Talebi</button>
+        </div>
+      </div>
+
+      <div class="tcr-ac-grid mb-5">
+        ${roleKpi('file_text','Açık Talep','18','çağrı merkezi','')}
+        ${roleKpi('alert','Kritik / Acil','5','öncelikli müdahale','danger')}
+        ${roleKpi('calendar','Randevu Bekleyen','7','planlanacak','warn')}
+        ${roleKpi('briefcase','İş Emrine Dönen','12','teknisyen atanmış','accent')}
+      </div>
+
+      <section class="card service-request-filter mb-5">
+        <div class="filter-grid-pro">
+          <div class="form-group"><label class="form-label">Genel Arama</label><div class="input-icon">${ICONS.search}<input class="form-input" id="serviceSearch" placeholder="Cari, cihaz, seri no, servis no..." oninput="filterServiceRequests()"></div></div>
+          <div class="form-group"><label class="form-label">Durum</label><select class="form-input"><option>Tümü</option><option>Randevu Bekliyor</option><option>İş Emrine Döndü</option><option>Tamamlandı</option></select></div>
+          <div class="form-group"><label class="form-label">Öncelik</label><select class="form-input"><option>Tümü</option><option>Kritik</option><option>Acil</option><option>Normal</option><option>Planlı</option></select></div>
+          <div class="form-group"><label class="form-label">Garanti</label><select class="form-input"><option>Tümü</option><option>Garanti Var</option><option>Bakım Sözleşmesi</option><option>Ücretli</option></select></div>
+        </div>
+      </section>
+
+      <div class="service-request-layout">
+        <section class="card service-request-list-card">
+          <div class="card-head service-card-head">
+            <div><div class="card-title">Talep Listesi</div><div class="text-mute small">Talep kartına tıklayınca düzenleme sayfası açılır.</div></div>
+            <div class="segmented-tabs"><button class="active">Açık</button><button>Bugün</button><button>Garanti</button><button>Tamamlanan</button></div>
+          </div>
+          <div class="card-body service-request-list" id="serviceRequestList">
+            ${serviceRequests.map(r => serviceRequestCard(r)).join('')}
+          </div>
+        </section>
+        <aside class="service-request-side">
+          <section class="card service-panel">
+            <div class="card-head service-card-head"><div class="card-title">Talep Akışı</div><span class="pill">Standart</span></div>
+            <div class="card-body service-request-flow-mini">
+              <div class="done"><b>1</b><span>Talep alındı</span></div>
+              <div class="active"><b>2</b><span>Randevu planlanır</span></div>
+              <div><b>3</b><span>İş emri açılır</span></div>
+              <div><b>4</b><span>Saha servis tamamlanır</span></div>
+              <div><b>5</b><span>Tahsilat / fatura</span></div>
+            </div>
+          </section>
+          <section class="card service-panel mt-4">
+            <div class="card-head service-card-head"><div class="card-title">Hızlı İşlemler</div></div>
+            <div class="card-body service-quick-actions">
+              <button onclick="location.href='servis-talep-form.html'">${ICONS.plus} Yeni Talep</button>
+              <button onclick="showActionModal('info','Randevu','Seçili talep için randevu planlama açıldı.')">${ICONS.calendar} Randevu Ver</button>
+              <button onclick="showActionModal('info','İş Emri','Teknisyen ve servis aracı atama açıldı.')">${ICONS.briefcase} İş Emrine Çevir</button>
+              <button onclick="openServiceDocuments()">${ICONS.file_text} Evrak / Fotoğraf</button>
+            </div>
+          </section>
+        </aside>
+      </div>
+    `);
+    function serviceRequestCard(r){
+      return `<article class="service-request-card ${r.tone}" onclick="location.href='servis-talep-form.html?no=${r.no}'" data-search="${(r.no+' '+r.cari+' '+r.device+' '+r.fault+' '+r.phone).toLowerCase()}">
+        <div class="request-main">
+          <div class="request-no"><strong>${r.no}</strong><span>${r.date}</span></div>
+          <div><strong>${r.cari}</strong><span>${r.contact} · ${r.phone}</span></div>
+          <div><strong>${r.device}</strong><span>${r.fault}</span></div>
+          <div><strong>${r.city}</strong><span>${r.warranty}</span></div>
+        </div>
+        <div class="request-tags"><span class="status ${r.tone==='danger'?'danger':r.tone==='warn'?'warn':'info'}">${r.priority}</span><span class="status ${reqStatusClass(r.status)}">${r.status}</span></div>
+        <div class="request-actions" onclick="event.stopPropagation()"><button class="btn btn-outline-success btn-sm" onclick="location.href='servis-talep-form.html?no=${r.no}'">Düzenle</button><button class="btn btn-outline-primary btn-sm" onclick="showActionModal('info','İş Emri','${r.no} iş emrine çevrildi.')">İş Emri</button></div>
+      </article>`;
+    }
+    function filterServiceRequests(){ const q=(document.getElementById('serviceSearch').value||'').toLowerCase(); document.querySelectorAll('.service-request-card').forEach(c=>c.style.display=c.dataset.search.includes(q)?'grid':'none'); }
+    function openServiceDocuments(){ showActionModal('info','Servis Evrakları','Fotoğraf, video, ses kaydı, PDF ve imzalı formlar ortak evrak bileşeni ile yönetilir.'); }
+  </script>
+
+</body>
+</html>

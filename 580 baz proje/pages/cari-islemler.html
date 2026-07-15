@@ -1,0 +1,843 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#10243f" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-title" content="Tcr3WEB" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <link rel="manifest" href="../manifest.webmanifest?v=20260711-699" />
+  <link rel="icon" type="image/png" href="../assets/icons/favicon-64.png" />
+  <link rel="apple-touch-icon" href="../assets/icons/icon-180.png" />
+  <title>Tcr3WEB · Cari İşlemleri</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../assets/css/style.css?v=20260712-653" />
+  <link rel="stylesheet" href="../assets/css/responsive-master.css?v=20260713-591" />
+  <link rel="stylesheet" href="../assets/css/performance.css?v=20260711-700" />
+  <link rel="stylesheet" href="../assets/css/tcr-table.css?v=20260713-580" />
+  <link rel="stylesheet" href="../assets/css/kpi-standard.css?v=20260712-694" />
+
+  <style>
+    .ci-action-pdf{font-size:10px;font-weight:800;letter-spacing:.02em}
+    .ci-sms-preview{border:1px solid var(--border);border-radius:12px;background:var(--surface-2);padding:12px;min-height:92px;font-size:13px;color:var(--text-soft)}
+    .ci-detail-hero{display:flex;align-items:center;justify-content:space-between;gap:18px;padding:18px 20px;margin-bottom:18px;border:1px solid #cbd5e1;border-left:6px solid #16a34a;border-radius:16px;background:linear-gradient(135deg,#f8fafc 0%,#ffffff 72%);box-shadow:0 8px 22px rgba(15,23,42,.06)}
+    .ci-detail-hero-main{display:flex;align-items:center;gap:14px;min-width:0}
+    .ci-detail-hero-icon{width:48px;height:48px;display:grid;place-items:center;border-radius:14px;background:#dcfce7;color:#15803d;flex:0 0 auto}
+    .ci-detail-hero-icon svg{width:24px;height:24px}
+    .ci-detail-hero-title{font-size:18px;font-weight:800;color:#0f172a;line-height:1.25}
+    .ci-detail-hero-sub{margin-top:4px;font-size:12px;font-weight:600;color:#475569}
+    .ci-detail-amount{text-align:right;flex:0 0 auto}
+    .ci-detail-amount-label{display:block;font-size:10px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:#64748b;margin-bottom:3px}
+    .ci-detail-amount-value{display:block;font-size:24px;line-height:1.1;font-weight:900;color:#16a34a;white-space:nowrap}
+    .ci-detail-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 24px;border:1px solid #dbe3ee;border-radius:16px;background:#fff;padding:4px 18px;margin-bottom:16px}
+    .ci-detail-item{display:grid;grid-template-columns:minmax(120px,42%) minmax(0,1fr);align-items:center;gap:14px;min-height:58px;border-bottom:1px solid #e5e7eb;padding:10px 2px}
+    .ci-detail-item:nth-last-child(-n+2){border-bottom:0}
+    .ci-detail-label{font-size:11px;color:#475569;font-weight:800;text-transform:uppercase;letter-spacing:.035em}
+    .ci-detail-value{font-size:14px;color:#111827;font-weight:700;text-align:right;overflow-wrap:anywhere}
+    .ci-detail-value.mono{font-family:'JetBrains Mono',monospace;font-size:13px}
+    .ci-detail-status{display:inline-flex;align-items:center;gap:6px;border-radius:999px;padding:6px 10px;background:#dcfce7;color:#166534;font-size:12px;font-weight:800}
+    .ci-detail-status::before{content:'';width:7px;height:7px;border-radius:50%;background:#16a34a}
+    .ci-detail-note{display:flex;gap:12px;align-items:flex-start;border:1px solid #dbe3ee;border-radius:14px;background:#f8fafc;padding:14px 16px;color:#111827;font-size:13px;line-height:1.55}
+    .ci-detail-note-icon{width:32px;height:32px;display:grid;place-items:center;border-radius:10px;background:#e0f2fe;color:#0369a1;flex:0 0 auto}
+    .ci-detail-note-icon svg{width:17px;height:17px}
+    .ci-detail-note-title{display:block;font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.04em;color:#475569;margin-bottom:2px}
+    #cariIslemDetailModal .modal-content{max-width:900px}
+    #cariIslemDetailModal .modal-footer{gap:12px;align-items:center}
+    #cariIslemDetailModal .modal-foot-left{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+    #cariIslemDetailModal .modal-foot-left .btn{min-height:40px}
+    #cariIslemDetailModal .ci-doc-chip{margin-right:4px}
+    @media (max-width:768px){.ci-detail-hero{align-items:flex-start;flex-direction:column}.ci-detail-amount{text-align:left}.ci-detail-grid{grid-template-columns:1fr;padding:4px 14px}.ci-detail-item:nth-last-child(-n+2){border-bottom:1px solid #e5e7eb}.ci-detail-item:last-child{border-bottom:0}.ci-detail-item{grid-template-columns:1fr;gap:4px}.ci-detail-value{text-align:left}.data .flex.gap-2{gap:4px}.data .icon-btn{width:28px!important;height:28px!important}}
+    .ci-actions{position:relative;display:inline-flex;gap:6px;justify-content:flex-end;align-items:center;overflow:visible}
+    .ci-table-wrap{overflow:visible!important}
+    .ci-output-menu{position:fixed!important;z-index:2147483647!important;width:210px;border:1px solid var(--border);border-radius:14px;background:#fff!important;box-shadow:0 28px 70px rgba(15,23,42,.28);padding:7px;display:none;text-align:left;isolation:isolate;transform:translateZ(0);overflow:hidden;pointer-events:auto}
+    .ci-output-menu.open{display:block!important}
+    .ci-output-title{font-size:10px;font-weight:900;color:var(--text-mute);text-transform:uppercase;letter-spacing:.08em;padding:7px 9px 6px;border-bottom:1px solid var(--border);margin-bottom:5px;white-space:nowrap;background:#fff!important}
+    .ci-output-item{width:100%;display:flex;align-items:center;gap:10px;border:0;background:transparent;color:var(--text);border-radius:10px;padding:8px 9px;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap;line-height:1.2;text-align:left;position:relative;z-index:1}
+    .ci-output-item:hover{background:var(--c-nu-50);color:var(--c-primary-700)}
+    .ci-output-item svg{width:16px;height:16px;flex:0 0 auto;color:var(--text-soft)}
+    .ci-output-sep{height:1px;background:var(--border);margin:5px 4px}
+    .ci-output-trigger{position:relative;z-index:3}
+    .ci-doc-chip{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--border);border-radius:999px;padding:5px 9px;font-size:11px;font-weight:800;color:var(--text-soft);background:var(--surface-2)}
+    .tcr-print-only{display:none}
+    @media (max-width: 768px){.ci-output-menu{width:214px}.data .flex.gap-2{gap:4px}.data .icon-btn{width:28px!important;height:28px!important}}
+  </style>
+  <link rel="stylesheet" href="../assets/css/text-readability.css?v=20260712-657" />
+  <link rel="stylesheet" href="../assets/css/cari-amount-status.css?v=20260712-621" />
+
+  <style>
+    /* 580 · Cari işlem çıktı menüsü mobil/tablet düzeltmesi */
+    @media (max-width:1180px){
+      .ci-output-menu{
+        position:fixed!important;left:12px!important;right:12px!important;top:auto!important;bottom:82px!important;
+        width:auto!important;max-width:520px!important;margin:0 auto!important;padding:10px!important;
+        border:1px solid #cbd8e8!important;border-radius:16px!important;background:#fff!important;
+        box-shadow:0 -12px 40px rgba(15,23,42,.22)!important;overflow:auto!important;max-height:calc(100vh - 120px)!important;
+      }
+      .ci-output-menu.open{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:7px!important}
+      .ci-output-title{grid-column:1/-1!important;margin:0 0 3px!important;padding:6px 8px 10px!important;background:#fff!important;color:#163e72!important}
+      .ci-output-item{min-height:44px!important;padding:9px 10px!important;border:1px solid #dbe5f1!important;border-radius:11px!important;background:#fff!important;color:#172033!important;justify-content:flex-start!important}
+      .ci-output-item:hover,.ci-output-item:focus{background:#eef5ff!important;color:#123f76!important}
+      .ci-output-sep{display:none!important}
+    }
+    @media (max-width:520px){
+      .ci-output-menu.open{grid-template-columns:1fr!important}
+      .ci-output-menu{bottom:74px!important}
+    }
+  </style>
+</head>
+<body>
+  <div id="app" class="app"></div>
+  <script src="../assets/js/app.js?v=20260712-653"></script>
+  <script src="../assets/js/tcr-actions.js?v=20260713-600"></script>
+  <script src="../assets/js/master-init.js?v=20260713-583"></script>
+  <script src="../assets/js/tcr-table.js?v=20260713-587"></script>
+  <script>
+    const CARI_ISLEM_TIPLERI = [
+      { id: 'tahsilat',       label: 'Tahsilat',       actionLabel: 'Yeni Tahsilat',       group: 'Finansal İşlemler', iconKey: 'cash',       color: 'var(--c-accent-500)',  desc: 'Müşteriden alınan ödeme kaydı' },
+      { id: 'odeme',          label: 'Ödeme',          actionLabel: 'Yeni Ödeme',          group: 'Finansal İşlemler', iconKey: 'wallet',     color: 'var(--c-danger-400)',  desc: 'Tedarikçiye yapılan ödeme kaydı' },
+      { id: 'alinan_cek',     label: 'Alınan Çek',     actionLabel: 'Alınan Çek',          group: 'Evrak İşlemleri',    iconKey: 'file_check', color: 'var(--c-primary-500)', desc: 'Müşteri çeki portföye alma' },
+      { id: 'verilen_cek',    label: 'Verilen Çek',    actionLabel: 'Verilen Çek',         group: 'Evrak İşlemleri',    iconKey: 'file_check', color: 'var(--c-warn-400)',    desc: 'Kendi çekimiz ile ödeme' },
+      { id: 'alinan_senet',   label: 'Alınan Senet',   actionLabel: 'Alınan Senet',        group: 'Evrak İşlemleri',    iconKey: 'file_text',  color: 'var(--c-primary-500)', desc: 'Müşteri senedi portföye alma' },
+      { id: 'verilen_senet',  label: 'Verilen Senet',  actionLabel: 'Verilen Senet',       group: 'Evrak İşlemleri',    iconKey: 'file_text',  color: 'var(--c-warn-400)',    desc: 'Kendi senedimiz ile ödeme' },
+    ];
+
+    const CARI_ISLEM_KARTLARI = [
+      { id: 'tahsilat', actionTip: 'tahsilat', label: 'Yeni Tahsilat', group: 'Finansal İşlemler', iconKey: 'cash', color: 'var(--c-accent-500)', desc: 'Müşteriden alınan ödeme kaydı', match: ['tahsilat'] },
+      { id: 'odeme', actionTip: 'odeme', label: 'Yeni Ödeme', group: 'Finansal İşlemler', iconKey: 'wallet', color: 'var(--c-danger-400)', desc: 'Tedarikçiye yapılan ödeme kaydı', match: ['odeme'] },
+      { id: 'cek_islemi', actionTip: 'cek_islemi', label: 'Çek İşlemi', group: 'Evrak İşlemleri', iconKey: 'file_check', color: 'var(--c-primary-500)', desc: 'Alınan / verilen çek kaydı', match: ['alinan_cek','verilen_cek'] },
+      { id: 'senet_islemi', actionTip: 'senet_islemi', label: 'Senet İşlemi', group: 'Evrak İşlemleri', iconKey: 'file_text', color: 'var(--c-warn-400)', desc: 'Alınan / verilen senet kaydı', match: ['alinan_senet','verilen_senet'] },
+    ];
+
+    const MOCK_CARI_ISLEM = [
+      { no: 'TAH2026070610000001', tip: 'tahsilat',      tarih: '2026-07-01', cari: 'Marmara Tekstil A.Ş.',       tutar: 25000,  kanal: 'Merkez Kasa',       durum: 'Onaylandı', aciklama: 'Nakit tahsilat' },
+      { no: 'ODE2026070610000001', tip: 'odeme',         tarih: '2026-07-01', cari: 'Yıldız Plastik A.Ş.',       tutar: 18000,  kanal: 'Garanti Bankası',   durum: 'Onaylandı', aciklama: 'EFT ödeme' },
+      { no: 'ACEK2026070610000001', tip: 'alinan_cek',    tarih: '2026-07-02', cari: 'Anadolu Hırdavat San.',     tutar: 32500,  kanal: 'Portföy',           durum: 'Portföyde', aciklama: 'Müşteri çeki' },
+      { no: 'VCEK2026070610000001', tip: 'verilen_cek',   tarih: '2026-07-02', cari: 'Akdeniz Gıda Ltd.',         tutar: 12450,  kanal: 'Garanti / Çek',     durum: 'Bekliyor',  aciklama: 'Verilen çek' },
+      { no: 'ASEN2026070610000001', tip: 'alinan_senet',  tarih: '2026-07-03', cari: 'Karadeniz Mobilya A.Ş.',    tutar: 40000,  kanal: 'Portföy',           durum: 'Portföyde', aciklama: 'Müşteri senedi' },
+      { no: 'VSEN2026070610000001', tip: 'verilen_senet', tarih: '2026-07-04', cari: 'Marmara Kimya San.',        tutar: 9850,   kanal: 'Firma Senedi',      durum: 'Bekliyor',  aciklama: 'Verilen senet' },
+      { no: 'TAH2026070610000002', tip: 'tahsilat',      tarih: '2026-07-04', cari: 'Erciyes Yapı Market',       tutar: 7500,   kanal: 'Ziraat Bankası',    durum: 'Onaylandı', aciklama: 'Havale tahsilat' },
+      { no: 'ACEK2026070610000002', tip: 'alinan_cek',    tarih: '2026-07-05', cari: 'Ege Lojistik Ltd. Şti.',    tutar: 15600,  kanal: 'Portföy',           durum: 'Portföyde', aciklama: 'Vadeli çek' },
+    ];
+
+    // Belge / işlem numarası standardı:
+    // PREFIX + YYYYMMDD + USERID + 6 haneli sıra
+    // Örnek: ACEK2026070610000001 (ACEK + 20260706 + kullanıcı 10 + sıra 000001)
+    const TCR_USER_ID = '10';
+    const TCR_SEQ = { TAH: 3, ODE: 2, ACEK: 3, VCEK: 2, ASEN: 2, VSEN: 2 };
+    const TCR_PORTFOY_EVRAKLAR = {
+      cek: [
+        { id:'ACEK2026070610000001', no:'ACEK2026070610000001', cari:'Anadolu Hırdavat San.', lehtar:'Marmara Tekstil A.Ş.', banka:'Garanti Bankası', tarih:'2026-07-02', vade:'2026-08-15', tutar:32500, kesideci:'Anadolu Hırdavat San.' },
+        { id:'ACEK2026070610000002', no:'ACEK2026070610000002', cari:'Ege Lojistik Ltd. Şti.', lehtar:'Marmara Tekstil A.Ş.', banka:'İş Bankası', tarih:'2026-07-05', vade:'2026-08-30', tutar:15600, kesideci:'Ege Lojistik Ltd. Şti.' },
+      ],
+      senet: [
+        { id:'ASEN2026070610000001', no:'ASEN2026070610000001', cari:'Karadeniz Mobilya A.Ş.', lehtar:'Marmara Tekstil A.Ş.', banka:'-', tarih:'2026-07-03', vade:'2026-09-10', tutar:40000, borclu:'Karadeniz Mobilya A.Ş.' },
+      ]
+    };
+
+    function tcrDateCode(d = new Date()) {
+      return d.getFullYear() + String(d.getMonth()+1).padStart(2,'0') + String(d.getDate()).padStart(2,'0');
+    }
+    function nextTcrNo(prefix) {
+      const seq = String(TCR_SEQ[prefix] || 1).padStart(6,'0');
+      TCR_SEQ[prefix] = (TCR_SEQ[prefix] || 1) + 1;
+      return `${prefix}${tcrDateCode()}${TCR_USER_ID}${seq}`;
+    }
+    function getCariIslemPrefix(tip) {
+      if (tip === 'tahsilat') return 'TAH';
+      if (tip === 'odeme') return 'ODE';
+      if (tip === 'alinan_cek') return 'ACEK';
+      if (tip === 'verilen_cek') return 'VCEK';
+      if (tip === 'alinan_senet') return 'ASEN';
+      if (tip === 'verilen_senet') return 'VSEN';
+      return 'ISL';
+    }
+
+    bootPage('cari-islemler', () => {
+      const makeTipCard = (t) => {
+        const count = MOCK_CARI_ISLEM.filter(f => (t.match || [t.id]).includes(f.tip)).length;
+        const colorClass = t.color.includes('accent') ? 'green' : t.color.includes('danger') ? 'red' : t.color.includes('primary') ? 'blue' : t.color.includes('warn') ? 'orange' : 'blue';
+        return `
+        <div class="tcr-action-card tcr-ac-${colorClass}" onclick="openCariIslemModal('${t.actionTip || t.id}')">
+          <span class="tcr-ac-icon">${ICONS[t.iconKey] || ICONS.file_text}</span>
+          <span class="tcr-ac-content">
+            <span class="tcr-ac-title">${t.label}</span>
+            <span class="tcr-ac-desc">${t.desc}</span>
+          </span>
+          <span class="tcr-ac-badge">${count}</span>
+        </div>`;
+      };
+      const finansCards = CARI_ISLEM_KARTLARI.filter(t => t.group === 'Finansal İşlemler').map(makeTipCard).join('');
+      const evrakCards = CARI_ISLEM_KARTLARI.filter(t => t.group === 'Evrak İşlemleri').map(makeTipCard).join('');
+
+      const rows = MOCK_CARI_ISLEM.map(h => {
+        const tip = CARI_ISLEM_TIPLERI.find(t => t.id === h.tip);
+        const durumColor = h.durum === 'Onaylandı' ? 'success' : h.durum === 'Bekliyor' ? 'warn' : '';
+        const isCikis = h.tip === 'odeme' || h.tip === 'verilen_cek' || h.tip === 'verilen_senet';
+        return `<tr data-tip="${h.tip}">
+          <td class="mono strong">${h.no}</td>
+          <td><span class="pill" style="background:${tip?.color||''}1a;color:${tip?.color||'var(--text-mute)'}">${tip?.label||h.tip}</span></td>
+          <td>${fmtDate(h.tarih)}</td>
+          <td class="strong">${h.cari}</td>
+          <td class="muted">${h.kanal}</td>
+          <td class="num strong" style="color:${isCikis ? 'var(--c-danger-500)' : 'var(--c-accent-600)'}">${isCikis ? '-' : '+'} ${fmtMoney(h.tutar)}</td>
+          <td><span class="badge badge-${durumColor}">${h.durum}</span></td>
+          <td class="muted">${h.aciklama}</td>
+          <td>
+            <div class="ci-actions">
+              <button class="icon-btn" style="width:30px;height:30px" onclick="openCariIslemDetail('${h.no}')" title="Görüntüle">${ICONS.eye}</button>
+              <button class="icon-btn" style="width:30px;height:30px" onclick="openCariIslemModal('${h.tip}','${h.no}')" title="Düzenle">${ICONS.edit}</button>
+              <button class="icon-btn ci-output-trigger" style="width:30px;height:30px;font-weight:900" onclick="toggleCariOutputMenu('${h.no}', event)" title="Çıktı İşlemleri">⋮</button>
+              <div class="ci-output-menu" id="ci-output-${h.no}">
+                <div class="ci-output-title">Tcr3WEB Çıktı Merkezi</div>
+                <button class="ci-output-item" onclick="printCariIslem('${h.no}')">${ICONS.print} Yazdır</button>
+                <button class="ci-output-item" onclick="downloadCariIslemPdf('${h.no}')">${ICONS.download} PDF İndir</button>
+                <button class="ci-output-item" onclick="mailCariIslem('${h.no}')">${ICONS.mail} Mail</button>
+                <button class="ci-output-item" onclick="openCariIslemSms('${h.no}')">${ICONS.phone} SMS</button>
+                <button class="ci-output-item" onclick="whatsappCariIslem('${h.no}')">${ICONS.whatsapp} WhatsApp</button>
+                <div class="ci-output-sep"></div>
+                <button class="ci-output-item" onclick="copyCariIslemText('${h.no}')">📋 Bilgiyi Kopyala</button>
+              </div>
+            </div>
+          </td>
+        </tr>`;
+      }).join('');
+
+      return `
+      <div class="page-head">
+        <div>
+          <div class="breadcrumb">
+            <a href="dashboard.html">Genel</a><span>›</span>
+            <a href="cari.html">Cari</a><span>›</span>
+            <span>Cari İşlemleri</span>
+          </div>
+          <h1 class="page-title">${ICONS.briefcase} Cari İşlemleri</h1>
+          <div class="page-sub">Tahsilat, ödeme, çek ve senet işlemleri</div>
+        </div>
+        <div class="page-actions">
+          <button class="btn btn-ghost" onclick="toast('Cari hareket raporu indirildi (prototip)')">${ICONS.download} Rapor</button>
+          <button class="btn btn-primary" onclick="openCariIslemModal('tahsilat')">${ICONS.plus} Yeni Tahsilat</button>
+        </div>
+      </div>
+
+      <div class="tcr-ac-grid cols-2">
+        <div>
+          
+          <div class="tcr-ac-grid cols-2">${finansCards}</div>
+        </div>
+        <div>
+          
+          <div class="tcr-ac-grid cols-2">${evrakCards}</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-body" style="padding:var(--s-4)">
+          <div class="toolbar">
+            <div class="toolbar-search">
+              <span class="toolbar-search-icon">${ICONS.search}</span>
+              <input type="text" placeholder="İşlem no, cari veya açıklama ara..." oninput="filterCariIslemTable(this.value)" />
+            </div>
+            <select class="filter-select" onchange="filterCariIslemTip(this.value)">
+              <option value="">Tüm Tipler</option>
+              ${CARI_ISLEM_TIPLERI.map(t => `<option value="${t.id}">${t.label}</option>`).join('')}
+            </select>
+            <select class="filter-select" onchange="filterCariIslemDurum(this.value)">
+              <option value="">Tüm Durumlar</option>
+              <option value="Onaylandı">Onaylandı</option>
+              <option value="Bekliyor">Bekliyor</option>
+              <option value="Taslak">Taslak</option>
+            </select>
+          </div>
+          <div class="table-wrap ci-table-wrap" style="border:none">
+            <table class="data" id="cariIslemTable">
+              <thead><tr>
+                <th>İşlem No</th><th>Tip</th><th>Tarih</th><th>Cari</th><th>Kasa / Banka / Portföy</th><th class="num">Tutar</th><th>Durum</th><th>Açıklama</th><th style="width:132px;text-align:right">İşlem</th>
+              </tr></thead>
+              <tbody>${rows}</tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      ${modalHtml('cariOdemeModal', 'Cari İşlem', `
+        <div class="form-grid-2">
+          <div class="form-field"><label class="form-label">İşlem No</label><input class="form-input mono" id="co-no" value="YENİ" readonly /></div>
+          <div class="form-field"><label class="form-label">İşlem Tipi</label><select class="form-input" id="co-tip" disabled><option value="tahsilat">Tahsilat</option><option value="odeme">Ödeme</option></select></div>
+          <div class="form-field full"><label class="form-label">Cari Kart</label><div style="display:flex;gap:var(--s-2)"><input class="form-input" id="co-cari" placeholder="Cari seçiniz" value="Marmara Tekstil A.Ş." oninput="updateCariOdemeBakiyeByName(this.value)" /><button class="btn btn-ghost" type="button" onclick="openPickerFor('cari','co-cari','', updateCariOdemeBakiye)">${ICONS.search}</button></div></div>
+          <div class="form-field"><label class="form-label">Tarih</label><input class="form-input" id="cs-duzenleme" type="date" value="2026-07-05" /></div>
+          <div class="form-field"><label class="form-label">Kasa / Banka</label><select class="form-input"><option>Merkez Kasa</option><option>Garanti Bankası</option><option>İş Bankası</option><option>Ziraat Bankası</option></select></div>
+          <div class="form-field"><label class="form-label">Belge / Makbuz No</label><input class="form-input mono" placeholder="Otomatik / manuel" /></div>
+          <div class="form-field"><label class="form-label">Tutar</label><input class="form-input" id="cs-tutar" type="number" value="0.00" /></div>
+          <div class="form-field"><label class="form-label">Durum</label><select class="form-input"><option>Taslak</option><option>Bekliyor</option><option>Onaylandı</option></select></div>
+          <div class="form-field full"><label class="form-label">Açıklama</label><textarea class="form-input" placeholder="Tahsilat / ödeme açıklaması"></textarea></div>
+        </div>
+      `, `<div class="modal-foot-left"><span class="ci-bakiye-row" id="co-bakiye-box" style="margin-top:0;padding-top:0"><span class="ci-bakiye-label">Mevcut Bakiye</span><strong class="ci-bakiye-value" id="co-bakiye-value">145.000,00 ₺</strong><span class="ci-bakiye-state" id="co-bakiye-state">Alacaklı</span></span></div><div class="modal-foot-right"><button class="btn btn-ghost" onclick="closeModal('cariOdemeModal')">Vazgeç</button><button class="btn btn-success" onclick="closeModal('cariOdemeModal');toast('Cari işlem kaydedildi','success')">${ICONS.check} Kaydet</button></div>`, 'lg')}
+
+      ${modalHtml('cekSenetModal', 'Çek / Senet İşlemi', `
+        <div class="form-grid-2">
+          <div class="form-field"><label class="form-label">İşlem No</label><input class="form-input mono" id="cs-no" value="YENİ" readonly /></div>
+          <div class="form-field"><label class="form-label">İşlem Yönü</label><select class="form-input" id="cs-yon" onchange="syncCekSenetModal()">
+            <option value="alinan">Alınan</option>
+            <option value="verilen">Verilen</option>
+          </select></div>
+          <div class="form-field" data-cs-field="evrakKaynak"><label class="form-label">Evrak Kaynağı</label><select class="form-input" id="cs-kaynak" onchange="syncCekSenetModal()">
+            <option value="kendi">Kendi Evrakımız</option>
+            <option value="musteri">Müşteri Evrakı</option>
+          </select></div>
+          <div class="form-field full"><label class="form-label">Cari Kart</label><div style="display:flex;gap:var(--s-2)"><input class="form-input" id="cs-cari" placeholder="Cari seçiniz" value="Marmara Tekstil A.Ş." oninput="updateCekSenetBakiyeByName(this.value)" /><button class="btn btn-ghost" type="button" onclick="openPickerFor('cari','cs-cari','', updateCekSenetBakiye)">${ICONS.search}</button></div></div>
+          <div class="form-field full" data-cs-field="portfoyEvrak"><label class="form-label">Portföydeki Evrak</label><select class="form-input" id="cs-portfoy">
+            <option value="">Portföyden çek/senet seçiniz</option>
+            <option>ACEK2026070610000001 · Anadolu Hırdavat · 32.500,00 ₺ · 15.08.2026</option>
+            <option>ACEK2026070610000002 · Ege Lojistik · 15.600,00 ₺ · 30.08.2026</option>
+            <option>ASEN2026070610000001 · Karadeniz Mobilya · 40.000,00 ₺ · 10.09.2026</option>
+          </select></div>
+          <div class="form-field" data-cs-field="cekNo"><label class="form-label">Çek No</label><input class="form-input mono" id="cs-cek-no" placeholder="Çek numarası" /></div>
+          <div class="form-field" data-cs-field="senetNo"><label class="form-label">Senet No</label><input class="form-input mono" id="cs-senet-no" placeholder="Senet numarası" /></div>
+          <div class="form-field" data-cs-field="kesideci"><label class="form-label">Keşideci</label><input class="form-input" id="cs-kesideci" placeholder="Keşideci adı" /></div>
+          <div class="form-field" data-cs-field="lehtar"><label class="form-label">Lehtar</label><input class="form-input" id="cs-lehtar" placeholder="Lehtar adı" /></div>
+          <div class="form-field" data-cs-field="borclu"><label class="form-label">Borçlu</label><input class="form-input" id="cs-borclu" placeholder="Borçlu adı" /></div>
+          <div class="form-field" data-cs-field="alacakli"><label class="form-label">Alacaklı</label><input class="form-input" id="cs-alacakli" placeholder="Alacaklı adı" /></div>
+          <div class="form-field" data-cs-field="banka"><label class="form-label">Banka</label><input class="form-input" id="cs-banka" placeholder="Banka adı" /></div>
+          <div class="form-field" data-cs-field="sube"><label class="form-label">Şube</label><input class="form-input" placeholder="Şube" /></div>
+          <div class="form-field" data-cs-field="hesap"><label class="form-label">Hesap No / IBAN</label><input class="form-input" placeholder="Hesap no veya IBAN" /></div>
+          <div class="form-field" data-cs-field="bankaHesabi"><label class="form-label">Banka Hesabı</label><select class="form-input"><option>Garanti Bankası - Merkez</option><option>İş Bankası - Şube</option><option>Ziraat Bankası - Cari</option></select></div>
+          <div class="form-field" data-cs-field="kocan"><label class="form-label">Çek Koçanı</label><select class="form-input"><option>GAR-2026-A</option><option>ISB-2026-B</option><option>ZRT-2026-C</option></select></div>
+          <div class="form-field" data-cs-field="duzenleme"><label class="form-label">Düzenleme Tarihi</label><input class="form-input" id="cs-keside-tarihi" type="date" value="2026-07-05" /></div>
+          <div class="form-field" data-cs-field="kesideTarihi"><label class="form-label">Keşide Tarihi</label><input class="form-input" type="date" value="2026-07-05" /></div>
+          <div class="form-field"><label class="form-label">Vade</label><input class="form-input" id="cs-vade" type="date" value="2026-08-05" /></div>
+          <div class="form-field"><label class="form-label">Tutar</label><input class="form-input" id="cs-tutar" type="number" value="0.00" /></div>
+          <div class="form-field"><label class="form-label">Durum</label><select class="form-input" id="cs-durum"><option>Taslak</option><option>Bekliyor</option><option>Portföyde</option><option>Ciro Edilecek</option><option>Onaylandı</option></select></div>
+          <div class="form-field full"><label class="form-label">Açıklama</label><textarea class="form-input" placeholder="Çek / senet açıklaması"></textarea></div>
+        </div>
+      `, `<div class="modal-foot-left"><span class="ci-bakiye-row" id="cs-bakiye-box" style="margin-top:0;padding-top:0"><span class="ci-bakiye-label">Mevcut Bakiye</span><strong class="ci-bakiye-value" id="cs-bakiye-value">145.000,00 ₺</strong><span class="ci-bakiye-state" id="cs-bakiye-state">Alacaklı</span></span></div><div class="modal-foot-right"><button class="btn btn-ghost" onclick="closeModal('cekSenetModal')">Vazgeç</button><button class="btn btn-success" onclick="closeModal('cekSenetModal');toast('Çek / senet işlemi kaydedildi','success')">${ICONS.check} Kaydet</button></div>`, 'lg')}
+
+      ${modalHtml('cariIslemDetailModal', 'İşlem Detayı', `
+        <div id="ci-detail-body" class="ci-detail-body"></div>
+      `, `<div class="modal-foot-left"><span class="ci-doc-chip">Kurumsal Çıktı</span><button class="btn btn-light" onclick="printCariIslem(currentDetailNo)">${ICONS.print} Yazdır</button><button class="btn btn-light" onclick="downloadCariIslemPdf(currentDetailNo)">${ICONS.download} PDF</button><button class="btn btn-light" onclick="mailCariIslem(currentDetailNo)">${ICONS.mail} Mail</button><button class="btn btn-light" onclick="openCariIslemSms(currentDetailNo)">${ICONS.phone} SMS</button><button class="btn btn-light" onclick="whatsappCariIslem(currentDetailNo)">${ICONS.whatsapp} WhatsApp</button></div><div class="modal-foot-right"><button class="btn btn-danger" onclick="closeModal('cariIslemDetailModal')">${ICONS.close} Kapat</button></div>`, 'lg')}
+
+      ${modalHtml('cariSmsModal', 'SMS', `
+        <div class="form-grid">
+          <div class="form-field"><label class="form-label">Cari</label><input class="form-input" id="ci-sms-cari" readonly /></div>
+          <div class="form-field"><label class="form-label">SMS Numarası</label><input class="form-input" id="ci-sms-no" placeholder="05xx xxx xx xx" /></div>
+          <div class="form-field full"><label class="form-label">Mesaj</label><textarea class="form-input" id="ci-sms-text" rows="4"></textarea></div>
+          <div class="form-field full"><label class="form-label">Önizleme</label><div class="ci-sms-preview" id="ci-sms-preview"></div></div>
+        </div>
+      `, `<div class="modal-foot-left"><span class="muted">SMS gönderimi prototip modundadır.</span></div><div class="modal-foot-right"><button class="btn btn-danger" onclick="closeModal('cariSmsModal')">${ICONS.close} Kapat</button><button class="btn btn-success" onclick="sendCariIslemSms()">${ICONS.phone} Gönder</button></div>`, 'md')}
+      `;
+    });
+
+    function filterCariIslemTable(v) {
+      const lv = v.toLowerCase();
+      document.querySelectorAll('#cariIslemTable tbody tr').forEach(r => {
+        r.style.display = r.textContent.toLowerCase().includes(lv) ? '' : 'none';
+      });
+    }
+
+    function filterCariIslemTip(tip) {
+      document.querySelectorAll('#cariIslemTable tbody tr').forEach(r => {
+        r.style.display = (!tip || r.dataset.tip === tip) ? '' : 'none';
+      });
+    }
+
+    function filterCariIslemDurum(durum) {
+      document.querySelectorAll('#cariIslemTable tbody tr').forEach(r => {
+        r.style.display = (!durum || r.textContent.includes(durum)) ? '' : 'none';
+      });
+    }
+
+    let aktifCekSenetTur = 'cek';
+
+    function openCariIslemModal(tip, no) {
+      if (tip === 'tahsilat' || tip === 'odeme') openCariOdemeModal(tip, no);
+      else openCekSenetModal(tip, no);
+    }
+
+    function openCariOdemeModal(tip, no) {
+      openModal('cariOdemeModal');
+      setTimeout(() => {
+        const data = no ? MOCK_CARI_ISLEM.find(x => x.no === no) : null;
+        const activeTip = data?.tip || tip || 'tahsilat';
+        const title = document.querySelector('#cariOdemeModal .modal-title');
+        const tipEl = document.getElementById('co-tip');
+        const noEl = document.getElementById('co-no');
+        const cariEl = document.getElementById('co-cari');
+        if (tipEl) tipEl.value = activeTip;
+        if (noEl) noEl.value = data?.no || nextTcrNo(activeTip === 'odeme' ? 'ODE' : 'TAH');
+        if (cariEl) cariEl.value = data?.cari || cariEl.value || 'Marmara Tekstil A.Ş.';
+        if (title) title.textContent = activeTip === 'odeme' ? 'Yeni Ödeme' : 'Yeni Tahsilat';
+        updateCariOdemeBakiyeByName(cariEl?.value || '');
+      }, 30);
+    }
+
+    function openCekSenetModal(tip, no) {
+      openModal('cekSenetModal');
+      setTimeout(() => {
+        const data = no ? MOCK_CARI_ISLEM.find(x => x.no === no) : null;
+        const activeTip = data?.tip || tip || 'cek_islemi';
+        aktifCekSenetTur = activeTip.includes('senet') ? 'senet' : 'cek';
+        const yon = activeTip.startsWith('verilen') ? 'verilen' : 'alinan';
+        const title = document.querySelector('#cekSenetModal .modal-title');
+        const yonEl = document.getElementById('cs-yon');
+        const noEl = document.getElementById('cs-no');
+        const cariEl = document.getElementById('cs-cari');
+        if (yonEl) yonEl.value = yon;
+        if (noEl) noEl.value = data?.no || nextTcrNo(getCariIslemPrefix(yon + '_' + aktifCekSenetTur));
+        if (cariEl) cariEl.value = data?.cari || cariEl.value || 'Marmara Tekstil A.Ş.';
+        if (title) title.textContent = aktifCekSenetTur === 'senet' ? 'Senet İşlemi' : 'Çek İşlemi';
+        syncCekSenetModal();
+        updateCekSenetBakiyeByName(cariEl?.value || '');
+      }, 30);
+    }
+
+    function updateCariOdemeBakiye(id) {
+      const rec = MOCK.cari.find(c => (c.kod || String(c.id)) === id);
+      if (rec) renderCariOdemeBakiye(rec);
+    }
+
+    function updateCariOdemeBakiyeByName(ad) {
+      const rec = MOCK.cari.find(c => c.ad === ad) || MOCK.cari.find(c => c.ad.toLowerCase().includes(String(ad || '').toLowerCase()));
+      if (rec) renderCariOdemeBakiye(rec);
+    }
+
+    function renderCariOdemeBakiye(rec) {
+      const box = document.getElementById('co-bakiye-box');
+      const val = document.getElementById('co-bakiye-value');
+      const state = document.getElementById('co-bakiye-state');
+      if (!box || !val || !state) return;
+      box.style.display = 'inline-flex';
+      const bakiye = Number(rec.bakiye || 0);
+      const renk = bakiye < 0 ? 'var(--c-danger-500)' : bakiye > 0 ? 'var(--c-accent-600)' : 'var(--text-mute)';
+      val.textContent = fmtMoney(Math.abs(bakiye));
+      val.style.color = renk;
+      state.textContent = bakiye < 0 ? 'Borçlu' : bakiye > 0 ? 'Alacaklı' : 'Bakiyesiz';
+    }
+    function updateCekSenetBakiye(id) {
+      const rec = MOCK.cari.find(c => (c.kod || String(c.id)) === id);
+      if (rec) renderCekSenetBakiye(rec);
+    }
+
+    function updateCekSenetBakiyeByName(ad) {
+      const rec = MOCK.cari.find(c => c.ad === ad) || MOCK.cari.find(c => c.ad.toLowerCase().includes(String(ad || '').toLowerCase()));
+      if (rec) renderCekSenetBakiye(rec);
+    }
+
+    function renderCekSenetBakiye(rec) {
+      const box = document.getElementById('cs-bakiye-box');
+      const val = document.getElementById('cs-bakiye-value');
+      const state = document.getElementById('cs-bakiye-state');
+      if (!box || !val || !state) return;
+      box.style.display = 'inline-flex';
+      const bakiye = Number(rec.bakiye || 0);
+      const renk = bakiye < 0 ? 'var(--c-danger-500)' : bakiye > 0 ? 'var(--c-accent-600)' : 'var(--text-mute)';
+      val.textContent = fmtMoney(Math.abs(bakiye));
+      val.style.color = renk;
+      state.textContent = bakiye < 0 ? 'Borçlu' : bakiye > 0 ? 'Alacaklı' : 'Bakiyesiz';
+    }
+
+
+    function syncCariOdemeModal() {
+      const tip = document.getElementById('co-tip')?.value || 'tahsilat';
+      const title = document.querySelector('#cariOdemeModal .modal-title');
+      if (title) title.textContent = tip === 'odeme' ? 'Yeni Ödeme' : 'Yeni Tahsilat';
+      updateCariOdemeBakiyeByName(document.getElementById('co-cari')?.value || '');
+    }
+
+    function populatePortfolioEvrakOptions() {
+      const portfoy = document.getElementById('cs-portfoy');
+      if (!portfoy) return;
+      const list = TCR_PORTFOY_EVRAKLAR[aktifCekSenetTur] || [];
+      const current = portfoy.value;
+      portfoy.innerHTML = '<option value="">Portföyden evrak seçiniz</option>' + list.map(x =>
+        `<option value="${x.id}">${x.no} · ${x.cari} · ${fmtMoney(x.tutar)} · ${fmtDate(x.vade)}</option>`
+      ).join('');
+      if (current && list.some(x => x.id === current)) portfoy.value = current;
+    }
+
+    function fillSelectedPortfolioEvrak() {
+      const portfoy = document.getElementById('cs-portfoy');
+      if (!portfoy || !portfoy.value) return;
+      const rec = (TCR_PORTFOY_EVRAKLAR[aktifCekSenetTur] || []).find(x => x.id === portfoy.value);
+      if (!rec) return;
+      const setVal = (id, val) => { const el = document.getElementById(id); if (el) el.value = val ?? ''; };
+      setVal('cs-cari', rec.cari);
+      setVal('cs-lehtar', rec.lehtar);
+      setVal('cs-alacakli', rec.lehtar);
+      setVal('cs-banka', rec.banka);
+      setVal('cs-duzenleme', rec.tarih);
+      setVal('cs-keside-tarihi', rec.tarih);
+      setVal('cs-vade', rec.vade);
+      setVal('cs-tutar', rec.tutar);
+      setVal('cs-cek-no', rec.no);
+      setVal('cs-senet-no', rec.no);
+      setVal('cs-kesideci', rec.kesideci || rec.cari);
+      setVal('cs-borclu', rec.borclu || rec.cari);
+      updateCekSenetBakiyeByName(rec.cari);
+      toast('Portföy evrak bilgileri forma aktarıldı', 'success');
+    }
+
+    function syncCekSenetModal() {
+      const yon = document.getElementById('cs-yon')?.value || 'alinan';
+      const kaynakEl = document.getElementById('cs-kaynak');
+      const kaynak = kaynakEl?.value || 'kendi';
+      populatePortfolioEvrakOptions();
+      const tip = `${yon}_${aktifCekSenetTur}`;
+      const title = document.querySelector('#cekSenetModal .modal-title');
+      if (title) title.textContent = aktifCekSenetTur === 'senet' ? 'Senet İşlemi' : 'Çek İşlemi';
+
+      if (kaynakEl) {
+        kaynakEl.closest('.form-field').style.display = yon === 'verilen' ? '' : 'none';
+        kaynakEl.options[0].textContent = aktifCekSenetTur === 'senet' ? 'Kendi Senedimiz' : 'Kendi Çekimiz';
+        kaynakEl.options[1].textContent = aktifCekSenetTur === 'senet' ? 'Müşteri Senedi' : 'Müşteri Çeki';
+      }
+
+      const visibleByTip = {
+        alinan_cek: ['cekNo','kesideci','banka','sube','hesap','kesideTarihi'],
+        verilen_cek_kendi: ['evrakKaynak','cekNo','kocan','bankaHesabi','lehtar','duzenleme'],
+        verilen_cek_musteri: ['evrakKaynak','portfoyEvrak','lehtar','duzenleme'],
+        alinan_senet: ['senetNo','borclu','duzenleme'],
+        verilen_senet_kendi: ['evrakKaynak','senetNo','alacakli','duzenleme'],
+        verilen_senet_musteri: ['evrakKaynak','portfoyEvrak','alacakli','duzenleme'],
+      };
+      const key = yon === 'verilen' ? `${tip}_${kaynak}` : tip;
+      const allowed = visibleByTip[key] || [];
+      document.querySelectorAll('[data-cs-field]').forEach(el => {
+        el.style.display = allowed.includes(el.dataset.csField) ? '' : 'none';
+      });
+
+      const durum = document.getElementById('cs-durum');
+      if (durum) durum.value = yon === 'alinan' ? 'Portföyde' : kaynak === 'musteri' ? 'Ciro Edilecek' : 'Bekliyor';
+      if (yon === 'verilen' && kaynak === 'musteri') {
+        const portfoy = document.getElementById('cs-portfoy');
+        if (portfoy?.value) fillSelectedPortfolioEvrak();
+      }
+      updateCekSenetBakiyeByName(document.getElementById('cs-cari')?.value || '');
+    }
+
+
+    let currentDetailNo = '';
+    function getCariIslem(no) {
+      return MOCK_CARI_ISLEM.find(x => x.no === no) || MOCK_CARI_ISLEM[0];
+    }
+    function cariIslemTipLabel(tip) {
+      return CARI_ISLEM_TIPLERI.find(t => t.id === tip)?.label || tip;
+    }
+    function openCariIslemDetail(no) {
+      const h = getCariIslem(no);
+      if (!h) return;
+      currentDetailNo = no;
+      const body = document.getElementById('ci-detail-body');
+      const title = document.querySelector('#cariIslemDetailModal .modal-title');
+      if (title) title.textContent = cariIslemTipLabel(h.tip) + ' Detayı';
+      if (body) {
+        const tipLabel = cariIslemTipLabel(h.tip);
+        const isPositive = ['tahsilat','alinan_cek','alinan_senet'].includes(h.tip);
+        const heroColor = isPositive ? '#16a34a' : '#dc2626';
+        const heroBg = isPositive ? '#dcfce7' : '#fee2e2';
+        body.innerHTML = `
+          <div class="ci-detail-hero" style="border-left-color:${heroColor}">
+            <div class="ci-detail-hero-main">
+              <div class="ci-detail-hero-icon" style="background:${heroBg};color:${heroColor}">${ICONS.wallet || ICONS.cash || ''}</div>
+              <div>
+                <div class="ci-detail-hero-title">${tipLabel}</div>
+                <div class="ci-detail-hero-sub">${h.no} · ${fmtDate(h.tarih)}</div>
+              </div>
+            </div>
+            <div class="ci-detail-amount">
+              <span class="ci-detail-amount-label">İşlem Tutarı</span>
+              <strong class="ci-detail-amount-value" style="color:${heroColor}">${fmtMoney(h.tutar)}</strong>
+            </div>
+          </div>
+          <div class="ci-detail-grid">
+            <div class="ci-detail-item"><div class="ci-detail-label">Cari Hesap</div><div class="ci-detail-value">${h.cari}</div></div>
+            <div class="ci-detail-item"><div class="ci-detail-label">İşlem Kanalı</div><div class="ci-detail-value">${h.kanal}</div></div>
+            <div class="ci-detail-item"><div class="ci-detail-label">İşlem No</div><div class="ci-detail-value mono">${h.no}</div></div>
+            <div class="ci-detail-item"><div class="ci-detail-label">İşlem Tarihi</div><div class="ci-detail-value">${fmtDate(h.tarih)}</div></div>
+            <div class="ci-detail-item"><div class="ci-detail-label">Durum</div><div class="ci-detail-value"><span class="ci-detail-status">${h.durum}</span></div></div>
+            <div class="ci-detail-item"><div class="ci-detail-label">Kayıt Modu</div><div class="ci-detail-value">Sadece görüntüleme</div></div>
+          </div>
+          <div class="ci-detail-note">
+            <span class="ci-detail-note-icon">${ICONS.file || ICONS.info || ''}</span>
+            <div><span class="ci-detail-note-title">Açıklama</span>${h.aciklama || 'Açıklama girilmemiş.'}</div>
+          </div>
+        `;
+      }
+      openModal('cariIslemDetailModal');
+    }
+    function getCariByName(ad) {
+      return MOCK.cari.find(c => c.ad === ad) || MOCK.cari.find(c => String(ad || '').toLowerCase().includes(c.ad.toLowerCase().slice(0,8))) || MOCK.cari[0];
+    }
+    function normalizeSmsPhone(tel) {
+      const digits = String(tel || '').replace(/\D/g, '');
+      if (!digits) return '0532 111 22 33';
+      if (digits.startsWith('90')) return '0' + digits.slice(2);
+      if (digits.startsWith('0')) return digits.replace(/(\d{4})(\d{3})(\d{2})(\d{2})/, '$1 $2 $3 $4');
+      if (digits.length === 10) return ('0' + digits).replace(/(\d{4})(\d{3})(\d{2})(\d{2})/, '$1 $2 $3 $4');
+      return tel;
+    }
+    function openCariIslemSms(no) {
+      const h = getCariIslem(no);
+      if (!h) return;
+      const cari = getCariByName(h.cari);
+      const text = `${h.cari} cari hesabınız için ${fmtDate(h.tarih)} tarihli ${h.no} nolu ${cariIslemTipLabel(h.tip)} işlemi ${fmtMoney(h.tutar)} olarak oluşturulmuştur. Tcr3WEB`;
+      openModal('cariSmsModal');
+      setTimeout(() => {
+        const title = document.querySelector('#cariSmsModal .modal-title');
+        if (title) title.textContent = 'SMS · ' + h.no;
+        document.getElementById('ci-sms-cari').value = h.cari;
+        document.getElementById('ci-sms-no').value = normalizeSmsPhone(cari?.telefon || '');
+        document.getElementById('ci-sms-text').value = text;
+        document.getElementById('ci-sms-preview').textContent = text;
+        document.getElementById('ci-sms-text').oninput = (e) => document.getElementById('ci-sms-preview').textContent = e.target.value;
+        currentSmsNo = no;
+      }, 30);
+    }
+    let currentSmsNo = null;
+    function sendCariIslemSms() {
+      const tel = document.getElementById('ci-sms-no')?.value || '';
+      if (!tel.trim()) { toast('SMS numarası boş olamaz', 'error'); return; }
+      closeModal('cariSmsModal');
+      toast('SMS gönderildi: ' + tel, 'success');
+    }
+
+    function closeCariOutputMenus() {
+      document.querySelectorAll('.ci-output-menu.open').forEach(m => {
+        m.classList.remove('open');
+        m.style.left = '-9999px';
+        m.style.top = '-9999px';
+      });
+    }
+    function toggleCariOutputMenu(no, ev) {
+      ev?.stopPropagation?.();
+      const btn = ev?.currentTarget || ev?.target;
+      const menu = document.getElementById('ci-output-' + no);
+      const willOpen = !menu?.classList.contains('open');
+      closeCariOutputMenus();
+      if (!menu || !willOpen) return;
+
+      // Menü tablo hücresi içinde kalınca satır ikonlarıyla karışıyordu.
+      // Açılırken body altına taşınıyor; bu nedenle her zaman en üst katmanda görünür.
+      if (menu.parentElement !== document.body) document.body.appendChild(menu);
+      menu.classList.add('open');
+
+      const r = btn.getBoundingClientRect();
+      const mw = menu.offsetWidth || 218;
+      const mh = menu.offsetHeight || 252;
+      let left = r.right - mw;
+      let top = r.bottom + 8;
+
+      // Menü satır yazılarının üstüne binmesin; mümkünse butonun solunda ve satırdan ayrık dursun.
+      // Alt tarafta yer yoksa üste açılır. Arka plan opak tutulduğu için tablo yazıları görünmez.
+
+      if (left < 12) left = 12;
+      if (left + mw > window.innerWidth - 12) left = window.innerWidth - mw - 12;
+      if (top + mh > window.innerHeight - 12) top = Math.max(12, r.top - mh - 8);
+
+      menu.style.left = left + 'px';
+      menu.style.top = top + 'px';
+    }
+    document.addEventListener('click', (e) => {
+      if (e.target.closest('.ci-output-menu') || e.target.closest('.ci-output-trigger')) return;
+      closeCariOutputMenus();
+    });
+    window.addEventListener('scroll', closeCariOutputMenus, true);
+    window.addEventListener('resize', closeCariOutputMenus);
+
+    function ciDirection(h) {
+      return (h.tip === 'odeme' || h.tip === 'verilen_cek' || h.tip === 'verilen_senet') ? 'Çıkış' : 'Giriş';
+    }
+    function ciSignedAmount(h) {
+      return (ciDirection(h) === 'Çıkış' ? '-' : '+') + ' ' + fmtMoney(h.tutar);
+    }
+    function cariIslemCorporateData(no) {
+      const h = getCariIslem(no);
+      const baslikMap = {
+        tahsilat: 'TAHSİLAT MAKBUZU',
+        odeme: 'ÖDEME MAKBUZU',
+        alinan_cek: 'ALINAN ÇEK BELGESİ',
+        verilen_cek: 'VERİLEN ÇEK BELGESİ',
+        alinan_senet: 'ALINAN SENET BELGESİ',
+        verilen_senet: 'VERİLEN SENET BELGESİ'
+      };
+      return {
+        firma: 'Tcr3WEB ERP Ön Muhasebe Sistemi',
+        unvan: 'Tcr3WEB Yazılım ve Ticari Sistemler',
+        adres: 'Merkez Mah. Yazılım Cad. No: 10 / İstanbul',
+        vergiDairesi: 'Marmara VD',
+        vergiNo: '1234567890',
+        tel: '0850 000 00 00',
+        mail: 'info@tcr3web.com',
+        web: 'www.tcr3web.com',
+        belgeBaslik: baslikMap[h.tip] || 'CARİ İŞLEM BELGESİ',
+        belgeNo: h.no,
+        tip: cariIslemTipLabel(h.tip),
+        tarih: fmtDate(h.tarih),
+        cari: h.cari,
+        cariKod: 'CR-' + String(Math.abs(h.cari.split('').reduce((a,c)=>a+c.charCodeAt(0),0)) % 9000 + 1000),
+        cariTel: '05xx xxx xx xx',
+        cariVergi: '—',
+        kanal: h.kanal,
+        yon: ciDirection(h),
+        tutar: ciSignedAmount(h),
+        durum: h.durum,
+        aciklama: h.aciklama,
+        hazirlayan: 'Kullanıcı #10',
+        kontrol: 'Muhasebe',
+        onay: 'Yetkili',
+        yazdirma: new Date().toLocaleString('tr-TR'),
+        qr: 'TCR3WEB-' + h.no
+      };
+    }
+    function cariIslemDetailText(no) {
+      const d = cariIslemCorporateData(no);
+      return [
+        d.firma,
+        d.belgeBaslik,
+        'Belge No: ' + d.belgeNo,
+        'İşlem Tipi: ' + d.tip,
+        'Tarih: ' + d.tarih,
+        'Cari: ' + d.cari,
+        'Kasa / Banka / Portföy: ' + d.kanal,
+        'Yön: ' + d.yon,
+        'Tutar: ' + d.tutar,
+        'Durum: ' + d.durum,
+        'Açıklama: ' + d.aciklama,
+        'Hazırlayan: ' + d.hazirlayan,
+        'Yazdırma Tarihi: ' + d.yazdirma
+      ].join('\n');
+    }
+    function cariIslemCorporateHtml(no) {
+      const d = cariIslemCorporateData(no);
+      return `<!doctype html><html><head><meta charset="utf-8"><title>${d.belgeNo}</title>
+      <style>
+        @page{size:A5 landscape;margin:7mm}
+        *{box-sizing:border-box}
+        body{font-family:Arial,Helvetica,sans-serif;margin:0;background:#e5e7eb;color:#0f172a}
+        .paper{width:210mm;min-height:148mm;margin:14px auto;background:#fff;padding:10mm 11mm;box-shadow:0 16px 38px rgba(15,23,42,.18);position:relative;overflow:hidden}
+        .top{display:grid;grid-template-columns:1fr 70mm;gap:8mm;border-bottom:2px solid #111827;padding-bottom:6mm;margin-bottom:5mm}
+        .brand{display:flex;gap:4mm;align-items:flex-start}.logo{width:18mm;height:18mm;border-radius:4mm;background:#111827;color:#fff;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:17px;letter-spacing:-.5px}.brand h1{font-size:17px;line-height:1.05;margin:0 0 2mm;color:#0f172a}.brand p{font-size:9px;color:#475569;margin:1mm 0;line-height:1.25}.doc{text-align:right}.doc h2{font-size:19px;line-height:1;margin:0 0 3mm;color:#0f172a;letter-spacing:.02em}.doc-no{font-family:monospace;font-size:9px;border:1px solid #cbd5e1;border-radius:999px;padding:2mm 3mm;display:inline-block;background:#f8fafc}.qr-wrap{margin-top:3mm;display:flex;justify-content:flex-end}.qr{width:20mm;height:20mm;border:2px solid #111827;border-radius:3mm;display:flex;align-items:center;justify-content:center;font-size:6px;line-height:1.1;text-align:center;font-weight:800;color:#111827;padding:2mm}
+        .main-grid{display:grid;grid-template-columns:1fr 1fr;gap:4mm}.panel{border:1px solid #e2e8f0;border-radius:4mm;background:#fff;overflow:hidden;margin-bottom:4mm}.panel-head{background:#f8fafc;border-bottom:1px solid #e2e8f0;padding:2.4mm 3mm;font-size:9px;font-weight:900;color:#334155;text-transform:uppercase;letter-spacing:.05em}.info-grid{display:grid;grid-template-columns:1fr 1fr}.info{padding:3mm;border-bottom:1px solid #edf2f7}.info:nth-child(odd){border-right:1px solid #edf2f7}.info:nth-last-child(-n+2){border-bottom:none}.label{font-size:7.5px;font-weight:900;color:#64748b;text-transform:uppercase;letter-spacing:.06em;margin-bottom:1.4mm}.val{font-size:10.5px;font-weight:800;color:#0f172a}.note{padding:3mm;min-height:15mm;font-size:10.5px;font-weight:700}.total-row{display:grid;grid-template-columns:1fr 64mm;gap:4mm;align-items:stretch}.total-box{border:2px solid #111827;border-radius:4mm;padding:4mm;display:flex;align-items:center;justify-content:space-between;gap:6mm}.total-label{font-size:10px;color:#64748b;font-weight:800}.amount{font-size:22px;font-weight:900;color:#047857;letter-spacing:-.02em}.sig-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:3mm}.sig{height:22mm;border:1px solid #e2e8f0;border-radius:3mm;padding:2.5mm;text-align:center}.sig b{font-size:9px;color:#334155}.sig div{margin-top:9mm;border-top:1px solid #cbd5e1;padding-top:1.5mm;font-size:8px;color:#64748b}.foot{position:absolute;left:11mm;right:11mm;bottom:5mm;border-top:1px solid #cbd5e1;padding-top:2mm;display:flex;justify-content:space-between;font-size:8px;color:#64748b}.watermark{position:absolute;right:12mm;bottom:14mm;font-size:7px;color:#cbd5e1}.print-actions{position:fixed;right:18px;top:18px;display:flex;gap:8px;z-index:99}.print-actions button{border:0;border-radius:10px;padding:10px 14px;font-weight:800;cursor:pointer}.print-actions .primary{background:#102754;color:#fff}.print-actions .ghost{background:#fff;color:#111827;border:1px solid #cbd5e1}
+        @media print{body{background:#fff}.paper{box-shadow:none;margin:0;width:auto;min-height:auto;padding:0;overflow:visible}.print-actions{display:none}.panel,.total-box,.sig-grid{break-inside:avoid}.foot{position:fixed;left:0;right:0;bottom:0}}
+      </style></head><body>
+      <div class="print-actions"><button class="primary" onclick="window.print()">Yazdır</button><button class="ghost" onclick="window.close()">Kapat</button></div>
+      <div class="paper print-a5-landscape">
+        <div class="top">
+          <div class="brand"><div class="logo">T3</div><div><h1>${d.unvan}</h1><p>${d.adres}</p><p>Vergi Dairesi: ${d.vergiDairesi} · Vergi No: ${d.vergiNo}</p><p>Tel: ${d.tel} · ${d.mail}</p><p>${d.web}</p></div></div>
+          <div class="doc"><h2>${d.belgeBaslik}</h2><div class="doc-no">${d.belgeNo}</div><div class="qr-wrap"><div class="qr">${d.qr}</div></div></div>
+        </div>
+        <div class="main-grid">
+          <div class="panel"><div class="panel-head">Cari Hesap Bilgileri</div><div class="info-grid">
+            <div class="info"><div class="label">Cari Kod</div><div class="val">${d.cariKod}</div></div>
+            <div class="info"><div class="label">Cari Ünvan</div><div class="val">${d.cari}</div></div>
+            <div class="info"><div class="label">Telefon</div><div class="val">${d.cariTel}</div></div>
+            <div class="info"><div class="label">Vergi Bilgisi</div><div class="val">${d.cariVergi}</div></div>
+          </div></div>
+          <div class="panel"><div class="panel-head">İşlem Bilgileri · ${d.tip}</div><div class="info-grid">
+            <div class="info"><div class="label">Tarih</div><div class="val">${d.tarih}</div></div>
+            <div class="info"><div class="label">Kasa / Banka / Portföy</div><div class="val">${d.kanal}</div></div>
+            <div class="info"><div class="label">Yön</div><div class="val">${d.yon}</div></div>
+            <div class="info"><div class="label">Durum</div><div class="val">${d.durum}</div></div>
+          </div></div>
+        </div>
+        <div class="panel"><div class="panel-head">Açıklama</div><div class="note">${d.aciklama || '-'}</div></div>
+        <div class="total-row">
+          <div class="total-box"><div><div class="total-label">Belge Toplamı</div><div class="amount">${d.tutar}</div></div><div style="text-align:right"><div class="label">Hazırlayan</div><div class="val">${d.hazirlayan}</div><div class="label" style="margin-top:2mm">Yazdırma Tarihi</div><div class="val">${d.yazdirma}</div></div></div>
+          <div class="sig-grid"><div class="sig"><b>Hazırlayan</b><div>${d.hazirlayan}</div></div><div class="sig"><b>Kontrol</b><div>${d.kontrol}</div></div><div class="sig"><b>Onay</b><div>${d.onay}</div></div></div>
+        </div>
+        <div class="foot"><span>Tcr3WEB Kurumsal Çıktı Sistemi · A5 Yatay</span><span>${d.belgeNo} · Sayfa 1 / 1</span></div><div class="watermark">Bu belge Tcr3WEB tarafından oluşturulmuştur.</div>
+      </div></body></html>`;
+    }
+    function printCariIslem(no) {
+      const h = getCariIslem(no);
+      if (!h) return;
+      closeCariOutputMenus();
+      const win = window.open('', '_blank', 'width=920,height=760');
+      win.document.write(cariIslemCorporateHtml(no) + '<script>window.onload=function(){setTimeout(function(){window.print()},250)}<\/script>');
+      win.document.close();
+    }
+    function pdfEscape(str) {
+      return String(str ?? '').replace(/[\\()]/g, '\\$&').replace(/[ğĞ]/g,'g').replace(/[üÜ]/g,'u').replace(/[şŞ]/g,'s').replace(/[ıİ]/g,'i').replace(/[öÖ]/g,'o').replace(/[çÇ]/g,'c');
+    }
+    function makeCorporatePdf(no) {
+      const d = cariIslemCorporateData(no);
+      const ops = [];
+      const t = (txt,x,y,size=10,bold=false) => { ops.push('BT'); ops.push(`/F${bold ? 2 : 1} ${size} Tf`); ops.push(`${x} ${y} Td`); ops.push(`(${pdfEscape(txt)}) Tj`); ops.push('ET'); };
+      const line = (x1,y1,x2,y2,w=1) => ops.push(`${w} w ${x1} ${y1} m ${x2} ${y2} l S`);
+      const rect = (x,y,w,h) => ops.push(`${x} ${y} ${w} ${h} re S`);
+      const fillRect = (x,y,w,h,gray='0.97') => { ops.push(`${gray} g ${x} ${y} ${w} ${h} re f 0 g`); };
+      // A5 yatay: 595 x 420 pt
+      fillRect(34,330,62,54,'0.08'); t('T3',55,358,21,true);
+      t(d.unvan,112,376,14,true); t(d.firma,112,359,9); t(d.adres,112,344,8); t('Vergi: '+d.vergiDairesi+' / '+d.vergiNo,112,331,8); t('Tel: '+d.tel+'  Mail: '+d.mail,112,318,8);
+      t(d.belgeBaslik,386,374,17,true); t('Belge No: '+d.belgeNo,386,352,9,true); rect(492,310,50,50); t('QR',508,338,12,true); t(d.qr,497,322,5);
+      line(34,298,560,298,2);
+      // Cari bilgileri
+      fillRect(34,250,250,26,'0.98'); rect(34,208,250,68); t('CARI HESAP BILGILERI',46,260,8,true);
+      t('Cari Kod',46,238,7,true); t(d.cariKod,46,224,10,true); t('Cari Unvan',150,238,7,true); t(d.cari,150,224,10,true);
+      t('Telefon',46,207,7,true); t(d.cariTel,46,193,9); t('Vergi Bilgisi',150,207,7,true); t(d.cariVergi,150,193,9);
+      // İşlem bilgileri
+      fillRect(310,250,250,26,'0.98'); rect(310,208,250,68); t('ISLEM BILGILERI - '+d.tip,322,260,8,true);
+      t('Tarih',322,238,7,true); t(d.tarih,322,224,10,true); t('Kasa / Banka / Portfoy',430,238,7,true); t(d.kanal,430,224,10,true);
+      t('Yon',322,207,7,true); t(d.yon,322,193,9,true); t('Durum',430,207,7,true); t(d.durum,430,193,9,true);
+      // Açıklama ve toplam
+      rect(34,148,526,42); t('ACIKLAMA',46,174,7,true); t(d.aciklama,46,158,10,true);
+      rect(34,82,300,50); t('Belge Toplami',50,113,9,true); t(d.tutar,50,91,19,true); t('Hazirlayan: '+d.hazirlayan,214,113,8); t('Yazdirma: '+d.yazdirma,214,96,8);
+      rect(350,82,60,50); t('Hazirlayan',357,113,7,true); line(357,94,403,94,.6); t(d.hazirlayan,357,85,6);
+      rect(420,82,60,50); t('Kontrol',432,113,7,true); line(427,94,473,94,.6); t(d.kontrol,432,85,6);
+      rect(490,82,60,50); t('Onay',508,113,7,true); line(497,94,543,94,.6); t(d.onay,508,85,6);
+      line(34,52,560,52,1); t('Tcr3WEB Kurumsal Cikti Sistemi - A5 Yatay',42,38,7); t('Sayfa 1 / 1',510,38,7);
+      const stream = ops.join('\n');
+      const objects = [
+        '1 0 obj << /Type /Catalog /Pages 2 0 R >> endobj',
+        '2 0 obj << /Type /Pages /Kids [3 0 R] /Count 1 >> endobj',
+        '3 0 obj << /Type /Page /Parent 2 0 R /MediaBox [0 0 595 420] /Resources << /Font << /F1 4 0 R /F2 6 0 R >> >> /Contents 5 0 R >> endobj',
+        '4 0 obj << /Type /Font /Subtype /Type1 /BaseFont /Helvetica >> endobj',
+        `5 0 obj << /Length ${stream.length} >> stream\n${stream}\nendstream endobj`,
+        '6 0 obj << /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold >> endobj'
+      ];
+      let pdf = '%PDF-1.4\n';
+      const offsets = [0];
+      objects.forEach(obj => { offsets.push(pdf.length); pdf += obj + '\n'; });
+      const xref = pdf.length;
+      pdf += `xref\n0 ${objects.length + 1}\n0000000000 65535 f \n`;
+      offsets.slice(1).forEach(o => { pdf += String(o).padStart(10,'0') + ' 00000 n \n'; });
+      pdf += `trailer << /Size ${objects.length + 1} /Root 1 0 R >>\nstartxref\n${xref}\n%%EOF`;
+      return pdf;
+    }
+    function downloadCariIslemPdf(no) {
+      const h = getCariIslem(no);
+      if (!h) return;
+      closeCariOutputMenus();
+      const blob = new Blob([makeCorporatePdf(no)], { type: 'application/pdf' });
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = `${h.no}_kurumsal.pdf`;
+      document.body.appendChild(a);
+      a.click();
+      setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 500);
+      toast('Kurumsal PDF indirildi', 'success');
+    }
+    function mailCariIslem(no) {
+      closeCariOutputMenus();
+      const h = getCariIslem(no);
+      if (!h) return;
+      const subject = encodeURIComponent('Tcr3WEB Cari İşlem Belgesi: ' + h.no);
+      const body = encodeURIComponent('Merhaba,\n\nKurumsal cari işlem belge özeti aşağıdadır.\n\n' + cariIslemDetailText(no) + '\n\nPDF çıktısı sistemden oluşturulabilir.');
+      window.location.href = `mailto:?subject=${subject}&body=${body}`;
+    }
+    function whatsappCariIslem(no) {
+      closeCariOutputMenus();
+      const text = encodeURIComponent('Tcr3WEB Cari İşlem Belgesi\n\n' + cariIslemDetailText(no));
+      window.open(`https://wa.me/?text=${text}`, '_blank');
+    }
+    function copyCariIslemText(no) {
+      closeCariOutputMenus();
+      navigator.clipboard?.writeText(cariIslemDetailText(no));
+      toast('Belge bilgisi kopyalandı', 'success');
+    }
+
+  </script>
+</body>
+</html>

@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#10243f" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-title" content="Tcr3WEB" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <link rel="manifest" href="../manifest.webmanifest?v=20260711-699" />
+  <link rel="icon" type="image/png" href="../assets/icons/favicon-64.png" />
+  <link rel="apple-touch-icon" href="../assets/icons/icon-180.png" />
+  <title>Tcr3WEB · Depo Fişi</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../assets/css/style.css?v=20260712-653" />
+  <link rel="stylesheet" href="../assets/css/responsive-master.css?v=20260713-591" />
+  <link rel="stylesheet" href="../assets/css/performance.css?v=20260711-700" />
+  <link rel="stylesheet" href="../assets/css/tcr-table.css?v=20260713-583" />
+
+  <style>
+    .depo-lines-wrap{overflow-x:auto;border:1px solid var(--border-soft);border-radius:18px;background:var(--surface-0)}
+    .depo-line-table{width:100%;min-width:920px;border-collapse:separate;border-spacing:0}
+    .depo-line-table thead th{background:var(--surface-2);color:var(--text-mute);font-size:11px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;padding:11px 14px;border-bottom:1px solid var(--border-soft);white-space:nowrap}
+    .depo-line-table tbody td{padding:10px 14px;border-bottom:1px solid var(--border-soft);vertical-align:middle;background:var(--surface-0)}
+    .depo-line-table tbody tr:nth-child(even) td{background:var(--surface-1)}
+    .depo-line-table tbody tr:last-child td{border-bottom:0}
+    .depo-product-picker{display:grid;grid-template-columns:minmax(210px,1fr) 34px;gap:8px;align-items:center}
+    .depo-product-display{min-height:38px;border:1px solid var(--border-soft);border-radius:12px;padding:7px 10px;background:var(--surface-0);display:flex;flex-direction:column;justify-content:center;gap:2px}
+    .depo-product-title{font-size:13px;font-weight:700;color:var(--text-main);line-height:1.2}
+    .depo-product-sub{font-size:11px;color:var(--text-mute);line-height:1.2}
+    .depo-stock-pill{display:inline-flex;align-items:center;justify-content:flex-end;min-width:96px;border-radius:999px;background:rgba(16,36,63,.06);padding:7px 10px;font-size:12px;font-weight:700;color:var(--c-primary-500);white-space:nowrap}
+    .depo-line-input{height:36px;padding:6px 10px!important;border-radius:11px!important}
+    .depo-note-input{min-width:180px}
+    .depo-totals-bar{display:flex;justify-content:flex-end;gap:12px;padding:16px 0 0;flex-wrap:wrap}
+    .depo-total-card{min-width:150px;border:1px solid var(--border-soft);border-radius:16px;background:var(--surface-0);box-shadow:var(--shadow-sm);padding:12px 14px;text-align:right}
+    .depo-total-label{display:block;font-size:10px;font-weight:800;color:var(--text-mute);text-transform:uppercase;letter-spacing:.04em}
+    .depo-total-val{display:block;margin-top:6px;font-size:22px;font-weight:800;color:var(--text-main)}
+    @media (max-width:1366px){.depo-line-table{min-width:840px}.depo-line-table thead th,.depo-line-table tbody td{padding:9px 10px}.depo-product-picker{grid-template-columns:minmax(190px,1fr) 32px}}
+    @media (max-width:767px){.depo-lines-wrap{border-radius:14px}.depo-line-table{min-width:760px}.depo-totals-bar{justify-content:stretch}.depo-total-card{flex:1;min-width:130px}}
+  </style>
+  <link rel="stylesheet" href="../assets/css/text-readability.css?v=20260712-657" />
+</head>
+<body>
+  <div id="app" class="app"></div>
+  <script src="../assets/js/app.js?v=20260712-653"></script>
+  <script src="../assets/js/tcr-actions.js?v=20260713-600"></script>
+  <script src="../assets/js/master-init.js?v=20260713-583"></script>
+  <script src="../assets/js/tcr-table.js?v=20260713-587"></script>
+  <script>
+    const params   = new URLSearchParams(location.search);
+    const editId   = params.get('id');
+    const fisTipi  = params.get('tip') || 'giris';
+
+    const DEPO_FIS_META = {
+      virman:{ label: 'Depo Virman Fişi', icon: 'send',       prefix: 'DV',  color: 'var(--c-primary-500)' },
+      devir: { label: 'Depo Devir Fişi',  icon: 'file_text',  prefix: 'DD',  color: 'var(--c-accent-500)' },
+      giris: { label: 'Depo Giriş Fişi', icon: 'inbox',      prefix: 'DG',  color: 'var(--c-accent-600)' },
+      cikis: { label: 'Depo Çıkış Fişi', icon: 'trend_up',   prefix: 'DC',  color: 'var(--c-warn-400)' },
+      sayim: { label: 'Depo Sayım Fişi', icon: 'file_check', prefix: 'DS',  color: 'var(--c-danger-400)' },
+    };
+
+    const DEPOLAR = ['Ana Depo', 'Kimya Depo', 'Metal Depo'];
+
+    bootPage('depo', () => {
+      const meta   = DEPO_FIS_META[fisTipi] || DEPO_FIS_META.giris;
+      const fisNo  = editId || (meta.prefix + '2026' + String(Math.floor(Math.random()*9000)+1000));
+      const title  = editId ? `${meta.label} Düzenle · ${editId}` : `Yeni ${meta.label}`;
+      const isVirman = fisTipi === 'virman';
+      const isDevir = fisTipi === 'devir';
+      const isSayim = fisTipi === 'sayim';
+      const showCari = fisTipi === 'giris' || fisTipi === 'cikis';
+      const cariLabel = fisTipi === 'giris' ? 'Tedarikçi' : 'Müşteri';
+      const cariType  = fisTipi === 'giris' ? 'tedarikci' : 'musteri';
+      const depoOpts  = DEPOLAR.map(d => `<option>${d}</option>`).join('');
+
+      return `
+      <div class="page-head">
+        <div>
+          <div class="breadcrumb">
+            <a href="dashboard.html">Genel</a><span>›</span>
+            <a href="depo-islemler.html">Depo İşlemleri</a><span>›</span>
+            <span>${title}</span>
+          </div>
+          <h1 class="page-title" style="color:${meta.color}">${ICONS[meta.icon]} ${title}</h1>
+        </div>
+        <div class="page-actions">
+          <a href="depo-islemler.html" class="btn btn-danger">${ICONS.close} Vazgeç</a>
+          <button class="btn btn-success" onclick="depoFisKaydet()">${ICONS.check} Kaydet</button>
+        </div>
+      </div>
+
+      <div class="form-page-grid">
+        <div style="display:flex;flex-direction:column;gap:var(--s-4)">
+
+          <!-- Fiş Bilgileri -->
+          <div class="card" style="overflow:hidden">
+            <div class="form-compact-head">
+              <div class="form-field">
+                <label class="form-label">Fiş No</label>
+                <input class="form-input mono" value="${fisNo}" readonly />
+              </div>
+              <div class="form-field">
+                <label class="form-label">Fiş Tipi</label>
+                <input class="form-input" value="${meta.label}" readonly style="color:${meta.color};font-weight:600" />
+              </div>
+              <div class="form-field">
+                <label class="form-label">Tarih</label>
+                <input type="date" class="form-input" value="2026-07-05" />
+              </div>
+              <div class="form-field">
+                <label class="form-label">Durum</label>
+                <select class="form-input">
+                  <option>Taslak</option><option>Bekliyor</option><option>Tamamlandı</option>
+                </select>
+              </div>
+              ${(isDevir || isVirman) ? `
+              <div class="form-field">
+                <label class="form-label">Kaynak Depo</label>
+                <select class="form-input"><option>${params.get('depo') || 'Ana Depo'}</option>${depoOpts}</select>
+              </div>
+              <div class="form-field">
+                <label class="form-label">Hedef Depo</label>
+                <select class="form-input"><option>Metal Depo</option><option>Ana Depo</option><option>Kimya Depo</option></select>
+              </div>
+              ` : `
+              <div class="form-field span2">
+                <label class="form-label">Depo</label>
+                <select class="form-input">${depoOpts}</select>
+              </div>
+              `}
+              ${showCari ? `
+              <div class="form-field span2">
+                <label class="form-label">${cariLabel}</label>
+                <div class="picker-field-wrap">
+                  <span class="picker-display" id="df-cari-display">Seçiniz...</span>
+                  <input type="hidden" id="df-cari-val">
+                  <button type="button" class="btn btn-ghost btn-sm picker-trigger" onclick="openPickerFor('${cariType}','df-cari-display','df-cari-val')">${ICONS.search} Seç</button>
+                </div>
+              </div>
+              ` : ''}
+              <div class="form-field">
+                <label class="form-label">Sorumlu</label>
+                <input class="form-input" placeholder="Sorumlu kişi" />
+              </div>
+            </div>
+            <div class="form-compact-body">
+              <div class="form-field">
+                <label class="form-label">Açıklama / Not</label>
+                <input type="text" class="form-input" placeholder="Bu fişe ait açıklama..." />
+              </div>
+            </div>
+          </div>
+
+          <!-- Ürün Kalemleri -->
+          <div class="card">
+            <div class="card-head">
+              <div class="card-title">Ürün Kalemleri</div>
+              <button class="btn btn-ghost btn-sm" onclick="addDepoFisLine()">${ICONS.plus} Satır Ekle</button>
+            </div>
+            <div class="depo-lines-wrap">
+              <table class="depo-line-table">
+                <thead><tr>
+                  <th style="min-width:300px">Ürün / Barkod</th>
+                  <th style="min-width:120px">Raf / Lot</th>
+                  <th class="num" style="min-width:120px">Kaynak Stok</th>
+                  ${isSayim ? '<th class="num" style="min-width:105px">Sistem</th><th class="num" style="min-width:105px">Sayılan</th><th class="num" style="min-width:90px">Fark</th>' : '<th class="num" style="min-width:105px">Miktar</th>'}
+                  <th style="min-width:90px">Birim</th>
+                  <th style="min-width:200px">Açıklama</th>
+                  <th style="width:46px"></th>
+                </tr></thead>
+                <tbody id="dfis-lines"></tbody>
+              </table>
+            </div>
+            <div class="depo-totals-bar">
+              <div class="depo-total-card">
+                <span class="depo-total-label">Toplam Kalem</span>
+                <span class="depo-total-val" id="dfis-kalem-say">0</span>
+              </div>
+              <div class="depo-total-card">
+                <span class="depo-total-label">Toplam Miktar</span>
+                <span class="depo-total-val" id="dfis-total-miktar">0</span>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Sidebar -->
+        <div class="form-page-side">
+          <div class="card">
+            <div class="card-head"><div class="card-title" style="color:${meta.color}">${ICONS[meta.icon]} ${meta.label}</div></div>
+            <div class="card-body">
+              <div class="sum-row"><span class="sum-row-label">Fiş No</span><span class="sum-row-val mono" style="font-size:12px">${fisNo}</span></div>
+              ${showCari ? `<div class="sum-row"><span class="sum-row-label">${cariLabel}</span><span class="sum-row-val" id="side-cari" style="font-size:12px">—</span></div>
+              <div class="sum-row"><span class="sum-row-label">Bakiye</span><span class="sum-row-val" id="sum-cari-bakiye" style="font-size:13px">—</span></div>
+              <div class="sum-row"><span class="sum-row-label">Risk</span><span class="sum-row-val" id="sum-cari-risk" style="font-size:13px">—</span></div>` : ''}
+              <div class="sum-row" style="margin-top:var(--s-2);padding-top:var(--s-2);border-top:1px solid var(--border-soft)">
+                <span class="sum-row-label">Kalem Sayısı</span><span class="sum-row-val" id="side-kalem-say">0</span>
+              </div>
+              <div class="sum-row total"><span class="sum-row-label">Toplam Miktar</span><span class="sum-row-val" id="side-total-miktar">0</span></div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-head"><div class="card-title">İşlemler</div></div>
+            <div class="card-body" style="display:flex;flex-direction:column;gap:var(--s-2)">
+              <button class="btn btn-success" style="width:100%" onclick="depoFisKaydet()">${ICONS.check} Kaydet</button>
+              <button class="btn btn-ghost" style="width:100%" onclick="printDoc()">${ICONS.print} Yazdır</button>
+              <a href="depo-islemler.html" class="btn btn-danger" style="width:100%;text-align:center">${ICONS.close} Vazgeç</a>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-head">
+              <div class="card-title">${ICONS.file_check} Evrak</div>
+              <label class="btn btn-ghost btn-sm" style="cursor:pointer;display:inline-flex;align-items:center;gap:4px">
+                <input type="file" multiple accept="image/*,.pdf,.doc,.docx,.xls,.xlsx" style="display:none" onchange="eklerUpload(this,'depofis','${fisNo}')">
+                ${ICONS.plus}
+              </label>
+            </div>
+            <div class="card-body" style="padding:var(--s-3)">
+              <div class="ekler-list" id="dfis-ekler-list"><div class="ekler-empty">Henüz evrak yok</div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      `;
+    });
+
+    window.afterRender = () => {
+      const id = editId || 'YENI';
+      initEkler('depofis', id, 'dfis-ekler-list');
+      addDepoFisLine();
+      const cariDisp = document.getElementById('df-cari-display');
+      if (cariDisp) {
+        const orig = document.getElementById('df-cari-val');
+        const sideEl = document.getElementById('side-cari');
+        const observer = new MutationObserver(() => { if (sideEl) sideEl.textContent = cariDisp.textContent; });
+        observer.observe(cariDisp, { childList: true, characterData: true, subtree: true });
+      }
+    };
+
+    let _dfisRowCounter = 0;
+
+    function addDepoFisLine() {
+      const tbody = document.getElementById('dfis-lines');
+      if (!tbody) return;
+      const rowId = 'dfis-row-' + (++_dfisRowCounter);
+      const isSayim = fisTipi === 'sayim';
+      const tr = document.createElement('tr');
+      tr.id = rowId;
+
+      const miktarCols = isSayim
+        ? `<td><input class="form-input depo-line-input dfis-sistem" type="number" value="0" style="width:92px;text-align:right" oninput="calcDfisTotals()"></td>
+           <td><input class="form-input depo-line-input dfis-miktar" type="number" value="0" min="0" style="width:92px;text-align:right" oninput="calcDfisTotals()"></td>
+           <td class="num strong dfis-fark" style="font-weight:800">0</td>`
+        : `<td><input class="form-input depo-line-input dfis-miktar" type="number" value="1" min="0" style="width:92px;text-align:right" oninput="calcDfisTotals()"></td>`;
+
+      tr.innerHTML = `
+        <td>
+          <div class="depo-product-picker">
+            <div class="depo-product-display" id="${rowId}-name">
+              <span class="depo-product-title">Ürün seçiniz</span>
+              <span class="depo-product-sub">Barkod / stok kodu ile arayın</span>
+            </div>
+            <input type="hidden" class="dfis-stok-id" id="${rowId}-stokid">
+            <button type="button" class="btn btn-ghost btn-sm" style="width:34px;height:34px;padding:0;display:inline-flex;align-items:center;justify-content:center"
+              onclick="openPickerFor('stok','${rowId}-name','${rowId}-stokid',function(id,ad){dfisStokSec(id,'${rowId}')})" title="Stok seç">${ICONS.search}</button>
+          </div>
+        </td>
+        <td><input class="form-input depo-line-input" placeholder="Raf / Lot" style="width:116px"></td>
+        <td class="num"><span class="depo-stock-pill dfis-kaynak-stok">—</span></td>
+        ${miktarCols}
+        <td><input class="form-input depo-line-input dfis-birim" value="adet" style="width:76px" readonly></td>
+        <td><input class="form-input depo-line-input depo-note-input" placeholder="Satır açıklaması"></td>
+        <td><button class="icon-btn" style="width:30px;height:30px;color:var(--c-danger-400)" onclick="this.closest('tr').remove();calcDfisTotals()" title="Kaldır">${ICONS.trash}</button></td>
+      `;
+      tbody.appendChild(tr);
+      calcDfisTotals();
+    }
+
+    function dfisStokSec(kod, rowId) {
+      const s = MOCK.stok.find(x => (x.kod || String(x.id)) === kod);
+      if (!s) return;
+      const row = document.getElementById(rowId);
+      if (!row) return;
+      const displayEl = document.getElementById(rowId + '-name');
+      const birimEl   = row.querySelector('.dfis-birim');
+      const stokEl    = row.querySelector('.dfis-kaynak-stok');
+      const sistemEl  = row.querySelector('.dfis-sistem');
+      const mevcut    = Number(s.miktar || 0);
+      const birim     = s.birim || 'adet';
+
+      if (displayEl) {
+        displayEl.innerHTML = `<span class="depo-product-title">${s.ad}</span><span class="depo-product-sub">${s.kod || s.id} · ${birim}</span>`;
+      }
+      if (birimEl)  birimEl.value = birim;
+      if (stokEl)   stokEl.textContent = `${fmtNum(mevcut)} ${birim}`;
+      if (sistemEl) sistemEl.value = mevcut;
+      calcDfisTotals();
+    }
+
+    function calcDfisTotals() {
+      const tbody = document.getElementById('dfis-lines');
+      if (!tbody) return;
+      const rows = tbody.querySelectorAll('tr');
+      let totalMiktar = 0;
+      const isSayim = fisTipi === 'sayim';
+
+      rows.forEach(row => {
+        const miktar = parseFloat(row.querySelector('.dfis-miktar')?.value || 0);
+        const sistem = parseFloat(row.querySelector('.dfis-sistem')?.value || 0);
+        totalMiktar += miktar;
+
+        if (isSayim) {
+          const farkEl = row.querySelector('.dfis-fark');
+          const fark = miktar - sistem;
+          if (farkEl) {
+            farkEl.textContent = (fark > 0 ? '+' : '') + fmtNum(fark);
+            farkEl.style.color = fark < 0 ? 'var(--c-danger-400)' : fark > 0 ? 'var(--c-accent-500)' : 'var(--text-mute)';
+          }
+        }
+      });
+
+      const setEl = (id, v) => { const e = document.getElementById(id); if (e) e.textContent = v; };
+      setEl('dfis-kalem-say', rows.length);
+      setEl('dfis-total-miktar', fmtNum(totalMiktar));
+      setEl('side-kalem-say', rows.length);
+      setEl('side-total-miktar', fmtNum(totalMiktar));
+    }
+
+    function depoFisKaydet() {
+      const meta = DEPO_FIS_META[fisTipi] || DEPO_FIS_META.giris;
+      toast(meta.label + ' kaydedildi', 'success');
+      setTimeout(() => window.location.href = 'depo-islemler.html', 1000);
+    }
+  </script>
+</body>
+</html>

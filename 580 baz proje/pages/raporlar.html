@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#10243f" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-title" content="Tcr3WEB" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <link rel="manifest" href="../manifest.webmanifest?v=20260711-699" />
+  <link rel="icon" type="image/png" href="../assets/icons/favicon-64.png" />
+  <link rel="apple-touch-icon" href="../assets/icons/icon-180.png" />
+  <title>Tcr3WEB · Raporlar</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../assets/css/style.css?v=20260712-653" />
+  <link rel="stylesheet" href="../assets/css/responsive-master.css?v=20260713-591" />
+  <link rel="stylesheet" href="../assets/css/performance.css?v=20260711-700" />
+  <link rel="stylesheet" href="../assets/css/tcr-table.css?v=20260713-583" />
+  <link rel="stylesheet" href="../assets/css/kpi-standard.css?v=20260712-694" />
+  <link rel="stylesheet" href="../assets/css/text-readability.css?v=20260712-657" />
+</head>
+<body>
+  <div id="app" class="app"></div>
+  <script src="../assets/js/app.js?v=20260712-653"></script>
+  <script src="../assets/js/tcr-actions.js?v=20260713-600"></script>
+  <script src="../assets/js/master-init.js?v=20260713-583"></script>
+  <script src="../assets/js/tcr-table.js?v=20260713-587"></script>
+  <script>
+    bootPage('raporlar', () => {      const reports = [
+        { grup: 'Finansal', items: [
+          { ad: 'Kasa Defteri', desc: 'Günlük/aylık kasa hareketleri', icon: 'wallet' },
+          { ad: 'Banka Ekstresi', desc: 'Hesap bazında hareket dökümü', icon: 'building' },
+          { ad: 'Çek Portföy Raporu', desc: 'Vadeye göre çek listesi', icon: 'file-check' },
+          { ad: 'Senet Portföy Raporu', desc: 'Vadeye göre senet listesi', icon: 'file-text' },
+          { ad: 'Vade Takvimi', desc: 'Yaklaşan ödeme/tahsilatlar', icon: 'calendar' },
+          { ad: 'Nakit Akış Tablosu', desc: 'Giriş/çıkış trendi', icon: 'trend-up' },
+        ]},
+        { grup: 'Ticari', items: [
+          { ad: 'Cari Ekstre', desc: 'Hesap hareket dökümü + bakiye', icon: 'users' },
+          { ad: 'Stok Hareket Raporu', desc: 'Giriş/çıkış hareketleri', icon: 'box' },
+          { ad: 'Stok Değer Raporu', desc: 'Depo bazında stok değeri', icon: 'cash' },
+          { ad: 'Satış Kar Marjı', desc: 'Ürün bazında kar analizi', icon: 'trend-up' },
+          { ad: 'Satış Performansı', desc: 'Personel/ay bazında satış', icon: 'chart' },
+          { ad: 'Cari Risk Raporu', desc: 'Risk limiti aşımı', icon: 'alert' },
+        ]},
+        { grup: 'İnsan Kaynakları', items: [
+          { ad: 'Personel Listesi', desc: 'Departman/unvan bazında', icon: 'users' },
+          { ad: 'Devam Raporu', desc: 'Aylık çalışma/devamsızlık', icon: 'clock' },
+          { ad: 'Maaş Bordrosu', desc: 'Ay/departman bazında', icon: 'cash' },
+          { ad: 'Avans Raporu', desc: 'Açık/kapalı avanslar', icon: 'hand-coins' },
+          { ad: 'İzin Raporu', desc: 'Kullanılan/yıllık izin', icon: 'calendar' },
+          { ad: 'İşe Alım Raporu', desc: 'Başvuru/durum analizi', icon: 'user-plus' },
+        ]},
+      ];
+
+      return `
+      <div class="page-head">
+        <div>
+          <div class="breadcrumb">
+            <a href="dashboard.html">Genel</a><span>›</span>
+            <span>Raporlar</span>
+          </div>
+          <h1 class="page-title">Raporlar</h1>
+          <div class="page-sub">Tüm modüllerin rapor ve analizleri</div>
+        </div>
+        <div class="page-actions">
+          <select class="filter-select"><option>Bugün</option><option>Bu Hafta</option><option selected>Bu Ay</option><option>Bu Yıl</option></select>
+          <button class="btn btn-ghost" onclick="toast('Tüm raporlar indirildi (prototip)')">${ICONS.download} Tümünü İndir</button>
+        </div>
+      </div>
+
+      <div class="tcr-ac-grid">
+        <div class="tcr-action-card tcr-ac-blue"><span class="tcr-ac-icon">${ICONS.trend_up}</span><span class="tcr-ac-content"><span class="tcr-ac-title">Aylık Ciro</span><span class="tcr-ac-desc">${fmtMoney(MOCK.satis.reduce((s,x)=>s+x.tutar,0))}</span></span></div>
+        <div class="tcr-action-card tcr-ac-green"><span class="tcr-ac-icon">${ICONS.box}</span><span class="tcr-ac-content"><span class="tcr-ac-title">Stok Değeri</span><span class="tcr-ac-desc">${fmtMoney(MOCK.stok.reduce((s,x)=>s+x.miktar*x.fiyat,0))}</span></span></div>
+        <div class="tcr-action-card tcr-ac-orange"><span class="tcr-ac-icon">${ICONS.cash}</span><span class="tcr-ac-content"><span class="tcr-ac-title">Açık Alacak</span><span class="tcr-ac-desc">${fmtMoney(MOCK.cari.filter(c=>c.bakiye>0).reduce((s,c)=>s+c.bakiye,0))}</span></span></div>
+        <div class="tcr-action-card tcr-ac-red"><span class="tcr-ac-icon">${ICONS.trend_down}</span><span class="tcr-ac-content"><span class="tcr-ac-title">Açık Borç</span><span class="tcr-ac-desc">${fmtMoney(Math.abs(MOCK.cari.filter(c=>c.bakiye<0).reduce((s,c)=>s+c.bakiye,0)))}</span></span></div>
+      </div>
+
+      <div class="grid-2 mb-6">
+        <div class="card">
+          <div class="card-head"><div class="card-title">Aylık Ciro Trendi</div></div>
+          <div class="card-body">
+            ${lineChart([
+              {label:'Oca', value:185000},
+              {label:'Şub', value:220000},
+              {label:'Mar', value:198000},
+              {label:'Nis', value:245000},
+              {label:'May', value:278000},
+              {label:'Haz', value:312000},
+              {label:'Tem', value:380300},
+            ], {id:'ciro', color:'#168a55'})}
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-head"><div class="card-title">Satış / Satın Alma Karşılaştırma</div></div>
+          <div class="card-body">
+            ${barChart([
+              {label:'Satış', value: MOCK.satis.reduce((s,x)=>s+x.tutar,0)},
+              {label:'Satın Al', value: MOCK.alim.reduce((s,x)=>s+x.tutar,0)},
+              {label:'Stok D.', value: MOCK.stok.reduce((s,x)=>s+x.miktar*x.fiyat,0)},
+              {label:'Çek', value: MOCK.cek.reduce((s,c)=>s+c.tutar,0)},
+              {label:'Senet', value: MOCK.senet.reduce((s,c)=>s+c.tutar,0)},
+            ], true)}
+            <div class="flex gap-4 mt-4">
+              <div class="flex items-center gap-2"><span class="donut-legend-dot" style="background:#168a55"></span><span class="text-soft" style="font-size:13px">Modül bazında özet</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      ${reports.map(grup => `
+        <div class="card mb-5">
+          <div class="card-head"><div class="card-title">${grup.grup} Raporlar</div></div>
+          <div class="card-body" style="padding:var(--s-4)">
+            <div class="grid-2">
+              ${grup.items.map(r => `
+                <div class="flex items-center gap-3" style="padding:var(--s-3);border:1px solid var(--border);border-radius:var(--r-md);cursor:pointer;transition:all 0.15s" onmouseover="this.style.background='var(--c-nu-50)'" onmouseout="this.style.background='white'" onclick="openRapor('${r.ad}')">
+                  <div style="width:40px;height:40px;border-radius:var(--r-md);background:var(--c-primary-50);color:var(--c-primary-600);display:grid;place-items:center;flex-shrink:0">${ICONS[r.icon]||ICONS.chart}</div>
+                  <div style="flex:1">
+                    <div class="strong" style="color:var(--c-primary-800)">${r.ad}</div>
+                    <div class="text-mute" style="font-size:12px">${r.desc}</div>
+                  </div>
+                  ${ICONS.chevron_right}
+                </div>
+              `).join('')}
+            </div>
+          </div>
+        </div>
+      `).join('')}
+
+      <div class="card">
+        <div class="card-head"><div class="card-title">Top Cari (Bakiye)</div><div class="flex gap-2"><button class="btn btn-ghost btn-sm" onclick="printDoc()">${ICONS.print} Yazdır</button><button class="btn btn-ghost btn-sm" onclick="toast('Rapor indirildi')">${ICONS.download} İndir</button></div></div>
+        <div class="card-body" style="padding:0">
+          <table class="data">
+            <thead><tr><th>#</th><th>Cari</th><th>Tip</th><th>Şehir</th><th class="num">Bakiye</th><th>Pay</th></tr></thead>
+            <tbody>
+              ${MOCK.cari.sort((a,b) => b.bakiye - a.bakiye).slice(0,5).map((c,i) => {
+                const total = MOCK.cari.reduce((s,x) => s + Math.abs(x.bakiye), 0);
+                const pct = Math.round((Math.abs(c.bakiye) / total) * 100);
+                return `
+                <tr>
+                  <td class="strong">${i+1}</td>
+                  <td class="strong">${c.ad}</td>
+                  <td><span class="badge ${c.tip==='Müşteri'?'badge-info':'badge-warn'}">${c.tip}</span></td>
+                  <td class="muted">${c.sehir}</td>
+                  <td class="num ${c.bakiye<0?'text-danger':'text-success'} strong">${fmtMoney(c.bakiye)}</td>
+                  <td style="min-width:120px"><div class="flex items-center gap-2"><div class="progress" style="flex:1"><div class="progress-bar ${c.bakiye<0?'danger':'accent'}" style="width:${pct}%"></div></div><span style="font-size:11px;font-weight:600">${pct}%</span></div></td>
+                </tr>`;
+              }).join('')}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      ${modalHtml('raporModal', '<span id="rapor-modal-title">Rapor</span>', `
+        <div id="rapor-modal-body" style="min-height:200px"></div>
+      `, `<button class="btn btn-ghost" onclick="printDoc()">${ICONS.print} Yazdır</button><button class="btn btn-ghost" onclick="closeModal('raporModal')">${ICONS.close} Kapat</button>`, 'xl')}
+      `;
+    });
+
+    const RAPOR_DATA = {
+      'Kasa Defteri': () => {
+        const rows = MOCK.kasaHareket.map(h => `<tr><td>${h.tarih}</td><td>${h.aciklama}</td><td><span class="badge ${h.tip==='Tahsilat'||h.tip==='Virman'?'badge-success':'badge-warn'}">${h.tip}</span></td><td class="num ${h.tutar>0?'text-success':'text-danger'}">${fmtMoney(h.tutar)}</td><td class="muted">${h.kasa}</td></tr>`).join('');
+        return `<table class="data"><thead><tr><th>Tarih</th><th>Açıklama</th><th>Tip</th><th class="num">Tutar</th><th>Kasa</th></tr></thead><tbody>${rows}</tbody></table>`;
+      },
+      'Banka Ekstresi': () => {
+        const rows = MOCK.bankaHareket.map(h => `<tr><td>${h.tarih}</td><td>${h.aciklama}</td><td><span class="badge ${h.tip==='Giriş'?'badge-success':'badge-warn'}">${h.tip}</span></td><td class="num ${h.tutar>0?'text-success':'text-danger'}">${fmtMoney(h.tutar)}</td><td class="muted">${h.banka}</td></tr>`).join('');
+        return `<table class="data"><thead><tr><th>Tarih</th><th>Açıklama</th><th>Tip</th><th class="num">Tutar</th><th>Banka</th></tr></thead><tbody>${rows}</tbody></table>`;
+      },
+      'Çek Portföy Raporu': () => {
+        const rows = MOCK.cek.map(c => `<tr><td class="mono">${c.no}</td><td><span class="badge ${c.tip==='Alınan'?'badge-success':'badge-warn'}">${c.tip}</span></td><td>${c.tip==='Alınan'?c.keşideci:c.lehtar}</td><td>${c.banka}</td><td>${fmtDate(c.vade)}</td><td><span class="badge ${c.durum==='Portföyde'?'badge-info':c.durum==='Tahsil Edildi'?'badge-success':c.durum==='Protesto'?'badge-danger':'badge-neutral'}">${c.durum}</span></td><td class="num strong">${fmtMoney(c.tutar)}</td></tr>`).join('');
+        return `<table class="data"><thead><tr><th>Çek No</th><th>Tip</th><th>Taraf</th><th>Banka</th><th>Vade</th><th>Durum</th><th class="num">Tutar</th></tr></thead><tbody>${rows}</tbody></table>`;
+      },
+      'Senet Portföy Raporu': () => {
+        const rows = MOCK.senet.map(s => `<tr><td class="mono">${s.no}</td><td><span class="badge ${s.tip==='Alınan'?'badge-success':'badge-warn'}">${s.tip}</span></td><td>${s.borclu}</td><td>${fmtDate(s.vade)}</td><td><span class="badge badge-info">${s.durum}</span></td><td class="num strong">${fmtMoney(s.tutar)}</td></tr>`).join('');
+        return `<table class="data"><thead><tr><th>Senet No</th><th>Tip</th><th>Borçlu</th><th>Vade</th><th>Durum</th><th class="num">Tutar</th></tr></thead><tbody>${rows}</tbody></table>`;
+      },
+      'Cari Ekstre': () => {
+        const rows = MOCK.cari.map(c => `<tr><td class="mono">${c.kod}</td><td class="strong">${c.ad}</td><td><span class="badge ${c.tip==='Müşteri'?'badge-info':'badge-warn'}">${c.tip}</span></td><td>${c.sehir}</td><td class="num ${c.bakiye<0?'text-danger':'text-success'} strong">${fmtMoney(c.bakiye)}</td><td><span class="badge ${c.durum==='Aktif'?'badge-success':'badge-neutral'}">${c.durum}</span></td></tr>`).join('');
+        return `<table class="data"><thead><tr><th>Kod</th><th>Ünvan</th><th>Tip</th><th>Şehir</th><th class="num">Bakiye</th><th>Durum</th></tr></thead><tbody>${rows}</tbody></table>`;
+      },
+      'Stok Hareket Raporu': () => {
+        const rows = MOCK.stok.map(s => `<tr><td class="mono">${s.kod}</td><td class="strong">${s.ad}</td><td>${s.kategori}</td><td>${s.depo}</td><td class="num">${fmtNum(s.miktar)} ${s.birim}</td><td class="num">${fmtNum(s.min)}</td><td class="num strong">${fmtMoney(s.miktar*s.fiyat)}</td></tr>`).join('');
+        return `<table class="data"><thead><tr><th>Kod</th><th>Ürün</th><th>Kategori</th><th>Depo</th><th class="num">Miktar</th><th class="num">Min</th><th class="num">Değer</th></tr></thead><tbody>${rows}</tbody></table>`;
+      },
+      'Stok Değer Raporu': () => {
+        const cats = [...new Set(MOCK.stok.map(s=>s.kategori))];
+        const rows = cats.map(k => {
+          const items = MOCK.stok.filter(s=>s.kategori===k);
+          const val = items.reduce((s,x)=>s+x.miktar*x.fiyat,0);
+          return `<tr><td class="strong">${k}</td><td class="num">${items.length}</td><td class="num strong">${fmtMoney(val)}</td></tr>`;
+        }).join('');
+        return `<table class="data"><thead><tr><th>Kategori</th><th class="num">Ürün Sayısı</th><th class="num">Toplam Değer</th></tr></thead><tbody>${rows}</tbody></table>`;
+      },
+      'Satış Performansı': () => {
+        const rows = MOCK.satis.map(s => `<tr><td class="mono">${s.no}</td><td>${s.cari}</td><td>${fmtDate(s.tarih)}</td><td><span class="badge ${s.durum==='Faturalandı'?'badge-success':s.durum==='İrsaliye'?'badge-info':'badge-neutral'}">${s.durum}</span></td><td class="num strong">${fmtMoney(s.tutar)}</td></tr>`).join('');
+        return `<div class="stat-row mb-4" style="padding:var(--s-4);background:var(--c-nu-50);border-radius:var(--r-md)"><span class="stat-label">Toplam Satış</span><span class="stat-value text-success strong">${fmtMoney(MOCK.satis.reduce((s,x)=>s+x.tutar,0))}</span></div><table class="data"><thead><tr><th>Belge No</th><th>Müşteri</th><th>Tarih</th><th>Durum</th><th class="num">Tutar</th></tr></thead><tbody>${rows}</tbody></table>`;
+      },
+      'Personel Listesi': () => {
+        const rows = MOCK.personel.map(p => `<tr><td class="strong">${p.ad}</td><td>${p.departman}</td><td>${p.unvan}</td><td>${fmtDate(p.giris)}</td><td class="num">${fmtMoney(p.maas)}</td><td><span class="badge ${p.durum==='Aktif'?'badge-success':'badge-warn'}">${p.durum}</span></td></tr>`).join('');
+        return `<table class="data"><thead><tr><th>Ad</th><th>Departman</th><th>Unvan</th><th>İşe Giriş</th><th class="num">Maaş</th><th>Durum</th></tr></thead><tbody>${rows}</tbody></table>`;
+      },
+      'Devam Raporu': () => {
+        const rows = MOCK.devam.map(d => `<tr><td class="strong">${d.personel}</td><td class="num">${d.gun}</td><td class="num ${d.gelmedi>0?'text-danger':''}">${d.gelmedi}</td><td class="num ${d.gec>0?'text-warn':''}">${d.gec}</td><td class="num text-success">${d.mesai}</td><td class="num">${d.izin}</td></tr>`).join('');
+        return `<table class="data"><thead><tr><th>Personel</th><th class="num">Çalışma</th><th class="num">Devamsız</th><th class="num">Geç</th><th class="num">Mesai</th><th class="num">İzin</th></tr></thead><tbody>${rows}</tbody></table>`;
+      },
+      'Maaş Bordrosu': () => {
+        const rows = MOCK.maas.map(m => `<tr><td class="strong">${m.personel}</td><td class="num">${fmtMoney(m.brut)}</td><td class="num">${fmtMoney(m.sgk)}</td><td class="num">${fmtMoney(m.vergi)}</td><td class="num text-success">${fmtMoney(m.net)}</td><td><span class="badge ${m.durum==='Ödendi'?'badge-success':'badge-warn'}">${m.durum}</span></td></tr>`).join('');
+        return `<table class="data"><thead><tr><th>Personel</th><th class="num">Brüt</th><th class="num">SGK</th><th class="num">Vergi</th><th class="num">Net</th><th>Durum</th></tr></thead><tbody>${rows}</tbody></table>`;
+      },
+      'Avans Raporu': () => {
+        const rows = MOCK.avans.map(a => `<tr><td class="strong">${a.personel}</td><td class="num">${fmtMoney(a.tutar)}</td><td>${fmtDate(a.tarih)}</td><td>${a.aciklama}</td><td><span class="badge ${a.durum==='Kapalı'?'badge-success':a.durum==='Açık'?'badge-info':'badge-warn'}">${a.durum}</span></td></tr>`).join('');
+        return `<table class="data"><thead><tr><th>Personel</th><th class="num">Tutar</th><th>Tarih</th><th>Açıklama</th><th>Durum</th></tr></thead><tbody>${rows}</tbody></table>`;
+      },
+      'İşe Alım Raporu': () => {
+        const rows = MOCK.basvuru.map(b => `<tr><td class="strong">${b.ad}</td><td>${b.pozisyon}</td><td>${fmtDate(b.tarih)}</td><td>${b.deneyim} yıl</td><td><span class="badge ${b.durum==='Kabul'?'badge-success':b.durum==='Red'?'badge-danger':b.durum==='Görüşmede'?'badge-info':'badge-neutral'}">${b.durum}</span></td></tr>`).join('');
+        return `<table class="data"><thead><tr><th>Aday</th><th>Pozisyon</th><th>Başvuru</th><th>Deneyim</th><th>Durum</th></tr></thead><tbody>${rows}</tbody></table>`;
+      },
+    };
+
+    function openRapor(ad) {
+      document.getElementById('rapor-modal-title').textContent = ad;
+      const fn = RAPOR_DATA[ad];
+      document.getElementById('rapor-modal-body').innerHTML = fn
+        ? fn()
+        : `<div class="ekler-empty" style="padding:var(--s-6)">Bu rapor için veri bulunmuyor.</div>`;
+      openModal('raporModal');
+    }
+  </script>
+</body>
+</html>

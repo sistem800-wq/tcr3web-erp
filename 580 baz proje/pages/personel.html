@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#10243f" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-title" content="Tcr3WEB" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <link rel="manifest" href="../manifest.webmanifest?v=20260711-699" />
+  <link rel="icon" type="image/png" href="../assets/icons/favicon-64.png" />
+  <link rel="apple-touch-icon" href="../assets/icons/icon-180.png" />
+  <title>Tcr3WEB · Personel</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../assets/css/style.css?v=20260712-653" />
+  <link rel="stylesheet" href="../assets/css/responsive-master.css?v=20260713-591" />
+  <link rel="stylesheet" href="../assets/css/performance.css?v=20260711-700" />
+  <link rel="stylesheet" href="../assets/css/tcr-table.css?v=20260713-583" />
+  <link rel="stylesheet" href="../assets/css/kpi-standard.css?v=20260712-694" />
+  <link rel="stylesheet" href="../assets/css/text-readability.css?v=20260712-657" />
+</head>
+<body>
+  <div id="app" class="app"></div>
+  <script src="../assets/js/app.js?v=20260712-653"></script>
+  <script src="../assets/js/tcr-actions.js?v=20260713-600"></script>
+  <script src="../assets/js/master-init.js?v=20260713-583"></script>
+  <script src="../assets/js/tcr-table.js?v=20260713-587"></script>
+  <script>
+    bootPage('personel', () => {
+      const totalMaas = MOCK.personel.reduce((s,p) => s + p.maas, 0);
+      const departmanlar = [...new Set(MOCK.personel.map(p => p.departman))];
+      const izinli = MOCK.personel.filter(p => p.durum === 'İzinli').length;
+
+      return `
+      <div class="page-head">
+        <div>
+          <div class="breadcrumb">
+            <a href="dashboard.html">Genel</a><span>›</span>
+            <a href="personel.html">İnsan Kaynakları</a><span>›</span>
+            <span>Personel</span>
+          </div>
+          <h1 class="page-title">Personel Yönetimi</h1>
+          <div class="page-sub">Personel kartları, departman, izin ve iletişim bilgileri</div>
+        </div>
+        <div class="page-actions">
+          <button class="btn btn-ghost" onclick="toast('Liste indirildi (prototip)')">${ICONS.download} Liste İndir</button>
+          <button class="btn btn-primary" onclick="openModal('personelModal')">${ICONS.plus} Yeni Personel</button>
+        </div>
+      </div>
+
+      <div class="tcr-ac-grid">
+        <div class="tcr-action-card tcr-ac-blue"><span class="tcr-ac-icon">${ICONS.users}</span><span class="tcr-ac-content"><span class="tcr-ac-title">Toplam Personel</span><span class="tcr-ac-desc">${MOCK.personel.length}</span></span></div>
+        <div class="tcr-action-card tcr-ac-green"><span class="tcr-ac-icon">${ICONS.cash}</span><span class="tcr-ac-content"><span class="tcr-ac-title">Aylık Maaş Toplamı</span><span class="tcr-ac-desc">${fmtMoney(totalMaas)}</span></span></div>
+        <div class="tcr-action-card tcr-ac-orange"><span class="tcr-ac-icon">${ICONS.calendar}</span><span class="tcr-ac-content"><span class="tcr-ac-title">İzinli</span><span class="tcr-ac-desc">${izinli}</span></span></div>
+        <div class="tcr-action-card tcr-ac-blue"><span class="tcr-ac-icon">${ICONS.briefcase}</span><span class="tcr-ac-content"><span class="tcr-ac-title">Departman</span><span class="tcr-ac-desc">${departmanlar.length}</span></span></div>
+      </div>
+
+      <div class="grid-12 mb-6">
+        <div class="card">
+          <div class="card-head"><div class="card-title">Departman Dağılımı</div></div>
+          <div class="card-body">
+            ${donutChart([
+              {value: MOCK.personel.filter(p=>p.departman==='Yönetim').length, color:'#2c4670', label:'Yönetim'},
+              {value: MOCK.personel.filter(p=>p.departman==='Muhasebe').length, color:'#168a55', label:'Muhasebe'},
+              {value: MOCK.personel.filter(p=>p.departman==='Satış').length, color:'#e6a93c', label:'Satış'},
+              {value: MOCK.personel.filter(p=>p.departman==='İK').length, color:'#c93838', label:'İK'},
+              {value: MOCK.personel.filter(p=>['Depo','Üretim'].includes(p.departman)).length, color:'#8a93a6', label:'Operasyon'},
+            ])}
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-head"><div class="card-title">Departmana Göre Maaş</div></div>
+          <div class="card-body">
+            ${barChart([
+              {label:'Yönetim', value: MOCK.personel.filter(p=>p.departman==='Yönetim').reduce((s,p)=>s+p.maas,0)},
+              {label:'Muhasebe', value: MOCK.personel.filter(p=>p.departman==='Muhasebe').reduce((s,p)=>s+p.maas,0)},
+              {label:'Satış', value: MOCK.personel.filter(p=>p.departman==='Satış').reduce((s,p)=>s+p.maas,0)},
+              {label:'İK', value: MOCK.personel.filter(p=>p.departman==='İK').reduce((s,p)=>s+p.maas,0)},
+              {label:'Depo', value: MOCK.personel.filter(p=>p.departman==='Depo').reduce((s,p)=>s+p.maas,0)},
+              {label:'Üretim', value: MOCK.personel.filter(p=>p.departman==='Üretim').reduce((s,p)=>s+p.maas,0)},
+            ])}
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-body" style="padding:var(--s-4)">
+          <div class="toolbar">
+            <div class="toolbar-search"><span class="toolbar-search-icon">${ICONS.search}</span><input type="text" placeholder="Personel adı ara..." oninput="filterP(this.value)" /></div>
+            <select class="filter-select"><option>Tüm Departmanlar</option>${departmanlar.map(d=>`<option>${d}</option>`).join('')}</select>
+            <select class="filter-select"><option>Tüm Durumlar</option><option>Aktif</option><option>İzinli</option></select>
+            <div class="toolbar-spacer"></div>
+          </div>
+
+          <div class="table-wrap" style="border:none">
+            <table class="data" id="pTable">
+              <thead><tr><th>Personel</th><th>Departman</th><th>Unvan</th><th>İşe Giriş</th><th class="num">Maaş</th><th>İzin</th><th>Durum</th><th></th></tr></thead>
+              <tbody>
+                ${MOCK.personel.map(p => {
+                  const initials = p.ad.split(' ').map(x=>x[0]).join('').slice(0,2);
+                  return `
+                  <tr data-ad="${p.ad.toLowerCase()}">
+                    <td class="flex items-center gap-3"><div class="avatar avatar-sm">${initials}</div><div><div class="strong">${p.ad}</div><div class="text-mute" style="font-size:11px">${p.telefon}</div></div></td>
+                    <td><span class="pill">${p.departman}</span></td>
+                    <td>${p.unvan}</td>
+                    <td class="muted">${fmtDate(p.giris)}</td>
+                    <td class="num strong">${fmtMoney(p.maas)}</td>
+                    <td><span class="badge ${p.izin>10?'badge-success':p.izin>5?'badge-info':'badge-warn'}">${p.izin} gün</span></td>
+                    <td><span class="badge ${p.durum==='Aktif'?'badge-success':'badge-warn'}">${p.durum}</span></td>
+                    <td><div class="flex gap-2"><button class="icon-btn" style="width:30px;height:30px" onclick="openModal('detayModal')" title="Detay">${ICONS.eye}</button><button class="icon-btn" style="width:30px;height:30px" onclick="openModal('personelModal')" title="Düzenle">${ICONS.edit}</button></div></td>
+                  </tr>`;
+                }).join('')}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      ${modalHtml('personelModal', 'Yeni Personel Kartı', `
+        <div class="form-grid-2">
+          <div class="form-field"><label class="form-label">Ad Soyad</label><input class="form-input" placeholder="Ad Soyad" /></div>
+          <div class="form-field"><label class="form-label">TC Kimlik No</label><input class="form-input" /></div>
+          <div class="form-field"><label class="form-label">Departman</label><select class="form-input"><option>Yönetim</option><option>Muhasebe</option><option>Satış</option><option>İK</option><option>Depo</option><option>Üretim</option></select></div>
+          <div class="form-field"><label class="form-label">Unvan</label><input class="form-input" placeholder="Örn: Satış Temsilcisi" /></div>
+          <div class="form-field"><label class="form-label">İşe Giriş</label><input class="form-input" type="date" value="2026-07-04" /></div>
+          <div class="form-field"><label class="form-label">Aylık Maaş (Brüt)</label><input class="form-input" type="number" value="0" /></div>
+          <div class="form-field"><label class="form-label">Telefon</label><input class="form-input" placeholder="05xx xxx xx xx" /></div>
+          <div class="form-field"><label class="form-label">E-posta</label><input class="form-input" placeholder="ad@sirket.com" /></div>
+          <div class="form-field"><label class="form-label">Yıllık İzin Hakkı</label><input class="form-input" type="number" value="14" /></div>
+          <div class="form-field"><label class="form-label">SGK No</label><input class="form-input" /></div>
+          <div class="form-field full"><label class="form-label">Adres</label><textarea class="form-input"></textarea></div>
+        </div>
+      `, `<button class="btn btn-ghost" onclick="closeModal('personelModal')">İptal</button><button class="btn btn-primary" onclick="closeModal('personelModal');toast('Personel kaydedildi','success')">${ICONS.check} Kaydet</button>`, 'lg')}
+
+      ${modalHtml('detayModal', 'Personel Detayı · Ahmet Yılmaz', `
+        <div class="flex items-center gap-4 mb-5">
+          <div class="avatar avatar-lg" style="background:linear-gradient(135deg,#2c4670,#142544)">AY</div>
+          <div>
+            <h3 style="font-size:18px;color:var(--c-primary-800)">Ahmet Yılmaz</h3>
+            <div class="text-soft" style="font-size:13px">Genel Müdür · Yönetim</div>
+            <div class="flex gap-2 mt-2"><span class="badge badge-success">Aktif</span><span class="badge badge-info">21 gün izin</span></div>
+          </div>
+        </div>
+        <div class="grid-2">
+          <div class="card" style="box-shadow:none"><div class="card-body" style="padding:var(--s-4)">
+            <div class="text-soft mb-3" style="font-size:12px;font-weight:600">Kişisel Bilgiler</div>
+            <div class="stat-row"><span class="stat-label">TC Kimlik</span><span class="stat-value mono">12345678901</span></div>
+            <div class="stat-row"><span class="stat-label">Telefon</span><span class="stat-value mono">0532 111 22 33</span></div>
+            <div class="stat-row"><span class="stat-label">E-posta</span><span class="stat-value">ahmet@sirket.com</span></div>
+            <div class="stat-row"><span class="stat-label">İşe Giriş</span><span class="stat-value">01.03.2018</span></div>
+          </div></div>
+          <div class="card" style="box-shadow:none"><div class="card-body" style="padding:var(--s-4)">
+            <div class="text-soft mb-3" style="font-size:12px;font-weight:600">İş Bilgileri</div>
+            <div class="stat-row"><span class="stat-label">Departman</span><span class="stat-value">Yönetim</span></div>
+            <div class="stat-row"><span class="stat-label">Unvan</span><span class="stat-value">Genel Müdür</span></div>
+            <div class="stat-row"><span class="stat-label">Maaş (Brüt)</span><span class="stat-value">${fmtMoney(85000)}</span></div>
+            <div class="stat-row"><span class="stat-label">Kullanılan İzin</span><span class="stat-value">0 gün</span></div>
+          </div></div>
+        </div>
+      `, `<button class="btn btn-ghost" onclick="closeModal('detayModal')">Kapat</button><button class="btn btn-primary" onclick="window.location.href='maas.html'">${ICONS.cash} Maaş Bordrosu</button>`, 'lg')}
+      `;
+    });
+
+    function filterP(v) {
+      document.querySelectorAll('#pTable tbody tr').forEach(r => {
+        r.style.display = r.dataset.ad.includes(v.toLowerCase()) ? '' : 'none';
+      });
+    }
+  </script>
+</body>
+</html>
