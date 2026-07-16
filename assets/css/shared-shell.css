@@ -107,3 +107,31 @@ body.sidebar-open-lock{overflow:hidden!important;touch-action:none!important;}
   }
   body:has(#cariFisTable) #content .tcr-action-card{width:100%!important;min-width:0!important;}
 }
+
+/* 578 · Cari Ekstre mobile KPI visibility
+   All period cards remain visible. Tablet uses 2 columns, phone uses 1 column. */
+@media (max-width:1180px){
+  body:has(#ekstreTable) #content .tcr-ac-grid{
+    display:grid!important;
+    grid-template-columns:repeat(2,minmax(0,1fr))!important;
+    gap:10px!important;
+    width:100%!important;
+  }
+  body:has(#ekstreTable) #content .tcr-ac-grid>.ekstre-period-card{
+    display:flex!important;
+    visibility:visible!important;
+    opacity:1!important;
+    width:100%!important;
+    min-width:0!important;
+    margin:0!important;
+  }
+}
+@media (max-width:767px){
+  body:has(#ekstreTable) #content .tcr-ac-grid{
+    grid-template-columns:1fr!important;
+    gap:9px!important;
+  }
+  body:has(#ekstreTable) #content .tcr-ac-grid>.ekstre-period-card{
+    min-height:68px!important;
+  }
+}
