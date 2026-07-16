@@ -179,15 +179,15 @@
         const durumColor = h.durum === 'Onaylandı' ? 'success' : h.durum === 'Bekliyor' ? 'warn' : '';
         const isCikis = h.tip === 'odeme' || h.tip === 'verilen_cek' || h.tip === 'verilen_senet';
         return `<tr data-tip="${h.tip}">
-          <td class="mono strong">${h.no}</td>
-          <td><span class="pill" style="background:${tip?.color||''}1a;color:${tip?.color||'var(--text-mute)'}">${tip?.label||h.tip}</span></td>
-          <td>${fmtDate(h.tarih)}</td>
-          <td class="strong">${h.cari}</td>
-          <td class="muted">${h.kanal}</td>
-          <td class="num strong" style="color:${isCikis ? 'var(--c-danger-500)' : 'var(--c-accent-600)'}">${isCikis ? '-' : '+'} ${fmtMoney(h.tutar)}</td>
-          <td><span class="badge badge-${durumColor}">${h.durum}</span></td>
-          <td class="muted">${h.aciklama}</td>
-          <td>
+          <td class="mono strong" data-label="İşlem No">${h.no}</td>
+          <td data-label="Tip"><span class="pill" style="background:${tip?.color||''}1a;color:${tip?.color||'var(--text-mute)'}">${tip?.label||h.tip}</span></td>
+          <td data-label="Tarih">${fmtDate(h.tarih)}</td>
+          <td class="strong" data-label="Cari">${h.cari}</td>
+          <td class="muted" data-label="Kasa / Banka / Portföy">${h.kanal}</td>
+          <td class="num strong" data-label="Tutar" style="color:${isCikis ? 'var(--c-danger-500)' : 'var(--c-accent-600)'}">${isCikis ? '-' : '+'} ${fmtMoney(h.tutar)}</td>
+          <td data-label="Durum"><span class="badge badge-${durumColor}">${h.durum}</span></td>
+          <td class="muted ci-description-cell" data-label="Açıklama">${h.aciklama}</td>
+          <td class="tcr-action-column" data-label="İşlem">
             <div class="ci-actions">
               <button class="icon-btn" style="width:30px;height:30px" onclick="openCariIslemDetail('${h.no}')" title="Görüntüle">${ICONS.eye}</button>
               <button class="icon-btn" style="width:30px;height:30px" onclick="openCariIslemModal('${h.tip}','${h.no}')" title="Düzenle">${ICONS.edit}</button>

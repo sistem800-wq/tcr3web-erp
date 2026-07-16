@@ -3664,42 +3664,85 @@ function bindStateDot(dot){
   });
   dot.addEventListener('mouseleave',()=>tip.classList.remove('show'));
 }
+function tcr3LockSvg(locked){
+  return locked
+    ? `<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="18" height="11" x="3" y="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>`
+    : `<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="18" height="11" x="3" y="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 9.7-1.7"/></svg>`;
+}
+function showRecordLockInfo(locked,dateText,days,age){
+  let overlay=document.getElementById('recordLockInfoOverlay');
+  if(!overlay){
+    overlay=document.createElement('div');
+    overlay.id='recordLockInfoOverlay';
+    overlay.className='record-lock-info-overlay';
+    overlay.innerHTML=`<div class="record-lock-info-dialog" role="dialog" aria-modal="true" aria-labelledby="recordLockInfoTitle">
+      <div class="record-lock-info-head"><strong id="recordLockInfoTitle">Kilit Bilgisi</strong><button type="button" class="record-lock-info-close" aria-label="Kapat">×</button></div>
+      <div class="record-lock-info-body"></div>
+      <div class="record-lock-info-foot"><button type="button" class="btn btn-danger record-lock-info-close">Kapat</button></div>
+    </div>`;
+    overlay.addEventListener('click',e=>{if(e.target===overlay || e.target.closest('.record-lock-info-close')) overlay.classList.remove('is-open')});
+    document.body.appendChild(overlay);
+  }
+  const remaining=Math.max(0,days-age);
+  overlay.querySelector('.record-lock-info-body').innerHTML=`
+    <div class="record-lock-info-status ${locked?'is-locked':'is-open'}">${tcr3LockSvg(locked)}<div><strong>${locked?'Kayıt kilitli':'Kayıt düzenlenebilir'}</strong><span>${locked?'Erişim süresi dolmuş.':'Erişim süresi devam ediyor.'}</span></div></div>
+    <dl class="record-lock-info-grid"><div><dt>İşlem tarihi</dt><dd>${dateText}</dd></div><div><dt>Kilit süresi</dt><dd>${days} gün</dd></div><div><dt>Geçen süre</dt><dd>${age} gün</dd></div><div><dt>${locked?'Aşılan süre':'Kalan süre'}</dt><dd>${locked?Math.max(0,age-days):remaining} gün</dd></div></dl>`;
+  overlay.classList.add('is-open');
+}
+function createRecordLockButton(locked,dateText,days,age){
+  const btn=document.createElement('button');
+  btn.type='button';
+  btn.className='icon-btn record-lock-info-btn '+(locked?'is-locked':'is-open');
+  btn.title=locked?'Kilitli kayıt bilgisi':'Açık kilit bilgisi';
+  btn.setAttribute('aria-label',btn.title);
+  btn.innerHTML=tcr3LockSvg(locked);
+  btn.addEventListener('click',e=>{e.preventDefault();e.stopPropagation();showRecordLockInfo(locked,dateText,days,age)});
+  return btn;
+}
 function applyRecordLockStandard(){
   const moduleKey=getCurrentModuleKey(); const policies=getLockPolicies(); const days=Number(policies[moduleKey]??5);
   document.querySelectorAll('table.data').forEach(table=>{
     if(
-      table.dataset.recordLockApplied ||
-      table.closest('#tab-kilit') ||
-      table.dataset.noRecordLock === 'true' ||
-      table.id === 'ekstreTable' ||
-      table.closest('.modal') ||
-      table.classList.contains('hareket-urun-table') ||
-      table.classList.contains('stok-detail-line-table')
+      table.closest('#tab-kilit') || table.dataset.noRecordLock === 'true' || table.id === 'ekstreTable' ||
+      table.closest('.modal') || table.classList.contains('hareket-urun-table') || table.classList.contains('stok-detail-line-table')
     ) return;
-    const scope = table.closest('.card, .modal, section, main') || table.parentElement;
-    const sectionTitle = scope?.querySelector('.card-title, .fis-section-title, .text-soft, h2, h3, h4')?.textContent || '';
-    const isLineItemsTable = table.classList.contains('form-line-table') || /kalemler|kalemleri|ürün kalemleri|sipariş kalemleri|teklif kalemleri|fatura kalemleri|cari hesap kalemleri/i.test(sectionTitle.trim());
-    if(isLineItemsTable){
-      table.querySelectorAll('.record-state-head,.record-state-cell').forEach(el=>el.remove());
-      return;
-    }
+    const scope=table.closest('.card, .modal, section, main')||table.parentElement;
+    const sectionTitle=scope?.querySelector('.card-title, .fis-section-title, .text-soft, h2, h3, h4')?.textContent||'';
+    const isLineItemsTable=table.classList.contains('form-line-table') || /kalemler|kalemleri|ürün kalemleri|sipariş kalemleri|teklif kalemleri|fatura kalemleri|cari hesap kalemleri/i.test(sectionTitle.trim());
+    if(isLineItemsTable){table.querySelectorAll('.record-state-head,.record-state-cell').forEach(el=>el.remove());return;}
+
+    const actionButtonMode=['cari-islemler','cari-fisleri'].includes(moduleKey);
     const headRow=table.tHead?.rows?.[0]; if(!headRow) return;
-    const th=document.createElement('th'); th.className='record-state-head'; th.textContent='Durum'; headRow.insertBefore(th,headRow.firstElementChild);
+
+    /* Önce eski kırmızı/yeşil nokta sütunlarını temizle. */
+    table.querySelectorAll('.record-state-head,.record-state-cell').forEach(el=>el.remove());
+
+    if(!actionButtonMode && !headRow.querySelector('.record-lock-head')){
+      const th=document.createElement('th'); th.className='record-lock-head'; th.textContent='Kilit'; headRow.insertBefore(th,headRow.firstElementChild);
+    }
+
     [...(table.tBodies[0]?.rows||[])].forEach(row=>{
-      const date=findRowDate(row); const age=date?daysBetweenToday(date):0; const locked=days>0 && date && age>=days;
-      const td=document.createElement('td'); td.className='record-state-cell';
-      const dot=document.createElement('span'); dot.className='record-state-dot '+(locked?'is-locked':'is-open');
+      const date=findRowDate(row); const age=date?daysBetweenToday(date):0; const locked=!!(days>0 && date && age>=days);
       const dateText=date?date.toLocaleDateString('tr-TR'):'Tarih bilgisi bulunamadı';
-      dot.dataset.tip=locked
-        ? `<strong style="color:#dc2626">Kilitli Kayıt</strong><br>İşlem süresi doldu.<br>İşlem tarihi: ${dateText}<br>Kilit süresi: ${days} gün<br>Geçen süre: ${age} gün`
-        : `<strong style="color:#16a34a">İşlem Yapılabilir</strong><br>İşlem tarihi: ${dateText}<br>Kilit süresi: ${days} gün${date?`<br>Kalan süre: ${Math.max(0,days-age)} gün`:''}`;
-      dot.setAttribute('aria-label',locked?'Kilitli kayıt':'İşlem yapılabilir'); td.appendChild(dot); row.insertBefore(td,row.firstElementChild); bindStateDot(dot);
+
+      if(actionButtonMode){
+        const actionCell=row.cells[row.cells.length-1];
+        if(actionCell && !actionCell.querySelector('.record-lock-info-btn')){
+          const actionWrap=actionCell.querySelector('.table-actions,.row-actions,.finance-actions,.actions')||actionCell;
+          const lockBtn=createRecordLockButton(locked,dateText,days,age);
+          const menuBtn=[...actionWrap.querySelectorAll('button,a')].find(el=>/menü|menu|diğer|diger|more|\.\.\./i.test([el.title,el.getAttribute('aria-label'),el.textContent].filter(Boolean).join(' ')));
+          if(menuBtn) actionWrap.insertBefore(lockBtn,menuBtn); else actionWrap.appendChild(lockBtn);
+        }
+      }else if(!row.querySelector('.record-lock-cell')){
+        const td=document.createElement('td'); td.className='record-lock-cell'; td.appendChild(createRecordLockButton(locked,dateText,days,age)); row.insertBefore(td,row.firstElementChild);
+      }
+
+      row.classList.toggle('is-record-locked',locked);
       if(locked){
-        row.classList.add('is-record-locked');
         row.querySelectorAll('button,a.btn').forEach(btn=>{
-          if(isRestrictedLockedAction(btn)){
-            btn.classList.add('record-action-blocked');
-            btn.setAttribute('aria-disabled','true');
+          if(btn.classList.contains('record-lock-info-btn')) return;
+          if(isRestrictedLockedAction(btn) && !btn.dataset.recordLockBound){
+            btn.dataset.recordLockBound='1'; btn.classList.add('record-action-blocked'); btn.setAttribute('aria-disabled','true');
             btn.addEventListener('click',e=>{e.preventDefault();e.stopImmediatePropagation();toast('Günü geçmiş kayıtlarda düzenleme ve iptal işlemleri kapalıdır.','error')},true);
           }
         });
@@ -4201,3 +4244,30 @@ function closeDocumentPreview(){
   document.body.classList.remove('tcr-preview-open');
 }
 document.addEventListener('keydown',e=>{if(e.key==='Escape' && document.getElementById('tcrDocumentPreviewModal')?.classList.contains('is-open')) closeDocumentPreview();});
+
+/* 569 · Final Cari action normalizer. No continuous observer/reflow. */
+(function(){
+  function normalizeCariActionRows(){
+    ['cariIslemTable','cariFisTable'].forEach(function(tableId){
+      var table=document.getElementById(tableId);
+      if(!table) return;
+      table.querySelectorAll('tbody tr').forEach(function(row){
+        row.querySelectorAll('.record-state-cell,.record-state-dot,.status-dot').forEach(function(el){el.remove();});
+        var actionCell=row.querySelector('td[data-label="İşlem"],td.tcr-action-column,td:last-child');
+        if(!actionCell) return;
+        actionCell.classList.add('tcr-action-column');
+        actionCell.setAttribute('data-label','İşlem');
+        var wrap=actionCell.querySelector('.ci-actions,.flex');
+        if(!wrap) return;
+        if(!wrap.classList.contains('ci-actions')) wrap.classList.add('ci-actions');
+        var lock=wrap.querySelector('.record-lock-info-btn');
+        var menu=wrap.querySelector('.ci-output-trigger,[data-action="more"]');
+        if(lock && menu && lock.nextElementSibling!==menu) wrap.insertBefore(lock,menu);
+      });
+    });
+  }
+  function run(){ requestAnimationFrame(function(){ normalizeCariActionRows(); setTimeout(normalizeCariActionRows,120); }); }
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',run,{once:true}); else run();
+  window.addEventListener('load',run,{once:true});
+  document.addEventListener('tcr:page-rendered',run);
+})();

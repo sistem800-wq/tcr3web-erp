@@ -435,3 +435,33 @@ body.tcr-page-cari-islemler #cariIslemTable .ci-output-trigger{order:4!important
 .record-lock-info-grid div{padding:10px;border:1px solid #e2e8f0;border-radius:10px;background:#f8fafc}.record-lock-info-grid dt{font-size:10px;font-weight:800;text-transform:uppercase;color:#64748b}.record-lock-info-grid dd{margin:4px 0 0;font-weight:800;color:#0f172a}
 @media(max-width:520px){.record-lock-info-grid{grid-template-columns:1fr}}
 
+
+
+/* 570 · Kilit / iş durumu ayrımı */
+.record-state-head,.record-state-cell,.record-state-dot{display:none!important}
+.record-lock-head,.record-lock-cell{width:58px!important;min-width:58px!important;max-width:58px!important;text-align:center!important}
+.record-lock-cell .record-lock-info-btn{margin:auto!important}
+.record-lock-info-btn{display:inline-flex!important;align-items:center!important;justify-content:center!important;width:36px!important;height:36px!important;padding:0!important;border-radius:9px!important;background:#fff!important;cursor:pointer!important;pointer-events:auto!important}
+.record-lock-info-btn.is-open{color:#16a34a!important;border:1px solid #22c55e!important}
+.record-lock-info-btn.is-locked{color:#dc2626!important;border:1px solid #ef4444!important}
+@media (hover:hover) and (pointer:fine){.record-lock-info-btn:hover{color:#fff!important;background:#1d4ed8!important;border-color:#1d4ed8!important}}
+#cariIslemTable th:first-child,#cariFisTable th:first-child{ /* İlk gerçek kolon iş durumudur; kilit ayrı aksiyon butonudur. */ }
+
+/* 569 · Workflow status has no legacy dot; lock lives in action buttons. */
+body.tcr-page-cari-islemler #cariIslemTable .record-state-head,
+body.tcr-page-cari-islemler #cariIslemTable .record-state-cell,
+body.tcr-page-cari-islemler #cariIslemTable .record-state-dot,
+body.tcr-page-cari-islemler #cariIslemTable .status-dot,
+body.tcr-page-cari-fisleri #cariFisTable .record-state-head,
+body.tcr-page-cari-fisleri #cariFisTable .record-state-cell,
+body.tcr-page-cari-fisleri #cariFisTable .record-state-dot,
+body.tcr-page-cari-fisleri #cariFisTable .status-dot{display:none!important}
+body.tcr-page-cari-islemler #cariIslemTable td .badge::before,
+body.tcr-page-cari-fisleri #cariFisTable td .badge::before{display:none!important;content:none!important}
+body.tcr-page-cari-islemler #cariIslemTable td .badge,
+body.tcr-page-cari-fisleri #cariFisTable td .badge{padding-left:9px!important}
+body.tcr-page-cari-islemler #cariIslemTable .ci-actions{
+  display:flex!important;align-items:center!important;justify-content:flex-start!important;gap:6px!important;white-space:nowrap!important
+}
+body.tcr-page-cari-islemler #cariIslemTable .ci-actions>.record-lock-info-btn{order:3!important;position:static!important;inset:auto!important;margin:0!important}
+body.tcr-page-cari-islemler #cariIslemTable .ci-actions>.ci-output-trigger{order:4!important;position:static!important;inset:auto!important;margin:0!important}

@@ -2334,3 +2334,140 @@ body.tcr-page-cari-fisleri .record-lock-info-btn[aria-disabled="true"]{
   cursor:pointer!important;
   opacity:1!important;
 }
+
+/* ============================================================
+   569 · CARI FINAL MOBILE CARD STANDARD
+   Stable layout; no hover-driven reflow; description and actions fixed.
+   ============================================================ */
+@media (max-width: 991.98px){
+  body.tcr-page-cari-islemler #cariIslemTable tbody tr{
+    display:grid!important;
+    grid-template-columns:repeat(4,minmax(0,1fr))!important;
+    grid-auto-flow:row!important;
+    width:100%!important;
+    min-width:0!important;
+    overflow:hidden!important;
+    background:#fff!important;
+    border:1px solid #cbd8e8!important;
+    border-left:5px solid #0877b9!important;
+    border-radius:14px!important;
+    box-shadow:0 2px 7px rgba(15,23,42,.07)!important;
+    transform:none!important;
+    transition:border-color .14s ease,box-shadow .14s ease,background-color .14s ease!important;
+  }
+  body.tcr-page-cari-islemler #cariIslemTable tbody tr:hover,
+  body.tcr-page-cari-islemler #cariIslemTable tbody tr:focus-within,
+  body.tcr-page-cari-islemler #cariIslemTable tbody tr:active{
+    transform:none!important;
+    background:#fff!important;
+    border-color:#2563eb!important;
+    border-left-color:#0877b9!important;
+    box-shadow:0 3px 10px rgba(30,64,175,.12)!important;
+  }
+  body.tcr-page-cari-islemler #cariIslemTable tbody td{
+    position:relative!important;
+    min-width:0!important;
+    width:auto!important;
+    margin:0!important;
+    padding:8px 7px!important;
+    border:0!important;
+    border-right:1px solid #d7e1ee!important;
+    border-bottom:1px solid #d7e1ee!important;
+    background:transparent!important;
+    color:#0f172a!important;
+    opacity:1!important;
+    visibility:visible!important;
+    overflow:hidden!important;
+    white-space:normal!important;
+    text-overflow:clip!important;
+    transform:none!important;
+  }
+  body.tcr-page-cari-islemler #cariIslemTable tbody td::before{
+    display:block!important;
+    margin:0 0 4px!important;
+    color:#45617f!important;
+    font-size:8px!important;
+    line-height:1.1!important;
+    font-weight:800!important;
+    text-transform:uppercase!important;
+    opacity:1!important;
+  }
+  body.tcr-page-cari-islemler #cariIslemTable td[data-label="Durum"]{grid-column:1!important;grid-row:1!important}
+  body.tcr-page-cari-islemler #cariIslemTable td[data-label="Tip"]{grid-column:2!important;grid-row:1!important}
+  body.tcr-page-cari-islemler #cariIslemTable td[data-label="Cari"]{grid-column:3 / 5!important;grid-row:1!important;border-right:0!important}
+  body.tcr-page-cari-islemler #cariIslemTable td[data-label="Tarih"]{grid-column:1!important;grid-row:2!important}
+  body.tcr-page-cari-islemler #cariIslemTable td[data-label="İşlem No"]{grid-column:2!important;grid-row:2!important}
+  body.tcr-page-cari-islemler #cariIslemTable td[data-label="Kasa / Banka / Portföy"]{grid-column:3!important;grid-row:2!important}
+  body.tcr-page-cari-islemler #cariIslemTable td[data-label="Tutar"]{grid-column:4!important;grid-row:2!important;border-right:0!important}
+  body.tcr-page-cari-islemler #cariIslemTable td[data-label="Açıklama"]{
+    grid-column:1 / -1!important;
+    grid-row:3!important;
+    min-height:48px!important;
+    padding:8px 10px!important;
+    border-right:0!important;
+    display:flex!important;
+    flex-direction:column!important;
+    align-items:flex-end!important;
+    justify-content:center!important;
+    text-align:right!important;
+    color:#0f172a!important;
+    background:#fff!important;
+    opacity:1!important;
+    visibility:visible!important;
+    overflow:visible!important;
+  }
+  body.tcr-page-cari-islemler #cariIslemTable td[data-label="Açıklama"]::before{
+    width:100%!important;
+    text-align:right!important;
+  }
+  body.tcr-page-cari-islemler #cariIslemTable td[data-label="İşlem"],
+  body.tcr-page-cari-islemler #cariIslemTable td.tcr-action-column{
+    grid-column:1 / -1!important;
+    grid-row:4!important;
+    min-height:52px!important;
+    padding:8px 10px!important;
+    border:0!important;
+    background:#fff!important;
+    display:flex!important;
+    align-items:center!important;
+    justify-content:flex-start!important;
+    overflow:visible!important;
+  }
+  body.tcr-page-cari-islemler #cariIslemTable td[data-label="İşlem"]::before,
+  body.tcr-page-cari-islemler #cariIslemTable td.tcr-action-column::before{display:none!important}
+  body.tcr-page-cari-islemler #cariIslemTable .ci-actions{
+    position:static!important;
+    inset:auto!important;
+    width:100%!important;
+    display:flex!important;
+    flex-wrap:nowrap!important;
+    align-items:center!important;
+    justify-content:flex-start!important;
+    gap:6px!important;
+    margin:0!important;
+    padding:0!important;
+    transform:none!important;
+  }
+  body.tcr-page-cari-islemler #cariIslemTable .ci-actions > .icon-btn,
+  body.tcr-page-cari-islemler #cariIslemTable .ci-actions > .record-lock-info-btn{
+    position:static!important;
+    inset:auto!important;
+    flex:0 0 34px!important;
+    width:34px!important;
+    height:34px!important;
+    margin:0!important;
+    transform:none!important;
+  }
+  body.tcr-page-cari-islemler #cariIslemTable .ci-actions > .icon-btn:nth-of-type(1){order:1!important}
+  body.tcr-page-cari-islemler #cariIslemTable .ci-actions > .icon-btn:nth-of-type(2){order:2!important}
+  body.tcr-page-cari-islemler #cariIslemTable .ci-actions > .record-lock-info-btn{order:3!important}
+  body.tcr-page-cari-islemler #cariIslemTable .ci-actions > .ci-output-trigger{order:4!important}
+  body.tcr-page-cari-islemler #cariIslemTable .ci-output-menu{order:20!important}
+
+  /* Status is workflow state only; no old red/green dot. */
+  body.tcr-page-cari-islemler #cariIslemTable td[data-label="Durum"]::after,
+  body.tcr-page-cari-islemler #cariIslemTable td[data-label="Durum"] .badge::before,
+  body.tcr-page-cari-islemler #cariIslemTable .record-state-dot,
+  body.tcr-page-cari-islemler #cariIslemTable .status-dot{display:none!important;content:none!important}
+  body.tcr-page-cari-islemler #cariIslemTable td[data-label="Durum"] .badge{padding-left:9px!important}
+}

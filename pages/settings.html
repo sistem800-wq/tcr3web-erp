@@ -507,7 +507,7 @@
           <div class="card-head">
             <div>
               <div class="card-title">Modül Bazlı Kayıt Erişim Günleri</div>
-              <div class="text-soft" style="font-size:12px;margin-top:4px">Belirlenen gün sayısına ulaşan ana kayıtlar kırmızı durum noktasıyla kilitlenir.</div>
+              <div class="text-soft" style="font-size:12px;margin-top:4px">Belirlenen gün sayısına ulaşan ana kayıtlar kilit simgesiyle gösterilir.</div>
             </div>
             <span class="lock-policy-badge">Aktif Güvenlik Politikası</span>
           </div>
@@ -521,13 +521,13 @@
           </div>
         </div>
         <div class="card">
-          <div class="card-head"><div class="card-title">Durum Göstergesi</div></div>
+          <div class="card-head"><div class="card-title">Kilit Göstergesi</div></div>
           <div class="card-body">
             <div class="flex gap-5 flex-wrap items-center">
-              <div class="flex gap-2 items-center"><span class="record-state-dot is-open"></span><strong>İşlem yapılabilir</strong></div>
-              <div class="flex gap-2 items-center"><span class="record-state-dot is-locked"></span><strong>Kilitli kayıt</strong></div>
+              <div class="flex gap-2 items-center"><button type="button" class="icon-btn record-lock-info-btn is-open" aria-label="Açık kilit">${ICONS.unlock || ICONS.lock}</button><strong>İşlem yapılabilir</strong></div>
+              <div class="flex gap-2 items-center"><button type="button" class="icon-btn record-lock-info-btn is-locked" aria-label="Kapalı kilit">${ICONS.lock}</button><strong>Kilitli kayıt</strong></div>
             </div>
-            <div class="lock-policy-note mt-4">Tablolarda yalnızca kırmızı veya yeşil daire gösterilir. Dairenin üzerine gelindiğinde işlem tarihi, kilit süresi, kalan veya geçen gün bilgisi görünür. Görüntüleme ve yazdırma işlemleri açık kalır; düzenleme, silme, onay ve benzeri işlemler kilitlenir.</div>
+            <div class="lock-policy-note mt-4">Tablolarda açık kilit yeşil, kapalı kilit kırmızı SVG butonu olarak gösterilir. Butona tıklandığında işlem tarihi, kilit süresi, kalan veya geçen gün bilgisi açılır. Görüntüleme ve yazdırma işlemleri açık kalır; düzenleme, silme, onay ve benzeri işlemler kilitlenir.</div>
           </div>
         </div>
       </div>
