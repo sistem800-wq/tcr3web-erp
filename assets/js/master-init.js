@@ -104,6 +104,7 @@
   }
 
   function enhanceSearchInput(input){
+    if (document.body.classList.contains('tcr-cari-clean')) return;
     if (!isSearchInput(input) || input.dataset.tcrClearReady === '1') return;
     if (input.closest('.modal,[role="dialog"]') && !input.closest('.evrak-search')) return;
 

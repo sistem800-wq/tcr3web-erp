@@ -1,14 +1,15 @@
-/* build-591 */
-const TCR3_CACHE_VERSION = '20260711-697';
+/* build-600 MASTER CLEAN */
+const TCR3_CACHE_VERSION = '20260715-600';
 const STATIC_CACHE = 'tcr3web-static-' + TCR3_CACHE_VERSION;
 const RUNTIME_CACHE = 'tcr3web-runtime-' + TCR3_CACHE_VERSION;
-const APP_SHELL = './index.html?pwa=1&v=697';
+const APP_SHELL = './index.html?pwa=1&v=600';
 const CORE_ASSETS = [
   './', './index.html', './pages/dashboard.html', './manifest.webmanifest',
   './assets/css/style.css?v=20260711-697',
-  './assets/css/responsive-master.css?v=20260713-593',
+  './assets/css/mobile-tablet-framework.css?v=20260715-600',
   './assets/css/performance.css?v=20260711-697',
   './assets/js/app.js?v=20260711-697',
+  './assets/js/mobile-tablet-framework.js?v=20260715-600',
   './assets/js/master-init.js?v=20260711-697',
   './assets/img/tcr3web-logo-clean.svg',
   './assets/icons/icon-192.png', './assets/icons/icon-512.png'

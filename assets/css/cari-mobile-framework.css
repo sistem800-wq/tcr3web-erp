@@ -1,0 +1,52 @@
+/* TCR3WEB ERP 600 MASTER CLEAN - Cari Mobile/Tablet Framework */
+:root{--cmf-gap:12px;--cmf-radius:12px;--cmf-border:#dbe3ee;--cmf-soft:#f6f8fb;--cmf-ink:#101828;--cmf-muted:#475467;--cmf-primary:#174a7e}
+body.cmf-ready{overflow-x:hidden}
+.cmf-ready .content{min-width:0}
+.cmf-ready .page-head{gap:12px}
+.cmf-ready .toolbar,.cmf-ready .filter-bar,.cmf-ready .table-toolbar{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.cmf-ready .toolbar-search{flex:1 1 280px;min-width:220px}
+.cmf-ready .toolbar-search input{width:100%}
+.cmf-ready .cmf-page-size{width:auto;min-width:82px}
+.cmf-ready .cmf-clear{width:38px;height:38px;padding:0;display:inline-flex;align-items:center;justify-content:center}
+.cmf-ready table.data{width:100%}
+.cmf-ready .picker-modal-box,.cmf-ready .modal.picker-modal-box{max-width:1100px}
+.cmf-ready .picker-search{display:flex;gap:8px;align-items:center}
+.cmf-ready .picker-search input{min-width:0;flex:1}
+@media (max-width:1180px){
+  .cmf-ready .page-head{align-items:flex-start}
+  .cmf-ready .page-actions{display:flex;gap:8px;flex-wrap:wrap}
+  .cmf-ready .toolbar,.cmf-ready .filter-bar,.cmf-ready .table-toolbar{display:grid;grid-template-columns:92px minmax(0,1fr) 40px;gap:8px;width:100%}
+  .cmf-ready .toolbar-search{grid-column:2;min-width:0;width:100%}
+  .cmf-ready .toolbar>.filter-select:not(.cmf-page-size),.cmf-ready .toolbar>select:not(.cmf-page-size){grid-column:auto;min-width:0;width:100%}
+  .cmf-ready .cmf-clear{grid-column:3;grid-row:1}
+  .cmf-ready .cmf-page-size{grid-column:1;grid-row:1;width:100%}
+  .cmf-ready .table-wrap{overflow:visible!important;border:0!important}
+  .cmf-ready table.cmf-card-table{display:block;width:100%;min-width:0!important}
+  .cmf-ready table.cmf-card-table thead{display:none}
+  .cmf-ready table.cmf-card-table tbody{display:grid;gap:10px}
+  .cmf-ready table.cmf-card-table tr{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px 12px;padding:12px;border:1px solid var(--cmf-border);border-radius:var(--cmf-radius);background:#fff;box-shadow:0 2px 8px rgba(16,24,40,.05)}
+  .cmf-ready table.cmf-card-table tr[style*="display: none"]{display:none!important}
+  .cmf-ready table.cmf-card-table td{display:flex!important;align-items:flex-start;justify-content:space-between;gap:10px;padding:0!important;border:0!important;min-width:0;text-align:right!important;white-space:normal!important}
+  .cmf-ready table.cmf-card-table td::before{content:attr(data-cmf-label);font-size:11px;font-weight:800;color:var(--cmf-muted);text-align:left;flex:0 0 42%}
+  .cmf-ready table.cmf-card-table td>*{min-width:0}
+  .cmf-ready table.cmf-card-table td.cmf-primary{grid-column:1/-1;font-size:13px;font-weight:800;text-align:left!important;justify-content:flex-start;flex-wrap:wrap}
+  .cmf-ready table.cmf-card-table td.cmf-primary::before{display:none}
+  .cmf-ready table.cmf-card-table td.cmf-actions{grid-column:1/-1;justify-content:flex-start;text-align:left!important;padding-top:8px!important;border-top:1px solid #edf1f6!important}
+  .cmf-ready table.cmf-card-table td.cmf-actions::before{display:none}
+  .cmf-ready table.cmf-card-table td.cmf-actions>div{display:flex;gap:7px;flex-wrap:wrap}
+  .cmf-ready .tcr-ac-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+  .cmf-ready .picker-modal-box{width:calc(100vw - 20px)!important;height:calc(100dvh - 20px)!important;margin:10px!important}
+  .cmf-ready .picker-modal-body{overflow:auto}
+}
+@media (max-width:767px){
+  .cmf-ready .page-head{display:block}
+  .cmf-ready .page-actions{margin-top:10px;width:100%}
+  .cmf-ready .page-actions .btn{flex:1 1 auto;justify-content:center}
+  .cmf-ready .toolbar,.cmf-ready .filter-bar,.cmf-ready .table-toolbar{grid-template-columns:78px minmax(0,1fr) 40px}
+  .cmf-ready .toolbar>.filter-select:not(.cmf-page-size),.cmf-ready .toolbar>select:not(.cmf-page-size){grid-column:1/-1}
+  .cmf-ready table.cmf-card-table tr{grid-template-columns:1fr;padding:11px}
+  .cmf-ready table.cmf-card-table td{grid-column:1!important}
+  .cmf-ready table.cmf-card-table td.cmf-primary,.cmf-ready table.cmf-card-table td.cmf-actions{grid-column:1!important}
+  .cmf-ready .tcr-ac-grid{grid-template-columns:1fr!important}
+  .cmf-ready .tcr-action-card{min-height:72px}
+}

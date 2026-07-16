@@ -224,6 +224,7 @@
   ]);
 
   function shouldCreatePagination(table) {
+    if (document.body.classList.contains('tcr-cari-clean')) return false;
     if (!table || table.dataset.tcrPagination === 'off') return false;
     if (table.closest('.modal, .modal-backdrop, [role=\"dialog\"], .picker-modal-box, .quick-add-modal-box')) return false;
     const pageFile = (location.pathname.split('/').pop() || '').toLowerCase();

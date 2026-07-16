@@ -1,0 +1,308 @@
+/* TCR3WEB ERP 600 MASTER CLEAN
+   Cari Mobile / Tablet Framework
+   Cari pages intentionally do not load responsive-master.css. */
+:root{
+  --tcr-mobile-gap:10px;
+  --tcr-mobile-radius:13px;
+  --tcr-mobile-border:#d7e0ed;
+  --tcr-mobile-bg:#f5f7fb;
+  --tcr-mobile-primary:#0b67b2;
+  --tcr-mobile-navy:#102f5c;
+}
+
+html.tcr-cari-clean,html.tcr-cari-clean body{max-width:100%;overflow-x:hidden}
+body.tcr-cari-clean .main,body.tcr-cari-clean .content,body.tcr-cari-clean .page-content{min-width:0}
+body.tcr-cari-clean .card,body.tcr-cari-clean .card-body{min-width:0}
+body.tcr-cari-clean .table-wrap{max-width:100%}
+
+/* Common toolbar */
+body.tcr-cari-clean .toolbar,
+body.tcr-cari-clean .tcr-mobile-toolbar{
+  display:grid;
+  grid-template-columns:minmax(110px,150px) minmax(220px,1fr) minmax(150px,190px) minmax(150px,190px) auto;
+  gap:10px;
+  align-items:center;
+  width:100%;
+}
+body.tcr-cari-clean .toolbar-search{min-width:0;width:100%}
+body.tcr-cari-clean .toolbar-search input,
+body.tcr-cari-clean .filter-select{width:100%;min-width:0}
+body.tcr-cari-clean .tcr-page-size{order:-1;width:100%}
+body.tcr-cari-clean .tcr-toolbar-clear{white-space:nowrap}
+
+/* Picker/modal foundation */
+body.tcr-cari-clean .modal-backdrop,
+body.tcr-cari-clean .modal-overlay{overscroll-behavior:contain}
+body.tcr-cari-clean .modal,
+body.tcr-cari-clean .modal-dialog,
+body.tcr-cari-clean .modal-content{max-width:calc(100vw - 24px)}
+body.tcr-cari-clean .tcr-cari-picker-clean .modal-body{overflow:auto;overscroll-behavior:contain}
+body.tcr-cari-clean .tcr-cari-picker-clean .toolbar{position:sticky;top:0;z-index:2;background:#fff;padding-bottom:10px}
+
+@media (max-width: 1100px){
+  body.tcr-cari-clean .page-head{gap:12px;align-items:flex-start}
+  body.tcr-cari-clean .page-actions{display:flex;flex-wrap:wrap;gap:8px}
+  body.tcr-cari-clean .toolbar,
+  body.tcr-cari-clean .tcr-mobile-toolbar{
+    grid-template-columns:120px minmax(220px,1fr) minmax(150px,190px) minmax(150px,190px) auto;
+  }
+}
+
+@media (max-width: 767.98px){
+  body.tcr-cari-clean{background:var(--tcr-mobile-bg)}
+  body.tcr-cari-clean .content,
+  body.tcr-cari-clean .page-content{padding-left:8px!important;padding-right:8px!important}
+  body.tcr-cari-clean .page-head{display:flex!important;flex-direction:column!important;margin-bottom:12px!important}
+  body.tcr-cari-clean .page-head .breadcrumb,
+  body.tcr-cari-clean .page-head .page-sub{display:none!important}
+  body.tcr-cari-clean .page-title{font-size:18px!important;line-height:1.25!important;margin:0!important}
+  body.tcr-cari-clean .page-actions{width:100%}
+  body.tcr-cari-clean .page-actions .btn{flex:1 1 auto;min-height:40px}
+
+  /* Toolbar: page size + search button, then search, then filters */
+  body.tcr-cari-clean .toolbar,
+  body.tcr-cari-clean .tcr-mobile-toolbar{
+    display:grid!important;
+    grid-template-columns:minmax(0,1fr) 44px!important;
+    gap:8px!important;
+    padding:0!important;
+  }
+  body.tcr-cari-clean .toolbar > *,body.tcr-cari-clean .tcr-mobile-toolbar > *{min-width:0!important}
+  body.tcr-cari-clean .tcr-page-size{grid-column:1;grid-row:1}
+  body.tcr-cari-clean .tcr-toolbar-clear{grid-column:2;grid-row:1;width:44px!important;height:40px!important;padding:0!important;display:grid!important;place-items:center!important}
+  body.tcr-cari-clean .toolbar-search{grid-column:1 / -1!important;grid-row:auto!important;width:100%!important}
+  body.tcr-cari-clean .toolbar-search input{height:42px!important}
+  body.tcr-cari-clean .filter-select{grid-column:1 / -1!important;height:42px!important}
+
+  /* Desktop tables become semantic cards. No absolute positioning. */
+  body.tcr-cari-clean .table-wrap{overflow:visible!important;border:0!important;background:transparent!important}
+  body.tcr-cari-clean table.data,
+  body.tcr-cari-clean table.tcr-mobile-cards{display:block!important;width:100%!important;min-width:0!important;border:0!important;background:transparent!important}
+  body.tcr-cari-clean table.data thead,
+  body.tcr-cari-clean table.tcr-mobile-cards thead{display:none!important}
+  body.tcr-cari-clean table.data tbody,
+  body.tcr-cari-clean table.tcr-mobile-cards tbody{display:grid!important;gap:10px!important;width:100%!important}
+  body.tcr-cari-clean table.data tbody tr,
+  body.tcr-cari-clean table.tcr-mobile-cards tbody tr{
+    display:grid!important;
+    grid-template-columns:minmax(0,1fr) minmax(0,1fr)!important;
+    gap:8px 12px!important;
+    width:100%!important;
+    min-width:0!important;
+    height:auto!important;
+    min-height:0!important;
+    margin:0!important;
+    padding:12px!important;
+    border:1px solid var(--tcr-mobile-border)!important;
+    border-left:5px solid var(--tcr-mobile-primary)!important;
+    border-radius:var(--tcr-mobile-radius)!important;
+    background:#fff!important;
+    box-shadow:0 2px 7px rgba(16,47,92,.05)!important;
+    position:relative!important;
+    transform:none!important;
+  }
+  body.tcr-cari-clean table.data tbody td,
+  body.tcr-cari-clean table.tcr-mobile-cards tbody td{
+    display:flex!important;
+    flex-direction:column!important;
+    align-items:flex-start!important;
+    justify-content:flex-start!important;
+    gap:3px!important;
+    width:auto!important;
+    min-width:0!important;
+    max-width:100%!important;
+    height:auto!important;
+    min-height:0!important;
+    padding:0!important;
+    border:0!important;
+    background:transparent!important;
+    position:static!important;
+    inset:auto!important;
+    transform:none!important;
+    overflow:visible!important;
+    white-space:normal!important;
+    text-align:left!important;
+    line-height:1.35!important;
+    overflow-wrap:anywhere!important;
+  }
+  body.tcr-cari-clean table.data tbody td::before,
+  body.tcr-cari-clean table.tcr-mobile-cards tbody td::before{
+    content:attr(data-label);
+    display:block;
+    font-size:11px;
+    line-height:1.15;
+    font-weight:700;
+    color:#53657c;
+  }
+  body.tcr-cari-clean table.data tbody td[data-label=""],
+  body.tcr-cari-clean table.tcr-mobile-cards tbody td[data-label=""]{grid-column:1 / -1}
+  body.tcr-cari-clean table.data tbody td[data-label=""]::before,
+  body.tcr-cari-clean table.tcr-mobile-cards tbody td[data-label=""]::before{display:none}
+  body.tcr-cari-clean table.data tbody td:last-child,
+  body.tcr-cari-clean table.tcr-mobile-cards tbody td:last-child{
+    grid-column:1 / -1!important;
+    border-top:1px solid #e7edf5!important;
+    padding-top:9px!important;
+    flex-direction:row!important;
+    align-items:center!important;
+    flex-wrap:wrap!important;
+  }
+  body.tcr-cari-clean table.data tbody td:last-child::before,
+  body.tcr-cari-clean table.tcr-mobile-cards tbody td:last-child::before{display:none!important}
+  body.tcr-cari-clean table.data tbody td .flex,
+  body.tcr-cari-clean table.tcr-mobile-cards tbody td .flex{display:flex!important;gap:7px!important;flex-wrap:wrap!important}
+  body.tcr-cari-clean table.data .icon-btn,
+  body.tcr-cari-clean table.tcr-mobile-cards .icon-btn{width:36px!important;height:36px!important;min-width:36px!important}
+  body.tcr-cari-clean table.data .num,
+  body.tcr-cari-clean table.tcr-mobile-cards .num{text-align:left!important}
+
+  /* Cari Fişleri priority map */
+  body.tcr-page-cari-fisleri #cariFisTable td[data-label="Fiş No"]{grid-column:1 / -1;font-weight:800}
+  body.tcr-page-cari-fisleri #cariFisTable td[data-label="Cari / İçerik"]{grid-column:1 / -1}
+  body.tcr-page-cari-fisleri #cariFisTable td[data-label="Açıklama"]{grid-column:1 / -1}
+
+  /* KPI and action cards */
+  body.tcr-cari-clean .tcr-ac-grid{grid-template-columns:1fr!important;gap:9px!important}
+  body.tcr-cari-clean .tcr-action-card{min-width:0!important}
+
+  /* Ekstre movement cards: clear flow instead of overlapped right/left blocks */
+  body.tcr-page-cari-ekstre .ekstre-filter-row{display:grid!important;grid-template-columns:1fr!important;gap:12px!important}
+  body.tcr-page-cari-ekstre .ekstre-picker-row{display:grid!important;grid-template-columns:1fr!important;gap:10px!important}
+  body.tcr-page-cari-ekstre .ekstre-picker-btn{width:100%!important}
+  body.tcr-page-cari-ekstre .ekstre-filter-action .btn{width:100%!important}
+  body.tcr-page-cari-ekstre .ekstre-movement-card,
+  body.tcr-page-cari-ekstre .movement-card,
+  body.tcr-page-cari-ekstre .ekstre-row{
+    position:static!important;
+    display:grid!important;
+    grid-template-columns:1fr!important;
+    height:auto!important;
+    min-height:0!important;
+  }
+
+  /* Picker modal */
+  body.tcr-cari-clean .tcr-cari-picker-clean .modal-dialog,
+  body.tcr-cari-clean .tcr-cari-picker-clean .modal-content{
+    width:calc(100vw - 16px)!important;
+    max-width:calc(100vw - 16px)!important;
+    margin:8px!important;
+    max-height:calc(100dvh - 16px)!important;
+  }
+  body.tcr-cari-clean .tcr-cari-picker-clean .modal-body{padding:10px!important;max-height:calc(100dvh - 130px)!important}
+}
+
+@media (min-width:768px) and (max-width:1100px){
+  body.tcr-cari-clean .tcr-ac-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+  body.tcr-cari-clean .card-body{min-width:0}
+}
+
+/* 600 FINAL — one responsive system for Cari modules. Laravel 12 ready:
+   presentation is driven by semantic table headers/data attributes and does not depend on static record markup. */
+body.tcr-cari-clean .tcr-responsive-label,
+body.tcr-cari-clean .tcr-search-action-group,
+body.tcr-cari-clean .tcr-table-generated-toolbar,
+body.tcr-cari-clean .tcr-table-pagination-footer{display:none!important}
+
+body.tcr-cari-clean .toolbar{padding:0!important}
+body.tcr-cari-clean .toolbar .toolbar-spacer{display:none!important}
+body.tcr-cari-clean .toolbar-search{position:relative!important}
+body.tcr-cari-clean .toolbar-search-icon{position:absolute!important;left:12px!important;top:50%!important;transform:translateY(-50%)!important;z-index:1!important;pointer-events:none!important}
+body.tcr-cari-clean .toolbar-search input{padding-left:38px!important}
+body.tcr-cari-clean .tcr-page-size{height:40px!important;border:1px solid #d5deeb!important;border-radius:10px!important;background:#fff!important;padding:0 12px!important}
+body.tcr-cari-clean .tcr-toolbar-clear{border:1px solid #2b6cff!important;color:#145ee8!important;background:#fff!important;border-radius:10px!important}
+
+/* Desktop KPI: exactly one row from 1366px upward. */
+@media (min-width:1366px){
+  body.tcr-page-cari .tcr-ac-grid.cols-6{grid-template-columns:repeat(6,minmax(0,1fr))!important}
+  body.tcr-page-cari .tcr-action-card{min-width:0!important}
+}
+
+/* Tablet: two KPI columns, compact toolbar, real table remains available. */
+@media (min-width:768px) and (max-width:1199.98px){
+  body.tcr-cari-clean .content,body.tcr-cari-clean .page-content{padding-left:12px!important;padding-right:12px!important}
+  body.tcr-cari-clean .toolbar,body.tcr-cari-clean .tcr-mobile-toolbar{
+    grid-template-columns:100px minmax(180px,1fr) minmax(130px,1fr) minmax(130px,1fr) 42px!important;
+  }
+  body.tcr-cari-clean .tcr-ac-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+  body.tcr-cari-clean .table-wrap{overflow:auto!important;-webkit-overflow-scrolling:touch}
+  body.tcr-cari-clean table.data{min-width:940px!important}
+}
+
+@media (max-width:767.98px){
+  body.tcr-cari-clean{padding-bottom:66px!important}
+  body.tcr-cari-clean .page-actions{display:none!important}
+  body.tcr-cari-clean .tcr-ac-grid{margin-bottom:10px!important}
+  body.tcr-page-cari .tcr-ac-grid .tcr-action-card:nth-child(-n+3){display:none!important}
+  body.tcr-page-cari .tcr-ac-grid{display:grid!important;grid-template-columns:1fr!important}
+
+  /* Toolbar standard: size/clear, search, two filters. No generated labels. */
+  body.tcr-cari-clean .toolbar,body.tcr-cari-clean .tcr-mobile-toolbar{
+    grid-template-columns:minmax(0,1fr) 110px!important;
+    padding:10px!important;
+    border:1px solid #d7e0ed!important;
+    border-left:4px solid #e52d3d!important;
+    border-radius:13px!important;
+    background:#fff!important;
+  }
+  body.tcr-cari-clean .tcr-page-size{grid-column:1!important;grid-row:1!important;width:100%!important}
+  body.tcr-cari-clean .tcr-toolbar-clear{grid-column:2!important;grid-row:1!important;width:100%!important;height:40px!important}
+  body.tcr-cari-clean .toolbar-search{grid-column:1 / -1!important;grid-row:2!important}
+  body.tcr-cari-clean .toolbar-search input{width:100%!important;height:42px!important}
+  body.tcr-cari-clean .filter-select{grid-column:auto!important;height:42px!important;width:100%!important}
+  body.tcr-cari-clean .filter-select:nth-of-type(2){grid-column:1!important;grid-row:3!important}
+  body.tcr-cari-clean .filter-select:nth-of-type(3){grid-column:2!important;grid-row:3!important}
+
+  /* Stable card engine: four cells per row, actions full-width. */
+  body.tcr-cari-clean table.tcr-mobile-cards tbody tr{
+    grid-template-columns:repeat(4,minmax(0,1fr))!important;
+    gap:0!important;
+    padding:10px!important;
+    overflow:hidden!important;
+  }
+  body.tcr-cari-clean table.tcr-mobile-cards tbody td{
+    min-height:58px!important;
+    padding:8px!important;
+    border-right:1px solid #e3eaf3!important;
+    border-bottom:1px solid #e3eaf3!important;
+    font-size:12px!important;
+  }
+  body.tcr-cari-clean table.tcr-mobile-cards tbody td:nth-child(4n){border-right:0!important}
+  body.tcr-cari-clean table.tcr-mobile-cards tbody td::before{font-size:9px!important;text-transform:uppercase!important;letter-spacing:.02em!important;color:#40577a!important}
+  body.tcr-cari-clean table.tcr-mobile-cards tbody td:last-child{
+    min-height:48px!important;padding:8px!important;border-right:0!important;border-bottom:0!important;
+  }
+  body.tcr-cari-clean table.tcr-mobile-cards tbody td[data-mobile-span="2"]{grid-column:span 2!important}
+  body.tcr-cari-clean table.tcr-mobile-cards tbody td[data-mobile-span="4"]{grid-column:1 / -1!important}
+  body.tcr-cari-clean table.tcr-mobile-cards tbody td.tcr-action-column{grid-column:1 / -1!important}
+
+  /* Cari cards */
+  body.tcr-page-cari #cariTable td[data-label="Ünvan"]{grid-column:span 2!important}
+  body.tcr-page-cari #cariTable td[data-label="Yetkili"]{display:none!important}
+  body.tcr-page-cari #cariTable td[data-label=""]{display:none!important}
+
+  /* Transactions */
+  body.tcr-page-cari-islemler #cariIslemTable td[data-label="Cari"]{grid-column:span 2!important;font-weight:800!important}
+  body.tcr-page-cari-islemler #cariIslemTable td[data-label="İşlem No"]{overflow-wrap:anywhere!important}
+  body.tcr-page-cari-islemler #cariIslemTable td[data-label="Açıklama"]{grid-column:span 2!important;text-align:right!important;align-items:flex-end!important}
+
+  /* Vouchers */
+  body.tcr-page-cari-fisleri #cariFisTable td[data-label="Fiş No"]{grid-column:span 2!important}
+  body.tcr-page-cari-fisleri #cariFisTable td[data-label="Cari / İçerik"]{grid-column:span 2!important}
+  body.tcr-page-cari-fisleri #cariFisTable td[data-label="Açıklama"]{grid-column:span 2!important}
+
+  /* Statement: clean 4-column movement cards. */
+  body.tcr-page-cari-ekstre .ekstre-kpis .tcr-action-card:not(:last-child){display:none!important}
+  body.tcr-page-cari-ekstre table.tcr-mobile-cards tbody tr{grid-template-columns:repeat(4,minmax(0,1fr))!important}
+  body.tcr-page-cari-ekstre table.tcr-mobile-cards tbody td[data-label="Açıklama"]{grid-column:span 2!important}
+  body.tcr-page-cari-ekstre table.tcr-mobile-cards tbody td[data-label="Bakiye"]{font-weight:800!important}
+
+  /* Bottom action bar remains fixed and above content. */
+  body.tcr-cari-clean .cari-mobile-nav{position:fixed!important;left:0!important;right:0!important;bottom:0!important;z-index:1100!important;height:58px!important;background:#fff!important;border-top:1px solid #d7e0ed!important;box-shadow:0 -3px 12px rgba(16,47,92,.08)!important}
+}
+
+@media (max-width:479.98px){
+  body.tcr-cari-clean .content,body.tcr-cari-clean .page-content{padding-left:4px!important;padding-right:4px!important}
+  body.tcr-cari-clean .toolbar,body.tcr-cari-clean .tcr-mobile-toolbar{grid-template-columns:minmax(0,1fr) 108px!important;padding:8px!important}
+  body.tcr-cari-clean table.tcr-mobile-cards tbody td{padding:7px 6px!important;font-size:11px!important}
+  body.tcr-cari-clean .tcr-action-card{min-height:64px!important}
+}
