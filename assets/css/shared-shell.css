@@ -362,3 +362,76 @@ body.sidebar-open-lock{overflow:hidden!important;touch-action:none!important;}
     column-gap:10px!important;
   }
 }
+
+/* 574 · Cari İşlemleri son düzenleme: açıklama, durum ve kilit aksiyonu */
+body.tcr-page-cari-islemler #cariIslemTable .record-state-head,
+body.tcr-page-cari-islemler #cariIslemTable .record-state-cell,
+body.tcr-page-cari-islemler #cariIslemTable .record-state-dot{
+  display:none!important;
+}
+body.tcr-page-cari-islemler #cariIslemTable td[data-label="Açıklama"],
+body.tcr-page-cari-islemler #cariIslemTable tbody tr:hover td[data-label="Açıklama"],
+body.tcr-page-cari-islemler #cariIslemTable tbody tr:focus-within td[data-label="Açıklama"]{
+  opacity:1!important;
+  visibility:visible!important;
+  color:#0f172a!important;
+  background:#fff!important;
+  -webkit-text-fill-color:#0f172a!important;
+}
+body.tcr-page-cari-islemler #cariIslemTable td[data-label="Açıklama"]::before,
+body.tcr-page-cari-islemler #cariIslemTable tbody tr:hover td[data-label="Açıklama"]::before{
+  color:#45617f!important;
+  opacity:1!important;
+  visibility:visible!important;
+}
+body.tcr-page-cari-islemler #cariIslemTable .ci-actions{
+  display:flex!important;
+  align-items:center!important;
+  justify-content:flex-start!important;
+  gap:6px!important;
+}
+body.tcr-page-cari-islemler #cariIslemTable .record-lock-info-btn{
+  position:static!important;
+  order:3!important;
+  width:34px!important;
+  height:34px!important;
+  min-width:34px!important;
+  flex:0 0 34px!important;
+  margin:0!important;
+  padding:0!important;
+  display:inline-grid!important;
+  place-items:center!important;
+  border-radius:9px!important;
+  background:#fff!important;
+  transform:none!important;
+}
+body.tcr-page-cari-islemler #cariIslemTable .record-lock-info-btn svg{width:17px!important;height:17px!important}
+body.tcr-page-cari-islemler #cariIslemTable .record-lock-info-btn.is-open{color:#16a34a!important;border:1px solid #22c55e!important}
+body.tcr-page-cari-islemler #cariIslemTable .record-lock-info-btn.is-locked{color:#dc2626!important;border:1px solid #ef4444!important}
+@media (hover:hover) and (pointer:fine){
+  body.tcr-page-cari-islemler #cariIslemTable .record-lock-info-btn:hover{
+    color:#1d4ed8!important;
+    border-color:#2563eb!important;
+    background:#eff6ff!important;
+    box-shadow:none!important;
+    transform:none!important;
+  }
+}
+body.tcr-page-cari-islemler #cariIslemTable .ci-output-trigger{order:4!important}
+
+.record-lock-info-overlay{position:fixed;inset:0;z-index:2147483600;display:none;align-items:center;justify-content:center;padding:18px;background:rgba(15,23,42,.48)}
+.record-lock-info-overlay.is-open{display:flex}
+.record-lock-info-dialog{width:min(430px,100%);border:1px solid #d7e1ee;border-radius:16px;background:#fff;box-shadow:0 24px 70px rgba(15,23,42,.28);overflow:hidden}
+.record-lock-info-head,.record-lock-info-foot{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 16px;border-bottom:1px solid #e2e8f0}
+.record-lock-info-foot{justify-content:flex-end;border-top:1px solid #e2e8f0;border-bottom:0}
+.record-lock-info-close{cursor:pointer}
+.record-lock-info-head .record-lock-info-close{width:34px;height:34px;border:1px solid #fecaca;border-radius:9px;background:#fff;color:#dc2626;font-size:22px;line-height:1}
+.record-lock-info-body{padding:16px}
+.record-lock-info-status{display:flex;align-items:center;gap:12px;padding:13px;border:1px solid;border-radius:12px;margin-bottom:14px}
+.record-lock-info-status svg{width:25px;height:25px;flex:0 0 25px}
+.record-lock-info-status strong,.record-lock-info-status span{display:block}.record-lock-info-status span{margin-top:2px;font-size:12px}
+.record-lock-info-status.is-open{border-color:#86efac;background:#f0fdf4;color:#166534}.record-lock-info-status.is-locked{border-color:#fca5a5;background:#fef2f2;color:#991b1b}
+.record-lock-info-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin:0}
+.record-lock-info-grid div{padding:10px;border:1px solid #e2e8f0;border-radius:10px;background:#f8fafc}.record-lock-info-grid dt{font-size:10px;font-weight:800;text-transform:uppercase;color:#64748b}.record-lock-info-grid dd{margin:4px 0 0;font-weight:800;color:#0f172a}
+@media(max-width:520px){.record-lock-info-grid{grid-template-columns:1fr}}
+
