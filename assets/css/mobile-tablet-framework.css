@@ -1835,3 +1835,110 @@ body.tcr-cari-clean .record-lock-info-btn.is-locked{
   }
   body.tcr-page-cari-islemler #cariIslemTable tbody tr:hover > td{background:transparent!important}
 }
+
+
+/* 583 MASTER CLEAN — stable shared header + Cari final conflict cleanup */
+.tcr-ci-mobile-intro{display:none!important}
+
+/* Shared header is page-independent and remains fixed/sticky on every module. */
+.topbar{
+  position:sticky!important;
+  top:0!important;
+  z-index:1200!important;
+  width:100%!important;
+  flex:0 0 var(--topbar-h)!important;
+  background:var(--bg-topbar,#fff)!important;
+  border-bottom:1px solid var(--border,#d9e1ec)!important;
+}
+.topbar .icon-btn:focus,
+.topbar .icon-btn:focus-visible{
+  outline:2px solid #2563eb!important;
+  outline-offset:2px!important;
+  background:transparent!important;
+  color:inherit!important;
+}
+.topbar .topbar-tool-btn:active{transform:none!important}
+
+@media (max-width:767.98px){
+  /* One identical compact header on Dashboard, Cari and every other page. */
+  .topbar{height:56px!important;min-height:56px!important;padding:0 8px!important;gap:6px!important;overflow:hidden!important}
+  .topbar > .icon-btn:first-child{display:inline-grid!important;width:40px!important;height:40px!important;min-width:40px!important;flex:0 0 40px!important}
+  .topbar-weather{min-width:0!important;max-width:150px!important;flex:0 1 auto!important}
+  .topbar-weather-copy{display:none!important}
+  .topbar-actions{display:flex!important;align-items:center!important;gap:5px!important;margin-left:auto!important}
+  .topbar-actions > .topbar-tool-btn:nth-of-type(1),
+  .topbar-actions > .topbar-tool-btn:nth-of-type(2){display:inline-grid!important;width:36px!important;height:36px!important;min-width:36px!important;flex:0 0 36px!important}
+  .topbar-actions > button:not(.topbar-tool-btn),
+  .topbar-user,
+  .topbar-logout-btn{display:none!important}
+
+  body.tcr-page-cari-islemler .tcr-ci-mobile-intro{display:block!important}
+
+  /* Cari İşlemleri: compact, stable card with description and actions on one bottom row. */
+  body.tcr-page-cari-islemler #cariIslemTable tbody tr{
+    width:calc(100% - 8px)!important;
+    margin:0 4px 10px!important;
+    transform:none!important;
+    transition:border-color .15s ease,box-shadow .15s ease!important;
+  }
+  body.tcr-page-cari-islemler #cariIslemTable tbody tr,
+  body.tcr-page-cari-islemler #cariIslemTable tbody tr:hover,
+  body.tcr-page-cari-islemler #cariIslemTable tbody tr:focus-within{
+    background:#fff!important;
+    transform:none!important;
+  }
+  body.tcr-page-cari-islemler #cariIslemTable tbody td{
+    padding:7px 6px!important;
+    min-height:54px!important;
+    font-size:11px!important;
+  }
+  body.tcr-page-cari-islemler #cariIslemTable td[data-label="Açıklama"]{
+    min-height:48px!important;
+    padding:7px 8px!important;
+    text-align:right!important;
+    overflow:hidden!important;
+  }
+  body.tcr-page-cari-islemler #cariIslemTable td[data-label="Açıklama"]::before{
+    display:block!important;
+    text-align:right!important;
+  }
+  body.tcr-page-cari-islemler #cariIslemTable td.tcr-action-column,
+  body.tcr-page-cari-islemler #cariIslemTable td[data-label="İşlem"]{
+    min-height:48px!important;
+    padding:7px!important;
+  }
+
+  /* Cari Fişleri: no animated hover/focus state. This prevents flashing and keeps cloned action buttons clickable. */
+  body.tcr-page-cari-fisleri .tcr-cari-fis-mobile-card,
+  body.tcr-page-cari-fisleri .tcr-cari-fis-mobile-card:hover,
+  body.tcr-page-cari-fisleri .tcr-cari-fis-mobile-card:focus,
+  body.tcr-page-cari-fisleri .tcr-cari-fis-mobile-card:focus-within{
+    background:#fff!important;
+    border-color:#cfdaea!important;
+    border-left-color:#0875b9!important;
+    box-shadow:0 2px 7px rgba(15,35,65,.06)!important;
+    transform:none!important;
+    transition:none!important;
+  }
+  body.tcr-page-cari-fisleri .tcr-fis-actions,
+  body.tcr-page-cari-fisleri .tcr-fis-actions *{pointer-events:auto!important}
+}
+
+@media (min-width:768px){
+  .tcr-ci-mobile-intro{display:none!important}
+  body.tcr-page-cari-islemler .card-body{padding:12px!important}
+  body.tcr-page-cari-islemler .ci-table-wrap{overflow-x:auto!important}
+  body.tcr-page-cari-islemler #cariIslemTable{table-layout:fixed!important;width:100%!important;font-size:12px!important}
+  body.tcr-page-cari-islemler #cariIslemTable th,
+  body.tcr-page-cari-islemler #cariIslemTable td{padding:9px 8px!important}
+  body.tcr-page-cari-islemler #cariIslemTable th:nth-child(1){width:155px!important}
+  body.tcr-page-cari-islemler #cariIslemTable th:nth-child(2){width:105px!important}
+  body.tcr-page-cari-islemler #cariIslemTable th:nth-child(3){width:100px!important}
+  body.tcr-page-cari-islemler #cariIslemTable th:nth-child(4){width:175px!important}
+  body.tcr-page-cari-islemler #cariIslemTable th:nth-child(5){width:185px!important}
+  body.tcr-page-cari-islemler #cariIslemTable th:nth-child(6){width:115px!important}
+  body.tcr-page-cari-islemler #cariIslemTable th:nth-child(7){width:110px!important}
+  body.tcr-page-cari-islemler #cariIslemTable th:nth-child(8){width:auto!important}
+  body.tcr-page-cari-islemler #cariIslemTable th:nth-child(9){width:150px!important}
+  body.tcr-page-cari-islemler #cariIslemTable td{overflow:hidden!important;text-overflow:ellipsis!important;white-space:nowrap!important}
+}

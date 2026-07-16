@@ -541,8 +541,7 @@ function renderShell(activeId) {
       </div>
       <nav class="sidebar-nav">${nav}</nav>
       <div class="sidebar-foot">
-        <div>v1.0 · HTML Şablon</div>
-        <div style="margin-top:4px;color:var(--c-primary-500)">© 2026 Tcr3WEB</div>
+        <div style="color:var(--c-primary-500)">© 2026 Tcr3WEB</div>
       </div>
     </aside>
     <div class="main">
@@ -4479,7 +4478,7 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape' && document.getEleme
     const table=document.getElementById('cariFisTable');
     if(table){
       observer=new MutationObserver(queue);
-      observer.observe(table,{childList:true,subtree:true,attributes:true,attributeFilter:['style','class','hidden','data-label']});
+      observer.observe(table,{childList:true,subtree:true});
     }
     document.addEventListener('input',e=>{if(e.target.closest('.tcr-page-cari-fisleri')) setTimeout(queue,0)},true);
     document.addEventListener('change',e=>{if(e.target.closest('.tcr-page-cari-fisleri')) setTimeout(queue,0)},true);
@@ -4500,6 +4499,13 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape' && document.getEleme
 
   function render(){
     queued=false;
+    const isMobile=window.matchMedia('(max-width: 767.98px)').matches;
+    const existing=document.querySelector('.tcr-ci-mobile-intro');
+    if(!isMobile){
+      if(existing) existing.remove();
+      document.body.classList.remove('tcr-ci-mobile-ready');
+      return;
+    }
     const table=document.getElementById('cariIslemTable');
     if(!table) return;
     document.body.classList.add('tcr-cari-clean','tcr-page-cari-islemler');
