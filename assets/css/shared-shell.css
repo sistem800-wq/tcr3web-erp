@@ -1,0 +1,109 @@
+/* TCR3WEB SHARED SHELL — single source layout lock
+   Header / Sidebar / Footer are owned only by renderShell() in assets/js/app.js.
+   Page/module styles must stay inside #content. */
+:root{
+  --tcr-shell-sidebar-width: 248px;
+  --tcr-shell-sidebar-collapsed: 76px;
+  --tcr-shell-header-height: 64px;
+  --tcr-shell-footer-height: 44px;
+}
+
+html,body{min-height:100%;}
+body.sidebar-open-lock{overflow:hidden!important;touch-action:none!important;}
+
+/* Shell layout */
+#app.app{min-height:100vh!important;display:block!important;position:relative!important;background:var(--c-nu-50,#f5f7fb)!important;}
+#app.app>.sidebar{
+  position:fixed!important;z-index:1300!important;left:0!important;top:0!important;bottom:0!important;
+  width:var(--tcr-shell-sidebar-width)!important;height:100dvh!important;
+  transform:none!important;visibility:visible!important;opacity:1!important;
+}
+#app.app>.main{
+  min-height:100vh!important;margin-left:var(--tcr-shell-sidebar-width)!important;
+  width:calc(100% - var(--tcr-shell-sidebar-width))!important;
+  display:flex!important;flex-direction:column!important;
+}
+#app.app>.main>.topbar{
+  position:fixed!important;z-index:1200!important;
+  top:0!important;left:var(--tcr-shell-sidebar-width)!important;right:0!important;
+  width:auto!important;height:var(--tcr-shell-header-height)!important;min-height:var(--tcr-shell-header-height)!important;
+  margin:0!important;transform:none!important;
+}
+#app.app>.main>#content.content{
+  flex:1 0 auto!important;
+  padding-top:calc(var(--tcr-shell-header-height) + 18px)!important;
+  min-width:0!important;
+}
+#app.app>.main>.app-footer{
+  position:relative!important;z-index:10!important;flex:0 0 auto!important;
+  margin:0!important;min-height:var(--tcr-shell-footer-height)!important;
+}
+#app.app>.main>.app-footer .app-footer-inner{min-height:var(--tcr-shell-footer-height)!important;}
+
+/* Collapsed desktop shell */
+#app.app.collapsed>.main{margin-left:var(--tcr-shell-sidebar-collapsed)!important;width:calc(100% - var(--tcr-shell-sidebar-collapsed))!important;}
+#app.app.collapsed>.main>.topbar{left:var(--tcr-shell-sidebar-collapsed)!important;}
+
+/* Sidebar footer is centrally controlled */
+#app.app>.sidebar>.sidebar-foot{display:flex!important;align-items:center!important;justify-content:center!important;min-height:42px!important;padding:10px 8px!important;}
+#app.app>.sidebar>.sidebar-foot>*:not(:last-child){display:none!important;}
+#app.app>.sidebar>.sidebar-foot>*:last-child{margin:0!important;color:var(--c-primary-500,#4f8cff)!important;font-size:11px!important;font-weight:700!important;}
+
+/* Header buttons: stable square geometry on every page */
+#app.app>.main>.topbar .icon-btn,
+#app.app>.main>.topbar .topbar-tool-btn,
+#app.app>.main>.topbar .topbar-logout-btn{
+  flex:0 0 38px!important;width:38px!important;height:38px!important;min-width:38px!important;min-height:38px!important;
+  padding:0!important;border-radius:10px!important;display:inline-grid!important;place-items:center!important;
+}
+#app.app>.main>.topbar .icon-btn svg,
+#app.app>.main>.topbar .topbar-tool-btn svg,
+#app.app>.main>.topbar .topbar-logout-btn svg{width:18px!important;height:18px!important;}
+#app.app>.main>.topbar .topbar-actions{display:flex!important;align-items:center!important;gap:8px!important;min-width:0!important;}
+
+/* Page styles may not reposition common shell */
+#content .topbar,#content .sidebar,#content .app-footer{position:static!important;}
+
+/* Mobile/tablet common shell */
+@media (max-width:1180px){
+  :root{--tcr-shell-header-height:58px;}
+  #app.app>.sidebar{
+    left:0!important;width:min(86vw,300px)!important;
+    transform:translate3d(-105%,0,0)!important;
+    transition:transform .22s ease!important;
+    box-shadow:18px 0 45px rgba(2,12,27,.22)!important;
+  }
+  #app.app.mobile-open>.sidebar{transform:translate3d(0,0,0)!important;visibility:visible!important;opacity:1!important;}
+  #app.app>.main,#app.app.collapsed>.main{margin-left:0!important;width:100%!important;}
+  #app.app>.main>.topbar,#app.app.collapsed>.main>.topbar{left:0!important;right:0!important;width:100%!important;}
+  #app.app.mobile-open::after{
+    content:""!important;display:block!important;position:fixed!important;z-index:1250!important;inset:0!important;
+    background:rgba(2,12,27,.55)!important;backdrop-filter:none!important;pointer-events:auto!important;
+  }
+  #app.app>.sidebar{pointer-events:auto!important;}
+  #app.app>.main>#content.content{padding-top:calc(var(--tcr-shell-header-height) + 10px)!important;}
+  #app.app>.main>.topbar{padding-left:10px!important;padding-right:10px!important;gap:7px!important;}
+  #app.app>.main>.topbar .topbar-actions{gap:6px!important;}
+  #app.app>.main>.topbar .icon-btn,
+  #app.app>.main>.topbar .topbar-tool-btn,
+  #app.app>.main>.topbar .topbar-logout-btn{
+    flex-basis:38px!important;width:38px!important;height:38px!important;min-width:38px!important;max-width:38px!important;border-radius:9px!important;
+  }
+}
+
+@media (max-width:767px){
+  #app.app>.main>.topbar .topbar-user{width:38px!important;height:38px!important;min-width:38px!important;overflow:hidden!important;border-radius:10px!important;padding:0!important;display:grid!important;place-items:center!important;}
+  #app.app>.main>.topbar .topbar-user .avatar{margin:0!important;}
+  #app.app>.main>.topbar .topbar-user .user-info{display:none!important;}
+  #app.app>.main>.topbar .topbar-weather{min-width:0!important;max-width:128px!important;}
+  #app.app>.main>.topbar .topbar-weather-copy strong{max-width:78px!important;overflow:hidden!important;text-overflow:ellipsis!important;white-space:nowrap!important;}
+  #app.app>.main>.topbar .topbar-weather-copy small{display:none!important;}
+
+  /* Cari Fişleri: KPI/action cards stack vertically on mobile */
+  body:has(#cariFisTable) #content .tcr-action-grid,
+  body:has(#cariFisTable) #content .tcr-action-cards,
+  body:has(#cariFisTable) #content .action-card-grid{
+    grid-template-columns:1fr!important;
+  }
+  body:has(#cariFisTable) #content .tcr-action-card{width:100%!important;min-width:0!important;}
+}

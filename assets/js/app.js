@@ -582,13 +582,11 @@ function renderShell(activeId) {
       <main class="content" id="content"></main>
       <footer class="app-footer">
         <div class="app-footer-inner">
-          <span>© 2026 Tcr3WEB · Ön Muhasebe HTML Şablonu</span>
+          <span>© 2026 Tcr3WEB</span>
           <div class="app-footer-links">
             <a href="raporlar.html">Raporlar</a>
             <span>·</span>
             <a href="settings.html">Ayarlar</a>
-            <span>·</span>
-            <span class="pill" style="font-size:11px;padding:2px 8px">HTML Şablon</span>
           </div>
         </div>
       </footer>
@@ -1244,6 +1242,16 @@ function closeMobileSidebar() {
   if (app) app.classList.remove('mobile-open');
   document.body.classList.remove('sidebar-open-lock');
 }
+
+// Shared shell overlay: clicking the dark area closes the one common sidebar.
+document.addEventListener('click', function(e){
+  const app=document.getElementById('app');
+  if(!app || !app.classList.contains('mobile-open')) return;
+  const sidebar=app.querySelector(':scope > .sidebar');
+  const menuButton=e.target.closest('.topbar [onclick*="toggleSidebar"]');
+  if(menuButton || (sidebar && sidebar.contains(e.target))) return;
+  closeMobileSidebar();
+}, true);
 
 /* ============================================================
    Modal
@@ -4178,59 +4186,3 @@ function closeDocumentPreview(){
   document.body.classList.remove('tcr-preview-open');
 }
 document.addEventListener('keydown',e=>{if(e.key==='Escape' && document.getElementById('tcrDocumentPreviewModal')?.classList.contains('is-open')) closeDocumentPreview();});
-
-/* ============================================================
-   580 MASTER CLEAN — shared shell + clickable record lock action
-   ============================================================ */
-(function(){
-  const lockSvg = (locked) => locked
-    ? '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="18" height="11" x="3" y="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>'
-    : '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="18" height="11" x="3" y="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 9.9-1"/></svg>';
-
-  function showRecordLockInfo(btn){
-    const locked = btn.classList.contains('is-locked') || btn.dataset.lockState === 'locked';
-    const row = btn.closest('tr,.tcr-cari-fis-mobile-card,.tcr-mobile-card');
-    const dateText = row?.querySelector('[data-label="Tarih"],.tcr-fis-field--date .tcr-fis-value')?.textContent?.trim() || 'Tarih bilgisi bulunamadı';
-    const title = locked ? 'Kilitli Kayıt' : 'İşlem Yapılabilir';
-    const detail = locked ? 'Bu kayıt için düzenleme süresi dolmuştur.' : 'Bu kayıt düzenlenebilir durumdadır.';
-    let modal=document.getElementById('recordLockInfoModal');
-    if(!modal){
-      modal=document.createElement('div');
-      modal.id='recordLockInfoModal';
-      modal.className='record-lock-info-modal';
-      modal.innerHTML='<div class="record-lock-info-dialog" role="dialog" aria-modal="true"><div class="record-lock-info-head"><div class="record-lock-info-title"></div><button class="record-lock-info-close" type="button" aria-label="Kapat">×</button></div><div class="record-lock-info-body"></div><div class="record-lock-info-foot"><button class="btn btn-danger" type="button">Kapat</button></div></div>';
-      document.body.appendChild(modal);
-      const close=()=>{modal.classList.remove('show');document.body.classList.remove('record-lock-modal-open')};
-      modal.querySelector('.record-lock-info-close').addEventListener('click',close);
-      modal.querySelector('.record-lock-info-foot button').addEventListener('click',close);
-    }
-    modal.querySelector('.record-lock-info-title').textContent='Kilit Bilgisi';
-    modal.querySelector('.record-lock-info-body').innerHTML='<div class="record-lock-info-summary"><span class="record-lock-status '+(locked?'is-locked':'is-open')+'">'+lockSvg(locked)+'</span><div><strong>'+title+'</strong><small>'+detail+'</small></div></div><dl class="record-lock-info-list"><div><dt>İşlem tarihi</dt><dd>'+dateText+'</dd></div><div><dt>Durum</dt><dd>'+title+'</dd></div></dl>';
-    modal.classList.add('show');
-    document.body.classList.add('record-lock-modal-open');
-  }
-
-  function normalizeLockButtons(root=document){
-    root.querySelectorAll('.record-lock-info-btn').forEach(btn=>{
-      btn.removeAttribute('disabled');
-      btn.setAttribute('aria-disabled','false');
-      btn.dataset.recordLock='1';
-      if(!btn.dataset.lockBound){
-        btn.dataset.lockBound='1';
-        btn.addEventListener('click',function(e){e.preventDefault();e.stopPropagation();showRecordLockInfo(this)});
-      }
-    });
-  }
-
-  function normalizeSharedShell(){
-    const foot=document.querySelector('.sidebar-foot');
-    if(foot) foot.innerHTML='<div>© 2026 Tcr3WEB</div>';
-    normalizeLockButtons();
-  }
-
-  document.addEventListener('DOMContentLoaded',()=>{
-    normalizeSharedShell();
-    const observer=new MutationObserver(()=>requestAnimationFrame(normalizeSharedShell));
-    observer.observe(document.body,{childList:true,subtree:true});
-  });
-})();
