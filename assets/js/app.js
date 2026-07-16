@@ -541,7 +541,8 @@ function renderShell(activeId) {
       </div>
       <nav class="sidebar-nav">${nav}</nav>
       <div class="sidebar-foot">
-        <div>© 2026 Tcr3WEB</div>
+        <div>v1.0 · HTML Şablon</div>
+        <div style="margin-top:4px;color:var(--c-primary-500)">© 2026 Tcr3WEB</div>
       </div>
     </aside>
     <div class="main">
@@ -582,11 +583,13 @@ function renderShell(activeId) {
       <main class="content" id="content"></main>
       <footer class="app-footer">
         <div class="app-footer-inner">
-          <span>© 2026 Tcr3WEB</span>
+          <span>© 2026 Tcr3WEB · Ön Muhasebe HTML Şablonu</span>
           <div class="app-footer-links">
             <a href="raporlar.html">Raporlar</a>
             <span>·</span>
             <a href="settings.html">Ayarlar</a>
+            <span>·</span>
+            <span class="pill" style="font-size:11px;padding:2px 8px">HTML Şablon</span>
           </div>
         </div>
       </footer>
@@ -1230,28 +1233,34 @@ document.addEventListener('click', function(e){
 function toggleSidebar() {
   const app = document.getElementById('app');
   if (!app) return;
-  if (window.matchMedia('(max-width: 1180px)').matches) {
-    app.classList.toggle('mobile-open');
-    document.body.classList.toggle('sidebar-open-lock', app.classList.contains('mobile-open'));
-  } else {
-    app.classList.toggle('collapsed');
+
+  const isDesktop = window.innerWidth >= 992;
+
+  if (isDesktop) {
+    // Desktop yalnız collapse kullanır; drawer ve overlay hiçbir zaman çalışmaz.
+    app.classList.remove('mobile-open');
+    document.body.classList.remove('sidebar-open-lock');
+    const collapsed = app.classList.toggle('collapsed');
+    app.dataset.sidebarMode = collapsed ? 'collapsed' : 'expanded';
+    try { localStorage.setItem('tcr3_desktop_sidebar_collapsed', collapsed ? '1' : '0'); } catch (_) {}
+    return;
   }
+
+  // Tablet/mobil yalnız drawer kullanır; desktop collapse sınıfı temizlenir.
+  app.classList.remove('collapsed');
+  const willOpen = !app.classList.contains('mobile-open');
+  app.classList.toggle('mobile-open', willOpen);
+  document.body.classList.toggle('sidebar-open-lock', willOpen);
+  app.dataset.sidebarMode = willOpen ? 'drawer-open' : 'drawer-closed';
+
+  const sidebar = app.querySelector('.sidebar');
+  if (sidebar) sidebar.setAttribute('aria-hidden', willOpen ? 'false' : 'true');
 }
 function closeMobileSidebar() {
   const app = document.getElementById('app');
   if (app) app.classList.remove('mobile-open');
   document.body.classList.remove('sidebar-open-lock');
 }
-
-// Shared shell overlay: clicking the dark area closes the one common sidebar.
-document.addEventListener('click', function(e){
-  const app=document.getElementById('app');
-  if(!app || !app.classList.contains('mobile-open')) return;
-  const sidebar=app.querySelector(':scope > .sidebar');
-  const menuButton=e.target.closest('.topbar [onclick*="toggleSidebar"]');
-  if(menuButton || (sidebar && sidebar.contains(e.target))) return;
-  closeMobileSidebar();
-}, true);
 
 /* ============================================================
    Modal
@@ -3574,7 +3583,7 @@ document.addEventListener('click', function(e){
 document.addEventListener('click', function(e){
   const app = document.getElementById('app');
   if (!app || !app.classList.contains('mobile-open')) return;
-  if (!window.matchMedia('(max-width: 1180px)').matches) return;
+  if (!window.matchMedia('(max-width: 991.98px)').matches) return;
   const inSidebar = e.target.closest && e.target.closest('.sidebar');
   const isMenuButton = e.target.closest && e.target.closest('.topbar > .icon-btn:first-child');
   if (!inSidebar && !isMenuButton) closeMobileSidebar();
@@ -3583,9 +3592,15 @@ document.addEventListener('click', function(e){
 window.addEventListener('resize', function(){
   const app = document.getElementById('app');
   if (!app) return;
-  if (!window.matchMedia('(max-width: 1180px)').matches) {
+
+  if (window.innerWidth >= 992) {
     app.classList.remove('mobile-open');
     document.body.classList.remove('sidebar-open-lock');
+    app.dataset.sidebarMode = app.classList.contains('collapsed') ? 'collapsed' : 'expanded';
+  } else {
+    // Desktop daraltma sınıfı mobil drawer genişliğini etkilemesin.
+    app.classList.remove('collapsed');
+    app.dataset.sidebarMode = app.classList.contains('mobile-open') ? 'drawer-open' : 'drawer-closed';
   }
 });
 
@@ -3649,110 +3664,50 @@ function bindStateDot(dot){
   });
   dot.addEventListener('mouseleave',()=>tip.classList.remove('show'));
 }
-function tcrLockIconSvg(locked){
-  return locked
-    ? `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>`
-    : `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 9.9-1"/></svg>`;
-}
-function ensureRecordLockInfoModal(){
-  let modal=document.getElementById('recordLockInfoModal');
-  if(modal) return modal;
-  modal=document.createElement('div');
-  modal.id='recordLockInfoModal';
-  modal.className='record-lock-info-overlay';
-  modal.setAttribute('aria-hidden','true');
-  modal.innerHTML=`<div class="record-lock-info-dialog" role="dialog" aria-modal="true" aria-labelledby="recordLockInfoTitle">
-    <div class="record-lock-info-head"><strong id="recordLockInfoTitle">Kilit Bilgisi</strong><button type="button" class="record-lock-info-close" aria-label="Kapat">×</button></div>
-    <div class="record-lock-info-body" id="recordLockInfoBody"></div>
-    <div class="record-lock-info-foot"><button type="button" class="btn btn-danger record-lock-info-close">Kapat</button></div>
-  </div>`;
-  modal.addEventListener('click',e=>{if(e.target===modal || e.target.closest('.record-lock-info-close')) closeRecordLockInfo();});
-  document.body.appendChild(modal);
-  return modal;
-}
-function showRecordLockInfo(info){
-  const modal=ensureRecordLockInfoModal();
-  const body=modal.querySelector('#recordLockInfoBody');
-  const locked=!!info.locked;
-  body.innerHTML=`<div class="record-lock-info-status ${locked?'is-locked':'is-open'}">${tcrLockIconSvg(locked)}<div><strong>${locked?'Kayıt Kilitli':'Kayıt Düzenlenebilir'}</strong><span>${locked?'İşlem süresi dolmuştur.':'İşlem süresi devam etmektedir.'}</span></div></div>
-    <dl class="record-lock-info-grid"><div><dt>İşlem Tarihi</dt><dd>${info.dateText}</dd></div><div><dt>Kilit Süresi</dt><dd>${info.days} gün</dd></div><div><dt>Geçen Süre</dt><dd>${info.age} gün</dd></div><div><dt>${locked?'Aşılan Süre':'Kalan Süre'}</dt><dd>${locked?Math.max(0,info.age-info.days):Math.max(0,info.days-info.age)} gün</dd></div></dl>`;
-  modal.classList.add('is-open');
-  modal.setAttribute('aria-hidden','false');
-}
-function closeRecordLockInfo(){
-  const modal=document.getElementById('recordLockInfoModal');
-  if(!modal) return;
-  modal.classList.remove('is-open');
-  modal.setAttribute('aria-hidden','true');
-}
 function applyRecordLockStandard(){
-  const moduleKey=getCurrentModuleKey();
-  const policies=getLockPolicies();
-  const days=Number(policies[moduleKey]??5);
+  const moduleKey=getCurrentModuleKey(); const policies=getLockPolicies(); const days=Number(policies[moduleKey]??5);
   document.querySelectorAll('table.data').forEach(table=>{
     if(
-      table.closest('#tab-kilit') || table.dataset.noRecordLock === 'true' ||
-      table.id === 'ekstreTable' || table.closest('.modal') ||
-      table.classList.contains('hareket-urun-table') || table.classList.contains('stok-detail-line-table')
+      table.dataset.recordLockApplied ||
+      table.closest('#tab-kilit') ||
+      table.dataset.noRecordLock === 'true' ||
+      table.id === 'ekstreTable' ||
+      table.closest('.modal') ||
+      table.classList.contains('hareket-urun-table') ||
+      table.classList.contains('stok-detail-line-table')
     ) return;
-
-    const scope=table.closest('.card, section, main') || table.parentElement;
-    const sectionTitle=scope?.querySelector('.card-title, .fis-section-title, .text-soft, h2, h3, h4')?.textContent || '';
-    const isLineItemsTable=table.classList.contains('form-line-table') || /kalemler|kalemleri|ürün kalemleri|sipariş kalemleri|teklif kalemleri|fatura kalemleri|cari hesap kalemleri/i.test(sectionTitle.trim());
-
-    /* Eski nokta/sütun standardını kesin olarak temizle. */
-    table.querySelectorAll('.record-state-head,.record-state-cell').forEach(el=>el.remove());
-    table.querySelectorAll('.record-state-dot').forEach(el=>el.remove());
-    if(isLineItemsTable) return;
-
+    const scope = table.closest('.card, .modal, section, main') || table.parentElement;
+    const sectionTitle = scope?.querySelector('.card-title, .fis-section-title, .text-soft, h2, h3, h4')?.textContent || '';
+    const isLineItemsTable = table.classList.contains('form-line-table') || /kalemler|kalemleri|ürün kalemleri|sipariş kalemleri|teklif kalemleri|fatura kalemleri|cari hesap kalemleri/i.test(sectionTitle.trim());
+    if(isLineItemsTable){
+      table.querySelectorAll('.record-state-head,.record-state-cell').forEach(el=>el.remove());
+      return;
+    }
+    const headRow=table.tHead?.rows?.[0]; if(!headRow) return;
+    const th=document.createElement('th'); th.className='record-state-head'; th.textContent='Durum'; headRow.insertBefore(th,headRow.firstElementChild);
     [...(table.tBodies[0]?.rows||[])].forEach(row=>{
-      const date=findRowDate(row);
-      const age=date?daysBetweenToday(date):0;
-      const locked=!!(days>0 && date && age>=days);
+      const date=findRowDate(row); const age=date?daysBetweenToday(date):0; const locked=days>0 && date && age>=days;
+      const td=document.createElement('td'); td.className='record-state-cell';
+      const dot=document.createElement('span'); dot.className='record-state-dot '+(locked?'is-locked':'is-open');
       const dateText=date?date.toLocaleDateString('tr-TR'):'Tarih bilgisi bulunamadı';
-      row.classList.toggle('is-record-locked',locked);
-
-      const actionCell=row.querySelector('.tcr-action-column,[data-label="İşlem"]') || row.lastElementChild;
-      const actionWrap=actionCell?.querySelector('.ci-actions,.flex') || actionCell;
-      if(actionWrap){
-        actionWrap.querySelectorAll('.record-lock-info-btn').forEach((btn,i)=>{if(i>0)btn.remove();});
-        let btn=actionWrap.querySelector('.record-lock-info-btn');
-        if(!btn){
-          btn=document.createElement('button');
-          btn.type='button';
-          btn.className='icon-btn record-lock-info-btn';
-          const menuTrigger=actionWrap.querySelector('.ci-output-trigger');
-          if(menuTrigger) actionWrap.insertBefore(btn,menuTrigger); else actionWrap.appendChild(btn);
-        }
-        btn.classList.toggle('is-locked',locked);
-        btn.classList.toggle('is-open',!locked);
-        btn.innerHTML=tcrLockIconSvg(locked);
-        btn.title=locked?'Kilitli kayıt bilgisi':'Açık kayıt bilgisi';
-        btn.setAttribute('aria-label',btn.title);
-        btn.onclick=(event)=>{
-          event.preventDefault();
-          event.stopPropagation();
-          showRecordLockInfo({locked,dateText,days,age});
-        };
-      }
-
-      row.querySelectorAll('button,a.btn').forEach(btn=>{
-        if(btn.classList.contains('record-lock-info-btn')) return;
-        if(locked && isRestrictedLockedAction(btn)){
-          btn.classList.add('record-action-blocked');
-          btn.setAttribute('aria-disabled','true');
-          if(!btn.dataset.lockBlockBound){
-            btn.dataset.lockBlockBound='1';
+      dot.dataset.tip=locked
+        ? `<strong style="color:#dc2626">Kilitli Kayıt</strong><br>İşlem süresi doldu.<br>İşlem tarihi: ${dateText}<br>Kilit süresi: ${days} gün<br>Geçen süre: ${age} gün`
+        : `<strong style="color:#16a34a">İşlem Yapılabilir</strong><br>İşlem tarihi: ${dateText}<br>Kilit süresi: ${days} gün${date?`<br>Kalan süre: ${Math.max(0,days-age)} gün`:''}`;
+      dot.setAttribute('aria-label',locked?'Kilitli kayıt':'İşlem yapılabilir'); td.appendChild(dot); row.insertBefore(td,row.firstElementChild); bindStateDot(dot);
+      if(locked){
+        row.classList.add('is-record-locked');
+        row.querySelectorAll('button,a.btn').forEach(btn=>{
+          if(isRestrictedLockedAction(btn)){
+            btn.classList.add('record-action-blocked');
+            btn.setAttribute('aria-disabled','true');
             btn.addEventListener('click',e=>{e.preventDefault();e.stopImmediatePropagation();toast('Günü geçmiş kayıtlarda düzenleme ve iptal işlemleri kapalıdır.','error')},true);
           }
-        }
-      });
+        });
+      }
     });
-    table.dataset.recordLockApplied='button';
+    table.dataset.recordLockApplied='1';
   });
 }
-window.showRecordLockInfo=showRecordLockInfo;
-window.closeRecordLockInfo=closeRecordLockInfo;
 const tcr3LockObserver=new MutationObserver(()=>requestAnimationFrame(applyRecordLockStandard));
 document.addEventListener('DOMContentLoaded',()=>{tcr3LockObserver.observe(document.body,{childList:true,subtree:true});setTimeout(applyRecordLockStandard,80)});
 window.applyRecordLockStandard=applyRecordLockStandard;

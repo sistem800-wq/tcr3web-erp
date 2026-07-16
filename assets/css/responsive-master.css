@@ -320,3 +320,195 @@ html{scroll-behavior:smooth} body{overflow-x:hidden}.app{min-height:100dvh}.cont
   .topbar-actions>.icon-btn,.topbar-actions>.topbar-tool-btn,.topbar-logout-btn,.topbar-user{width:31px!important;height:31px!important;min-width:31px!important;flex-basis:31px!important}
   .topbar-user .avatar{width:28px!important;height:28px!important;min-width:28px!important}
 }
+
+/* 573 — Sidebar anlık açılış ve tek animasyon standardı */
+@media (max-width: 1180px) {
+  .app .sidebar,
+  .app.collapsed .sidebar,
+  .app.mobile-open .sidebar {
+    display: flex !important;
+    left: 0 !important;
+    right: auto !important;
+    width: 286px !important;
+    transform: translate3d(-100%, 0, 0) !important;
+    transition: transform .14s cubic-bezier(.2,.8,.2,1) !important;
+    will-change: transform;
+    visibility: visible !important;
+    opacity: 1 !important;
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+  }
+
+  .app.mobile-open .sidebar {
+    transform: translate3d(0, 0, 0) !important;
+  }
+
+  .app.mobile-open::after {
+    background: rgba(7,15,31,.36) !important;
+    animation: none !important;
+    transition: none !important;
+    pointer-events: auto;
+  }
+
+  body.sidebar-open-lock {
+    overflow: hidden !important;
+    touch-action: none;
+  }
+}
+
+/* ============================================================
+   572 — Desktop / Mobile sidebar davranışını kesin ayır
+   Desktop >= 992px: collapse, overlay yok
+   Tablet/Mobile < 992px: overlay sidebar
+   ============================================================ */
+@media (min-width: 992px) {
+  :root {
+    --sidebar-w: 240px;
+    --sidebar-w-collapsed: 72px;
+  }
+
+  html, body {
+    overflow-x: visible !important;
+  }
+
+  body.sidebar-open-lock {
+    overflow: auto !important;
+    touch-action: auto !important;
+  }
+
+  .app,
+  .app.mobile-open {
+    display: grid !important;
+    grid-template-columns: var(--sidebar-w) minmax(0, 1fr) !important;
+  }
+
+  .app.collapsed {
+    --sidebar-w: var(--sidebar-w-collapsed) !important;
+    grid-template-columns: var(--sidebar-w-collapsed) minmax(0, 1fr) !important;
+  }
+
+  .app .sidebar,
+  .app.collapsed .sidebar,
+  .app.mobile-open .sidebar {
+    display: flex !important;
+    position: sticky !important;
+    inset: auto !important;
+    top: 0 !important;
+    left: auto !important;
+    right: auto !important;
+    width: var(--sidebar-w) !important;
+    height: 100vh !important;
+    max-height: 100vh !important;
+    transform: none !important;
+    transition: width .16s ease !important;
+    box-shadow: none !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    z-index: 1300 !important;
+  }
+
+  .app.collapsed .sidebar {
+    width: var(--sidebar-w-collapsed) !important;
+  }
+
+  .app::after,
+  .app.mobile-open::after {
+    content: none !important;
+    display: none !important;
+    pointer-events: none !important;
+  }
+
+  .main {
+    margin-left: 0 !important;
+    width: auto !important;
+    min-width: 0 !important;
+  }
+}
+
+@media (max-width: 991.98px) {
+  .app,
+  .app.collapsed,
+  .app.mobile-open {
+    display: block !important;
+    grid-template-columns: 1fr !important;
+  }
+
+  .app .sidebar,
+  .app.collapsed .sidebar,
+  .app.mobile-open .sidebar {
+    position: fixed !important;
+    top: 0 !important;
+    bottom: 0 !important;
+    left: 0 !important;
+    width: 286px !important;
+    height: 100dvh !important;
+    transform: translate3d(-100%, 0, 0) !important;
+    transition: transform .14s cubic-bezier(.2,.8,.2,1) !important;
+    box-shadow: 0 20px 60px rgba(0,0,0,.25) !important;
+  }
+
+  .app.mobile-open .sidebar {
+    transform: translate3d(0,0,0) !important;
+  }
+}
+
+/* ============================================================
+   571 — Desktop sidebar kesin collapse standardı
+   style.css içindeki --sidebar-current-w ile ortak çalışır.
+   Desktop: 240px <-> 72px, overlay/drawer kesinlikle yok.
+   ============================================================ */
+@media (min-width: 992px) {
+  .app {
+    --sidebar-w: 240px !important;
+    --sidebar-current-w: 240px !important;
+    display: grid !important;
+    grid-template-columns: var(--sidebar-current-w) minmax(0, 1fr) !important;
+    width: 100% !important;
+  }
+
+  .app.collapsed {
+    --sidebar-w: 72px !important;
+    --sidebar-current-w: 72px !important;
+    grid-template-columns: 72px minmax(0, 1fr) !important;
+  }
+
+  .app .sidebar,
+  .app.collapsed .sidebar,
+  .app.mobile-open .sidebar {
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    bottom: 0 !important;
+    width: var(--sidebar-current-w) !important;
+    max-width: var(--sidebar-current-w) !important;
+    height: 100vh !important;
+    transform: none !important;
+    transition: width .16s ease !important;
+    box-shadow: none !important;
+    overflow-x: hidden !important;
+  }
+
+  .app .main,
+  .app.collapsed .main,
+  .app.mobile-open .main {
+    grid-column: 2 !important;
+    margin-left: 0 !important;
+    width: 100% !important;
+    min-width: 0 !important;
+  }
+
+  .app-footer {
+    left: var(--sidebar-current-w) !important;
+    transition: left .16s ease !important;
+  }
+
+  .app::after,
+  .app.mobile-open::after,
+  .app.collapsed::after {
+    content: none !important;
+    display: none !important;
+    opacity: 0 !important;
+    visibility: hidden !important;
+    pointer-events: none !important;
+  }
+}
