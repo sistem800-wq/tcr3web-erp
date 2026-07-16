@@ -447,21 +447,42 @@ body.tcr-page-cari-islemler #cariIslemTable .ci-output-trigger{order:4!important
 @media (hover:hover) and (pointer:fine){.record-lock-info-btn:hover{color:#fff!important;background:#1d4ed8!important;border-color:#1d4ed8!important}}
 #cariIslemTable th:first-child,#cariFisTable th:first-child{ /* İlk gerçek kolon iş durumudur; kilit ayrı aksiyon butonudur. */ }
 
-/* 569 · Workflow status has no legacy dot; lock lives in action buttons. */
-body.tcr-page-cari-islemler #cariIslemTable .record-state-head,
-body.tcr-page-cari-islemler #cariIslemTable .record-state-cell,
-body.tcr-page-cari-islemler #cariIslemTable .record-state-dot,
-body.tcr-page-cari-islemler #cariIslemTable .status-dot,
-body.tcr-page-cari-fisleri #cariFisTable .record-state-head,
-body.tcr-page-cari-fisleri #cariFisTable .record-state-cell,
-body.tcr-page-cari-fisleri #cariFisTable .record-state-dot,
-body.tcr-page-cari-fisleri #cariFisTable .status-dot{display:none!important}
-body.tcr-page-cari-islemler #cariIslemTable td .badge::before,
-body.tcr-page-cari-fisleri #cariFisTable td .badge::before{display:none!important;content:none!important}
-body.tcr-page-cari-islemler #cariIslemTable td .badge,
-body.tcr-page-cari-fisleri #cariFisTable td .badge{padding-left:9px!important}
-body.tcr-page-cari-islemler #cariIslemTable .ci-actions{
-  display:flex!important;align-items:center!important;justify-content:flex-start!important;gap:6px!important;white-space:nowrap!important
+/* ============================================================
+   568 — Cari Fişleri desktop action buttons: single row
+   Gör → Düzenle → Kilit masaüstünde asla alt satıra düşmez.
+   Mobil kart bileşenine müdahale etmez.
+   ============================================================ */
+@media (min-width: 992px) {
+  #cariFisTable th:last-child,
+  #cariFisTable td:last-child {
+    width: 132px !important;
+    min-width: 132px !important;
+    max-width: 132px !important;
+    white-space: nowrap !important;
+    text-align: center !important;
+  }
+
+  #cariFisTable td:last-child > div,
+  #cariFisTable td:last-child .flex,
+  #cariFisTable td:last-child .row-actions,
+  #cariFisTable td:last-child .action-buttons {
+    display: inline-flex !important;
+    flex-direction: row !important;
+    flex-wrap: nowrap !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 6px !important;
+    width: auto !important;
+    min-width: max-content !important;
+    white-space: nowrap !important;
+  }
+
+  #cariFisTable td:last-child .icon-btn,
+  #cariFisTable td:last-child .record-lock-info-btn {
+    flex: 0 0 32px !important;
+    width: 32px !important;
+    min-width: 32px !important;
+    height: 32px !important;
+    margin: 0 !important;
+  }
 }
-body.tcr-page-cari-islemler #cariIslemTable .ci-actions>.record-lock-info-btn{order:3!important;position:static!important;inset:auto!important;margin:0!important}
-body.tcr-page-cari-islemler #cariIslemTable .ci-actions>.ci-output-trigger{order:4!important;position:static!important;inset:auto!important;margin:0!important}
