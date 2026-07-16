@@ -135,3 +135,230 @@ body.sidebar-open-lock{overflow:hidden!important;touch-action:none!important;}
     min-height:68px!important;
   }
 }
+
+/* 577 · Mobile page head, KPI visibility and shell spacing hard fix */
+@media (max-width: 767px){
+  /* The fixed header owns its height. No second spacer is allowed. */
+  #app.app > .main{
+    padding-top:0!important;
+    margin-top:0!important;
+  }
+  #app.app > .main > #content.content{
+    margin-top:0!important;
+    padding-top:calc(var(--tcr-shell-header-height) + 4px)!important;
+  }
+  #app.app > .main > #content.content > :first-child{
+    margin-top:0!important;
+  }
+
+  /* Cari İşlemleri: page title and only the two financial KPI cards. */
+  body:has(#cariIslemTable) #content > .page-head{
+    display:block!important;
+    visibility:visible!important;
+    opacity:1!important;
+    margin:0 0 10px!important;
+  }
+  body:has(#cariIslemTable) #content > .page-head .breadcrumb,
+  body:has(#cariIslemTable) #content > .page-head .page-sub,
+  body:has(#cariIslemTable) #content > .page-head .page-actions{
+    display:none!important;
+  }
+  body:has(#cariIslemTable) #content > .page-head .page-title{
+    display:flex!important;
+    visibility:visible!important;
+    opacity:1!important;
+    align-items:center!important;
+    gap:7px!important;
+    margin:0!important;
+    font-size:20px!important;
+    line-height:1.25!important;
+  }
+  body:has(#cariIslemTable) #content > .tcr-ac-grid.cols-2{
+    display:block!important;
+    visibility:visible!important;
+    opacity:1!important;
+    margin:0 0 10px!important;
+  }
+  body:has(#cariIslemTable) #content > .tcr-ac-grid.cols-2 > div:first-child{
+    display:block!important;
+  }
+  body:has(#cariIslemTable) #content > .tcr-ac-grid.cols-2 > div:last-child{
+    display:none!important;
+  }
+  body:has(#cariIslemTable) #content > .tcr-ac-grid.cols-2 > div:first-child > .tcr-ac-grid.cols-2{
+    display:grid!important;
+    grid-template-columns:repeat(2,minmax(0,1fr))!important;
+    gap:8px!important;
+    width:100%!important;
+  }
+  body:has(#cariIslemTable) #content .tcr-action-card{
+    display:flex!important;
+    visibility:visible!important;
+    opacity:1!important;
+    min-width:0!important;
+    width:100%!important;
+    margin:0!important;
+  }
+
+  /* Cari Fişleri: all three KPI cards stack vertically. */
+  body:has(#cariFisTable) #content > .tcr-ac-grid.cols-3{
+    display:grid!important;
+    visibility:visible!important;
+    opacity:1!important;
+    grid-template-columns:1fr!important;
+    gap:8px!important;
+    width:100%!important;
+    margin:0 0 10px!important;
+  }
+  body:has(#cariFisTable) #content > .tcr-ac-grid.cols-3 > .tcr-action-card{
+    display:flex!important;
+    visibility:visible!important;
+    opacity:1!important;
+    width:100%!important;
+    min-width:0!important;
+    margin:0!important;
+  }
+}
+
+@media (max-width: 390px){
+  body:has(#cariIslemTable) #content > .tcr-ac-grid.cols-2 > div:first-child > .tcr-ac-grid.cols-2{
+    grid-template-columns:1fr!important;
+  }
+}
+
+/* 576 · Tablet parity for Cari responsive framework */
+@media (min-width:768px) and (max-width:1024px){
+  /* Shared shell: tablet uses the same compact header/content rhythm as mobile. */
+  #app.app > .main{
+    padding-top:0!important;
+    margin-top:0!important;
+  }
+  #app.app > .main > #content.content{
+    margin-top:0!important;
+    padding-top:calc(var(--tcr-shell-header-height) + 8px)!important;
+  }
+  #app.app > .main > #content.content > :first-child{
+    margin-top:0!important;
+  }
+
+  /* Cari İşlemleri: title and Tahsilat/Ödeme KPI cards stay visible on tablet. */
+  body:has(#cariIslemTable) #content > .page-head{
+    display:block!important;
+    visibility:visible!important;
+    opacity:1!important;
+    margin:0 0 12px!important;
+  }
+  body:has(#cariIslemTable) #content > .page-head .page-actions{
+    display:none!important;
+  }
+  body:has(#cariIslemTable) #content > .page-head .page-title{
+    display:flex!important;
+    visibility:visible!important;
+    opacity:1!important;
+    align-items:center!important;
+    gap:8px!important;
+    margin:0!important;
+  }
+  body:has(#cariIslemTable) #content > .tcr-ac-grid.cols-2{
+    display:block!important;
+    visibility:visible!important;
+    opacity:1!important;
+    margin:0 0 12px!important;
+  }
+  body:has(#cariIslemTable) #content > .tcr-ac-grid.cols-2 > div:first-child{
+    display:block!important;
+  }
+  body:has(#cariIslemTable) #content > .tcr-ac-grid.cols-2 > div:last-child{
+    display:none!important;
+  }
+  body:has(#cariIslemTable) #content > .tcr-ac-grid.cols-2 > div:first-child > .tcr-ac-grid.cols-2{
+    display:grid!important;
+    grid-template-columns:repeat(2,minmax(0,1fr))!important;
+    gap:10px!important;
+    width:100%!important;
+  }
+  body:has(#cariIslemTable) #content .tcr-action-card{
+    display:flex!important;
+    visibility:visible!important;
+    opacity:1!important;
+    min-width:0!important;
+    width:100%!important;
+    margin:0!important;
+  }
+
+  /* Cari Fişleri: all KPI cards stay visible; two columns, last card spans full row. */
+  body:has(#cariFisTable) #content > .tcr-ac-grid.cols-3{
+    display:grid!important;
+    visibility:visible!important;
+    opacity:1!important;
+    grid-template-columns:repeat(2,minmax(0,1fr))!important;
+    gap:10px!important;
+    width:100%!important;
+    margin:0 0 12px!important;
+  }
+  body:has(#cariFisTable) #content > .tcr-ac-grid.cols-3 > .tcr-action-card{
+    display:flex!important;
+    visibility:visible!important;
+    opacity:1!important;
+    width:100%!important;
+    min-width:0!important;
+    margin:0!important;
+  }
+  body:has(#cariFisTable) #content > .tcr-ac-grid.cols-3 > .tcr-action-card:last-child{
+    grid-column:1 / -1!important;
+  }
+
+  /* Cari Ekstre: period KPI cards remain visible in a balanced 2x2 grid. */
+  body:has(#ekstreTable) #content .tcr-ac-grid{
+    display:grid!important;
+    visibility:visible!important;
+    opacity:1!important;
+    grid-template-columns:repeat(2,minmax(0,1fr))!important;
+    gap:10px!important;
+  }
+  body:has(#ekstreTable) #content .tcr-ac-grid > .ekstre-period-card{
+    display:flex!important;
+    visibility:visible!important;
+    opacity:1!important;
+    width:100%!important;
+    min-width:0!important;
+    margin:0!important;
+  }
+}
+
+/* 575 · Permanent small KPI alignment standard
+   Icon left, text center, counter fixed to the far right on desktop/tablet/mobile. */
+#content .tcr-action-card{
+  position:relative!important;
+  display:grid!important;
+  grid-template-columns:auto minmax(0,1fr) auto!important;
+  align-items:center!important;
+  column-gap:12px!important;
+}
+#content .tcr-action-card>.tcr-ac-icon{
+  grid-column:1!important;
+  justify-self:start!important;
+  align-self:center!important;
+  margin:0!important;
+}
+#content .tcr-action-card>.tcr-ac-content{
+  grid-column:2!important;
+  min-width:0!important;
+  width:100%!important;
+  margin:0!important;
+}
+#content .tcr-action-card>.tcr-ac-badge{
+  grid-column:3!important;
+  justify-self:end!important;
+  align-self:center!important;
+  position:static!important;
+  inset:auto!important;
+  margin:0!important;
+  flex:0 0 auto!important;
+}
+@media (max-width:1180px){
+  #content .tcr-action-card{
+    grid-template-columns:auto minmax(0,1fr) auto!important;
+    column-gap:10px!important;
+  }
+}
