@@ -541,7 +541,7 @@ function renderShell(activeId) {
       </div>
       <nav class="sidebar-nav">${nav}</nav>
       <div class="sidebar-foot">
-        <div style="color:var(--c-primary-500)">© 2026 Tcr3WEB</div>
+        <div>© 2026 Tcr3WEB</div>
       </div>
     </aside>
     <div class="main">
@@ -3626,85 +3626,57 @@ function isRestrictedLockedAction(btn){
   const t=lockedActionText(btn);
   return /düzenle|duzenle|edit|iptal|cancel/.test(t);
 }
-function ensureLockInfoModal(){
-  let modal=document.getElementById('recordLockInfoModal');
-  if(modal) return modal;
-  modal=document.createElement('div');
-  modal.id='recordLockInfoModal';
-  modal.className='record-lock-info-modal';
-  modal.setAttribute('aria-hidden','true');
-  modal.innerHTML=`<div class="record-lock-info-dialog" role="dialog" aria-modal="true" aria-labelledby="recordLockInfoTitle">
-    <div class="record-lock-info-head">
-      <div id="recordLockInfoTitle" class="record-lock-info-title">Kilit Bilgisi</div>
-      <button type="button" class="record-lock-info-close" aria-label="Kapat">×</button>
-    </div>
-    <div class="record-lock-info-body"></div>
-    <div class="record-lock-info-foot"><button type="button" class="btn btn-danger record-lock-info-ok">Kapat</button></div>
-  </div>`;
-  document.body.appendChild(modal);
-  const close=()=>{modal.classList.remove('show');modal.setAttribute('aria-hidden','true');document.body.classList.remove('record-lock-modal-open')};
-  modal.querySelector('.record-lock-info-close').addEventListener('click',close);
-  modal.querySelector('.record-lock-info-ok').addEventListener('click',close);
-  return modal;
+function ensureLockTooltip(){
+  let t=document.getElementById('recordLockTooltip');
+  if(!t){ t=document.createElement('div'); t.id='recordLockTooltip'; t.className='record-lock-tooltip'; document.body.appendChild(t); }
+  return t;
 }
-function showRecordLockInfo(data){
-  const modal=ensureLockInfoModal();
-  const icon=data.locked
-    ? '<span class="record-lock-status is-locked"><svg viewBox="0 0 24 24" aria-hidden="true"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg></span>'
-    : '<span class="record-lock-status is-open"><svg viewBox="0 0 24 24" aria-hidden="true"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 9.33-2.5"></path></svg></span>';
-  modal.querySelector('.record-lock-info-body').innerHTML=`
-    <div class="record-lock-info-summary">${icon}<div><strong>${data.locked?'Kilitli Kayıt':'İşlem Yapılabilir'}</strong><small>${data.locked?'Düzenleme ve iptal süresi dolmuştur.':'Kayıt için işlem süresi devam ediyor.'}</small></div></div>
-    <dl class="record-lock-info-list">
-      <div><dt>İşlem tarihi</dt><dd>${data.dateText}</dd></div>
-      <div><dt>Kilit süresi</dt><dd>${data.days} gün</dd></div>
-      <div><dt>Geçen süre</dt><dd>${data.age} gün</dd></div>
-      <div><dt>${data.locked?'Aşılan süre':'Kalan süre'}</dt><dd>${data.locked?Math.max(0,data.age-data.days):Math.max(0,data.days-data.age)} gün</dd></div>
-    </dl>`;
-  modal.classList.add('show');modal.setAttribute('aria-hidden','false');document.body.classList.add('record-lock-modal-open');
-}
-function makeRecordLockButton(data){
-  const btn=document.createElement('button');
-  btn.type='button';
-  btn.className='icon-btn record-lock-info-btn '+(data.locked?'is-locked':'is-open');
-  btn.title='Kilit bilgisini göster';
-  btn.setAttribute('aria-label','Kilit bilgisini göster');
-  btn.innerHTML=data.locked
-    ? '<svg viewBox="0 0 24 24" aria-hidden="true"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>'
-    : '<svg viewBox="0 0 24 24" aria-hidden="true"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 9.33-2.5"></path></svg>';
-  btn.addEventListener('click',e=>{e.preventDefault();e.stopPropagation();showRecordLockInfo(data)});
-  return btn;
+function bindStateDot(dot){
+  if(dot.dataset.bound) return; dot.dataset.bound='1';
+  const tip=ensureLockTooltip();
+  dot.addEventListener('mouseenter',()=>{
+    tip.innerHTML=dot.dataset.tip||''; const r=dot.getBoundingClientRect();
+    tip.style.left=Math.min(window.innerWidth-295,Math.max(12,r.left-8))+'px';
+    tip.style.top=Math.min(window.innerHeight-120,r.bottom+10)+'px'; tip.classList.add('show');
+  });
+  dot.addEventListener('mouseleave',()=>tip.classList.remove('show'));
 }
 function applyRecordLockStandard(){
   const moduleKey=getCurrentModuleKey(); const policies=getLockPolicies(); const days=Number(policies[moduleKey]??5);
   document.querySelectorAll('table.data').forEach(table=>{
     if(
-      table.dataset.recordLockApplied || table.closest('#tab-kilit') || table.dataset.noRecordLock === 'true' ||
-      table.id === 'ekstreTable' || table.closest('.modal') || table.classList.contains('hareket-urun-table') ||
+      table.dataset.recordLockApplied ||
+      table.closest('#tab-kilit') ||
+      table.dataset.noRecordLock === 'true' ||
+      table.id === 'ekstreTable' ||
+      table.closest('.modal') ||
+      table.classList.contains('hareket-urun-table') ||
       table.classList.contains('stok-detail-line-table')
     ) return;
-    const scope=table.closest('.card, .modal, section, main')||table.parentElement;
-    const sectionTitle=scope?.querySelector('.card-title, .fis-section-title, .text-soft, h2, h3, h4')?.textContent||'';
-    const isLineItemsTable=table.classList.contains('form-line-table')||/kalemler|kalemleri|ürün kalemleri|sipariş kalemleri|teklif kalemleri|fatura kalemleri|cari hesap kalemleri/i.test(sectionTitle.trim());
-    if(isLineItemsTable) return;
+    const scope = table.closest('.card, .modal, section, main') || table.parentElement;
+    const sectionTitle = scope?.querySelector('.card-title, .fis-section-title, .text-soft, h2, h3, h4')?.textContent || '';
+    const isLineItemsTable = table.classList.contains('form-line-table') || /kalemler|kalemleri|ürün kalemleri|sipariş kalemleri|teklif kalemleri|fatura kalemleri|cari hesap kalemleri/i.test(sectionTitle.trim());
+    if(isLineItemsTable){
+      table.querySelectorAll('.record-state-head,.record-state-cell').forEach(el=>el.remove());
+      return;
+    }
+    const headRow=table.tHead?.rows?.[0]; if(!headRow) return;
+    const th=document.createElement('th'); th.className='record-state-head'; th.textContent='Durum'; headRow.insertBefore(th,headRow.firstElementChild);
     [...(table.tBodies[0]?.rows||[])].forEach(row=>{
-      const date=findRowDate(row); const age=date?Math.max(0,daysBetweenToday(date)):0; const locked=!!(days>0&&date&&age>=days);
-      const data={locked,days,age,dateText:date?date.toLocaleDateString('tr-TR'):'Tarih bilgisi bulunamadı'};
-      const actionCell=row.lastElementChild;
-      if(actionCell){
-        actionCell.classList.add('tcr-action-column');
-        const host=actionCell.querySelector('.flex')||actionCell;
-        const lockButton=makeRecordLockButton(data);
-        const moreButton=host.querySelector('.ci-output-trigger, [data-action="more"], [aria-label*="Diğer"], [title*="Diğer"], [aria-label*="Menü"], [title*="Menü"]');
-        if(document.body.classList.contains('tcr-page-cari-islemler')) host.classList.add('ci-actions');
-        if(moreButton) host.insertBefore(lockButton,moreButton);
-        else host.appendChild(lockButton);
-      }
+      const date=findRowDate(row); const age=date?daysBetweenToday(date):0; const locked=days>0 && date && age>=days;
+      const td=document.createElement('td'); td.className='record-state-cell';
+      const dot=document.createElement('span'); dot.className='record-state-dot '+(locked?'is-locked':'is-open');
+      const dateText=date?date.toLocaleDateString('tr-TR'):'Tarih bilgisi bulunamadı';
+      dot.dataset.tip=locked
+        ? `<strong style="color:#dc2626">Kilitli Kayıt</strong><br>İşlem süresi doldu.<br>İşlem tarihi: ${dateText}<br>Kilit süresi: ${days} gün<br>Geçen süre: ${age} gün`
+        : `<strong style="color:#16a34a">İşlem Yapılabilir</strong><br>İşlem tarihi: ${dateText}<br>Kilit süresi: ${days} gün${date?`<br>Kalan süre: ${Math.max(0,days-age)} gün`:''}`;
+      dot.setAttribute('aria-label',locked?'Kilitli kayıt':'İşlem yapılabilir'); td.appendChild(dot); row.insertBefore(td,row.firstElementChild); bindStateDot(dot);
       if(locked){
         row.classList.add('is-record-locked');
         row.querySelectorAll('button,a.btn').forEach(btn=>{
-          if(btn.classList.contains('record-lock-info-btn')) return;
           if(isRestrictedLockedAction(btn)){
-            btn.classList.add('record-action-blocked'); btn.setAttribute('aria-disabled','true');
+            btn.classList.add('record-action-blocked');
+            btn.setAttribute('aria-disabled','true');
             btn.addEventListener('click',e=>{e.preventDefault();e.stopImmediatePropagation();toast('Günü geçmiş kayıtlarda düzenleme ve iptal işlemleri kapalıdır.','error')},true);
           }
         });
@@ -3716,7 +3688,6 @@ function applyRecordLockStandard(){
 const tcr3LockObserver=new MutationObserver(()=>requestAnimationFrame(applyRecordLockStandard));
 document.addEventListener('DOMContentLoaded',()=>{tcr3LockObserver.observe(document.body,{childList:true,subtree:true});setTimeout(applyRecordLockStandard,80)});
 window.applyRecordLockStandard=applyRecordLockStandard;
-window.showRecordLockInfo=showRecordLockInfo;
 
 /* 743 - MASTER panel/KPI semantik renk standardı */
 (function(){
@@ -4208,339 +4179,58 @@ function closeDocumentPreview(){
 }
 document.addEventListener('keydown',e=>{if(e.key==='Escape' && document.getElementById('tcrDocumentPreviewModal')?.classList.contains('is-open')) closeDocumentPreview();});
 
-/* 589 MASTER CLEAN — keep the lock action present after responsive/menu rerenders */
-(function tcrRepairRecordLockActions(){
-  let scheduled=false;
-
-  function buildRowLockData(row){
-    const policies=(typeof getLockPolicies==='function') ? getLockPolicies() : {};
-    const moduleKey=(typeof getCurrentModuleKey==='function') ? getCurrentModuleKey() : '';
-    const days=Number(policies[moduleKey] ?? 5);
-    const date=(typeof findRowDate==='function') ? findRowDate(row) : null;
-    const age=date && typeof daysBetweenToday==='function' ? Math.max(0,daysBetweenToday(date)) : 0;
-    return {
-      locked:!!(days>0 && date && age>=days),
-      days,
-      age,
-      dateText:date ? date.toLocaleDateString('tr-TR') : 'Tarih bilgisi bulunamadı'
-    };
-  }
-
-  function repairTable(table){
-    const isCariIslem=table.id==='cariIslemTable';
-    const isCariFis=table.id==='cariFisTable';
-    if(!isCariIslem && !isCariFis) return;
-
-    Array.from(table.tBodies[0]?.rows || []).forEach(row=>{
-      const actionCell=row.lastElementChild;
-      if(!actionCell || actionCell.tagName!=='TD') return;
-      actionCell.classList.add('tcr-action-column');
-
-      const host=actionCell.querySelector('.flex') || actionCell;
-      if(isCariIslem) host.classList.add('ci-actions');
-
-      let lockButton=host.querySelector(':scope > .record-lock-info-btn');
-      if(!lockButton && typeof makeRecordLockButton==='function'){
-        lockButton=makeRecordLockButton(buildRowLockData(row));
-      }
-      if(!lockButton) return;
-
-      const moreButton=host.querySelector(':scope > .ci-output-trigger, :scope > [data-action="more"], :scope > [aria-label*="Menü"], :scope > [title*="Menü"], :scope > [aria-label*="Diğer"], :scope > [title*="Diğer"]');
-      if(moreButton){
-        if(lockButton.nextElementSibling!==moreButton) host.insertBefore(lockButton,moreButton);
-      }else if(lockButton.parentElement!==host){
-        host.appendChild(lockButton);
-      }else if(!lockButton.isConnected){
-        host.appendChild(lockButton);
-      }
-    });
-  }
-
-  function run(){
-    scheduled=false;
-    document.querySelectorAll('#cariIslemTable, #cariFisTable').forEach(repairTable);
-  }
-  function schedule(){
-    if(scheduled) return;
-    scheduled=true;
-    requestAnimationFrame(run);
-  }
-
-  function init(){
-    schedule();
-    setTimeout(schedule,80);
-    setTimeout(schedule,300);
-    window.addEventListener('load',schedule,{once:true});
-    window.addEventListener('resize',schedule,{passive:true});
-    new MutationObserver(schedule).observe(document.body,{childList:true,subtree:true});
-  }
-  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',init,{once:true});
-  else init();
-})();
-
-/* 588 MASTER CLEAN — lock action dedupe and stable Cari action order */
+/* ============================================================
+   580 MASTER CLEAN — shared shell + clickable record lock action
+   ============================================================ */
 (function(){
-  'use strict';
-  let queued=false;
+  const lockSvg = (locked) => locked
+    ? '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="18" height="11" x="3" y="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>'
+    : '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="18" height="11" x="3" y="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 9.9-1"/></svg>';
 
-  function normalizeRow(row, isCariIslem){
-    const actionCell=row.lastElementChild;
-    if(!actionCell || actionCell.tagName!=='TD') return;
-    actionCell.classList.add('tcr-action-column');
-    const host=actionCell.querySelector('.flex') || actionCell;
-    if(isCariIslem) host.classList.add('ci-actions');
-
-    const locks=Array.from(host.querySelectorAll('.record-lock-info-btn'));
-    if(locks.length>1) locks.slice(1).forEach(button=>button.remove());
-    const lock=host.querySelector('.record-lock-info-btn');
-    if(!lock) return;
-
-    const more=host.querySelector('.ci-output-trigger,[data-action="more"],[aria-label*="Menü"],[title*="Menü"],[aria-label*="Diğer"],[title*="Diğer"]');
-    if(isCariIslem && more && lock.nextElementSibling!==more) host.insertBefore(lock,more);
+  function showRecordLockInfo(btn){
+    const locked = btn.classList.contains('is-locked') || btn.dataset.lockState === 'locked';
+    const row = btn.closest('tr,.tcr-cari-fis-mobile-card,.tcr-mobile-card');
+    const dateText = row?.querySelector('[data-label="Tarih"],.tcr-fis-field--date .tcr-fis-value')?.textContent?.trim() || 'Tarih bilgisi bulunamadı';
+    const title = locked ? 'Kilitli Kayıt' : 'İşlem Yapılabilir';
+    const detail = locked ? 'Bu kayıt için düzenleme süresi dolmuştur.' : 'Bu kayıt düzenlenebilir durumdadır.';
+    let modal=document.getElementById('recordLockInfoModal');
+    if(!modal){
+      modal=document.createElement('div');
+      modal.id='recordLockInfoModal';
+      modal.className='record-lock-info-modal';
+      modal.innerHTML='<div class="record-lock-info-dialog" role="dialog" aria-modal="true"><div class="record-lock-info-head"><div class="record-lock-info-title"></div><button class="record-lock-info-close" type="button" aria-label="Kapat">×</button></div><div class="record-lock-info-body"></div><div class="record-lock-info-foot"><button class="btn btn-danger" type="button">Kapat</button></div></div>';
+      document.body.appendChild(modal);
+      const close=()=>{modal.classList.remove('show');document.body.classList.remove('record-lock-modal-open')};
+      modal.querySelector('.record-lock-info-close').addEventListener('click',close);
+      modal.querySelector('.record-lock-info-foot button').addEventListener('click',close);
+    }
+    modal.querySelector('.record-lock-info-title').textContent='Kilit Bilgisi';
+    modal.querySelector('.record-lock-info-body').innerHTML='<div class="record-lock-info-summary"><span class="record-lock-status '+(locked?'is-locked':'is-open')+'">'+lockSvg(locked)+'</span><div><strong>'+title+'</strong><small>'+detail+'</small></div></div><dl class="record-lock-info-list"><div><dt>İşlem tarihi</dt><dd>'+dateText+'</dd></div><div><dt>Durum</dt><dd>'+title+'</dd></div></dl>';
+    modal.classList.add('show');
+    document.body.classList.add('record-lock-modal-open');
   }
 
-  function normalize(){
-    queued=false;
-    const fis=document.getElementById('cariFisTable');
-    const islemler=document.getElementById('cariIslemTable');
-    if(fis) Array.from(fis.tBodies[0]?.rows||[]).forEach(row=>normalizeRow(row,false));
-    if(islemler) Array.from(islemler.tBodies[0]?.rows||[]).forEach(row=>normalizeRow(row,true));
-  }
-  function queue(){
-    if(queued) return;
-    queued=true;
-    requestAnimationFrame(normalize);
-  }
-  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',queue,{once:true}); else queue();
-  new MutationObserver(queue).observe(document.documentElement,{childList:true,subtree:true});
-})();
-
-/* 586 MASTER CLEAN — final Cari DOM normalization */
-(function tcrFinalCariMobileRepair(){
-  'use strict';
-  let queued=false;
-
-  function labelTable(table){
-    if(!table || !table.tHead || !table.tBodies[0]) return;
-    const labels=Array.from(table.tHead.rows[0]?.cells||[]).map((cell,index)=>{
-      const value=(cell.textContent||'').trim();
-      return value || (index===table.tHead.rows[0].cells.length-1 ? 'İşlem' : '');
-    });
-    Array.from(table.tBodies[0].rows).forEach(row=>{
-      Array.from(row.cells).forEach((cell,index)=>{
-        if(!cell.dataset.label) cell.dataset.label=labels[index]||'';
-      });
-      const actionCell=Array.from(row.cells).find(cell=>cell.dataset.label==='İşlem') || row.lastElementChild;
-      if(actionCell){
-        actionCell.classList.add('tcr-action-column');
-        actionCell.dataset.label='İşlem';
-        /* Physical DOM order also matches visual order, including after Livewire-style rerenders. */
-        if(row.lastElementChild!==actionCell) row.appendChild(actionCell);
+  function normalizeLockButtons(root=document){
+    root.querySelectorAll('.record-lock-info-btn').forEach(btn=>{
+      btn.removeAttribute('disabled');
+      btn.setAttribute('aria-disabled','false');
+      btn.dataset.recordLock='1';
+      if(!btn.dataset.lockBound){
+        btn.dataset.lockBound='1';
+        btn.addEventListener('click',function(e){e.preventDefault();e.stopPropagation();showRecordLockInfo(this)});
       }
     });
   }
 
-  function repairCariIslemler(){
-    const table=document.getElementById('cariIslemTable');
-    if(!table) return;
-    document.body.classList.add('tcr-cari-clean','tcr-page-cari-islemler');
-    labelTable(table);
-
-    const pageHead=table.closest('#content,main,.content')?.querySelector('.page-head') || document.querySelector('.page-head');
-    if(pageHead) pageHead.classList.add('tcr-mobile-page-head');
-
-    const kpiButtons=Array.from(document.querySelectorAll('.tcr-action-card')).filter(card=>{
-      const click=card.getAttribute('onclick')||'';
-      return /openCariIslemModal\(['"](?:tahsilat|odeme)['"]/.test(click);
-    });
-    if(kpiButtons.length){
-      const outer=kpiButtons[0].closest('#content > .tcr-ac-grid') || kpiButtons[0].closest('.tcr-ac-grid')?.parentElement?.closest('.tcr-ac-grid') || kpiButtons[0].parentElement;
-      if(outer) outer.classList.add('tcr-mobile-kpi-group');
-      kpiButtons.forEach(card=>card.classList.add('tcr-mobile-kpi-primary'));
-    }
+  function normalizeSharedShell(){
+    const foot=document.querySelector('.sidebar-foot');
+    if(foot) foot.innerHTML='<div>© 2026 Tcr3WEB</div>';
+    normalizeLockButtons();
   }
 
-  function repairCariFisleri(){
-    const table=document.getElementById('cariFisTable');
-    if(!table) return;
-    document.body.classList.add('tcr-cari-clean','tcr-page-cari-fisleri');
-    labelTable(table);
-  }
-
-  function run(){
-    queued=false;
-    repairCariIslemler();
-    repairCariFisleri();
-  }
-  function queue(){
-    if(queued) return;
-    queued=true;
-    requestAnimationFrame(run);
-  }
-  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',queue,{once:true}); else queue();
-  window.addEventListener('load',queue,{once:true});
-  window.addEventListener('resize',queue,{passive:true});
-  new MutationObserver(queue).observe(document.documentElement,{childList:true,subtree:true});
-})();
-
-/* 585 MASTER CLEAN — build Cari Fişleri mobile cards from the semantic table.
-   This isolates mobile layout from legacy responsive table rules and remains
-   compatible with Blade/Livewire DOM replacements. */
-(function tcrBuildCariFisMobileCards(){
-  'use strict';
-  let queued=false;
-  let observer=null;
-
-  const fieldOrder=[
-    ['Fiş No','no','wide'],
-    ['Tip','type',''],
-    ['Tarih','date',''],
-    ['Cari / İçerik','account','wide'],
-    ['Kalem','line',''],
-    ['Borç','debit','debit'],
-    ['Alacak','credit','credit'],
-    ['Durum','status',''],
-    ['Açıklama','description','wide']
-  ];
-
-  function getCellMap(row){
-    const map=new Map();
-    Array.from(row.cells||[]).forEach((cell,index)=>{
-      const label=(cell.dataset.label||'').trim();
-      if(label) map.set(label,cell);
-      if(index===row.cells.length-1) map.set('İşlem',cell);
-    });
-    return map;
-  }
-
-  function makeField(label,key,variant,source){
-    if(!source) return null;
-    const field=document.createElement('div');
-    field.className='tcr-fis-field tcr-fis-field--'+key+(variant==='wide'?' tcr-fis-field--wide':'')+(variant==='debit'?' tcr-fis-field--debit':'')+(variant==='credit'?' tcr-fis-field--credit':'');
-    const title=document.createElement('span');
-    title.className='tcr-fis-label';
-    title.textContent=label;
-    const value=document.createElement('div');
-    value.className='tcr-fis-value';
-    Array.from(source.childNodes).forEach(node=>value.appendChild(node.cloneNode(true)));
-    field.append(title,value);
-    return field;
-  }
-
-  function buildCard(row){
-    const cells=getCellMap(row);
-    const card=document.createElement('article');
-    card.className='tcr-cari-fis-mobile-card';
-    card.dataset.sourceRow=String(row.rowIndex||'');
-    fieldOrder.forEach(([label,key,variant])=>{
-      const field=makeField(label,key,variant,cells.get(label));
-      if(field) card.appendChild(field);
-    });
-    const actionSource=cells.get('İşlem') || row.lastElementChild;
-    if(actionSource){
-      const actions=document.createElement('div');
-      actions.className='tcr-fis-actions';
-      const host=actionSource.querySelector('.flex') || actionSource;
-      Array.from(host.childNodes).forEach(node=>actions.appendChild(node.cloneNode(true)));
-      card.appendChild(actions);
-    }
-    const hidden=row.hidden || row.style.display==='none';
-    card.hidden=hidden;
-    return card;
-  }
-
-  function render(){
-    queued=false;
-    const table=document.getElementById('cariFisTable');
-    if(!table || !table.tBodies[0]) return;
-    document.body.classList.add('tcr-page-cari-fisleri','tcr-cari-clean');
-    let list=table.parentElement.querySelector(':scope > .tcr-cari-fis-mobile-list');
-    if(!list){
-      list=document.createElement('div');
-      list.className='tcr-cari-fis-mobile-list';
-      table.insertAdjacentElement('afterend',list);
-    }
-    const fragment=document.createDocumentFragment();
-    Array.from(table.tBodies[0].rows).forEach(row=>fragment.appendChild(buildCard(row)));
-    list.replaceChildren(fragment);
-  }
-
-  function queue(){
-    if(queued) return;
-    queued=true;
-    requestAnimationFrame(render);
-  }
-
-  function init(){
-    queue();
-    setTimeout(queue,100);
-    setTimeout(queue,350);
-    const table=document.getElementById('cariFisTable');
-    if(table){
-      observer=new MutationObserver(queue);
-      observer.observe(table,{childList:true,subtree:true});
-    }
-    document.addEventListener('input',e=>{if(e.target.closest('.tcr-page-cari-fisleri')) setTimeout(queue,0)},true);
-    document.addEventListener('change',e=>{if(e.target.closest('.tcr-page-cari-fisleri')) setTimeout(queue,0)},true);
-    window.addEventListener('resize',queue,{passive:true});
-  }
-  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',init,{once:true}); else init();
-})();
-
-/* 584 MASTER CLEAN — deterministic Cari İşlemleri mobile title/KPI renderer. */
-(function tcrCariIslemlerMobileIntro(){
-  'use strict';
-  let queued=false;
-
-  function icon(name){
-    if(name==='income') return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M16 12h.01M6 9h6M6 15h4"/></svg>';
-    return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 7h-9a4 4 0 0 0 0 8h9V7Z"/><path d="M16 11h.01"/><path d="M4 7h12V5a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-2"/></svg>';
-  }
-
-  function render(){
-    queued=false;
-    const isMobile=window.matchMedia('(max-width: 767.98px)').matches;
-    const existing=document.querySelector('.tcr-ci-mobile-intro');
-    if(!isMobile){
-      if(existing) existing.remove();
-      document.body.classList.remove('tcr-ci-mobile-ready');
-      return;
-    }
-    const table=document.getElementById('cariIslemTable');
-    if(!table) return;
-    document.body.classList.add('tcr-cari-clean','tcr-page-cari-islemler');
-    const card=table.closest('.card');
-    if(!card || !card.parentElement) return;
-    let intro=document.querySelector('.tcr-ci-mobile-intro');
-    if(!intro){
-      intro=document.createElement('section');
-      intro.className='tcr-ci-mobile-intro';
-      intro.setAttribute('aria-label','Cari İşlemleri hızlı işlemler');
-      intro.innerHTML='\
-        <h1 class="tcr-ci-mobile-title">Cari İşlemleri</h1>\
-        <div class="tcr-ci-mobile-kpis">\
-          <button type="button" class="tcr-ci-mobile-kpi tcr-ci-mobile-kpi--income" data-ci-action="tahsilat">'+icon('income')+'<span><strong>Yeni Tahsilat</strong><small>Müşteriden ödeme al</small></span></button>\
-          <button type="button" class="tcr-ci-mobile-kpi tcr-ci-mobile-kpi--payment" data-ci-action="odeme">'+icon('payment')+'<span><strong>Yeni Ödeme</strong><small>Tedarikçiye ödeme yap</small></span></button>\
-        </div>';
-      card.parentElement.insertBefore(intro,card);
-      intro.addEventListener('click',function(event){
-        const button=event.target.closest('[data-ci-action]');
-        if(!button) return;
-        if(typeof window.openCariIslemModal==='function') window.openCariIslemModal(button.dataset.ciAction);
-      });
-    } else if(intro.nextElementSibling!==card){
-      card.parentElement.insertBefore(intro,card);
-    }
-    document.body.classList.add('tcr-ci-mobile-ready');
-  }
-
-  function queue(){
-    if(queued) return;
-    queued=true;
-    requestAnimationFrame(render);
-  }
-  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',queue,{once:true}); else queue();
-  window.addEventListener('load',queue,{once:true});
-  window.addEventListener('resize',queue,{passive:true});
-  new MutationObserver(queue).observe(document.documentElement,{childList:true,subtree:true});
+  document.addEventListener('DOMContentLoaded',()=>{
+    normalizeSharedShell();
+    const observer=new MutationObserver(()=>requestAnimationFrame(normalizeSharedShell));
+    observer.observe(document.body,{childList:true,subtree:true});
+  });
 })();

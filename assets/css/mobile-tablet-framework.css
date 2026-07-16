@@ -1942,3 +1942,395 @@ body.tcr-cari-clean .record-lock-info-btn.is-locked{
   body.tcr-page-cari-islemler #cariIslemTable th:nth-child(9){width:150px!important}
   body.tcr-page-cari-islemler #cariIslemTable td{overflow:hidden!important;text-overflow:ellipsis!important;white-space:nowrap!important}
 }
+
+/* ============================================================
+   582 MASTER CLEAN — Header parity + Cari İşlemleri card footer
+   ============================================================ */
+@media (max-width: 767.98px){
+  /* Every module uses the same compact header as Dashboard. */
+  .topbar{
+    display:flex!important;
+    align-items:center!important;
+    gap:6px!important;
+    padding:7px 8px!important;
+    min-height:58px!important;
+  }
+  .topbar-spacer{display:block!important;flex:1 1 auto!important;min-width:2px!important}
+  .topbar-actions{
+    display:flex!important;
+    align-items:center!important;
+    justify-content:flex-end!important;
+    gap:4px!important;
+    margin-left:auto!important;
+    flex:0 0 auto!important;
+  }
+  .topbar-actions > .icon-btn,
+  .topbar-actions > .topbar-tool-btn,
+  .topbar-actions > a.icon-btn,
+  .topbar-actions > button.icon-btn{
+    display:inline-grid!important;
+    place-items:center!important;
+    width:34px!important;
+    height:34px!important;
+    min-width:34px!important;
+    flex:0 0 34px!important;
+    padding:0!important;
+  }
+  .topbar-actions > button[aria-label="Bildirimler"]{display:inline-grid!important}
+  .topbar-user{
+    display:flex!important;
+    align-items:center!important;
+    width:34px!important;
+    min-width:34px!important;
+    height:34px!important;
+    flex:0 0 34px!important;
+    padding:0!important;
+    border:0!important;
+    background:transparent!important;
+  }
+  .topbar-user .avatar{
+    width:32px!important;
+    height:32px!important;
+    min-width:32px!important;
+    display:grid!important;
+    place-items:center!important;
+    margin:0!important;
+  }
+  .topbar-user .user-info{display:none!important}
+  .topbar-logout-btn{display:inline-grid!important}
+
+  /* Cari İşlemleri: description and actions are independent full-width footer rows. */
+  body.tcr-page-cari-islemler #cariIslemTable tbody tr{
+    display:grid!important;
+    grid-template-columns:repeat(4,minmax(0,1fr))!important;
+    align-items:stretch!important;
+  }
+  body.tcr-page-cari-islemler #cariIslemTable tbody td[data-label="Açıklama"]{
+    grid-column:1 / -1!important;
+    width:auto!important;
+    min-width:0!important;
+    min-height:50px!important;
+    padding:8px 10px!important;
+    border-top:1px solid #d7e1ee!important;
+    border-right:0!important;
+    background:#fff!important;
+    text-align:left!important;
+    overflow:visible!important;
+    white-space:normal!important;
+    display:flex!important;
+    flex-direction:column!important;
+    align-items:flex-start!important;
+    justify-content:center!important;
+    gap:3px!important;
+  }
+  body.tcr-page-cari-islemler #cariIslemTable tbody td[data-label="Açıklama"]::before{
+    display:block!important;
+    width:100%!important;
+    text-align:left!important;
+    margin:0!important;
+  }
+  body.tcr-page-cari-islemler #cariIslemTable tbody td.tcr-action-column,
+  body.tcr-page-cari-islemler #cariIslemTable tbody td[data-label="İşlem"]{
+    grid-column:1 / -1!important;
+    width:auto!important;
+    min-width:0!important;
+    min-height:52px!important;
+    padding:8px 10px!important;
+    border-top:1px solid #d7e1ee!important;
+    border-right:0!important;
+    background:#fff!important;
+    display:flex!important;
+    align-items:center!important;
+    justify-content:flex-start!important;
+    overflow:visible!important;
+  }
+  body.tcr-page-cari-islemler #cariIslemTable .ci-actions{
+    position:static!important;
+    width:100%!important;
+    display:flex!important;
+    align-items:center!important;
+    justify-content:flex-start!important;
+    gap:6px!important;
+    margin:0!important;
+    transform:none!important;
+  }
+  body.tcr-page-cari-islemler #cariIslemTable .ci-actions > .icon-btn,
+  body.tcr-page-cari-islemler #cariIslemTable .record-lock-info-btn{
+    position:static!important;
+    inset:auto!important;
+    margin:0!important;
+    flex:0 0 34px!important;
+    width:34px!important;
+    height:34px!important;
+  }
+}
+
+/* ============================================================
+   581 MASTER CLEAN — TEK ORTAK HEADER
+   Header yalnız assets/js/app.js içindeki ortak shell tarafından üretilir.
+   Hiçbir modül/sayfa header görünümünü değiştiremez.
+   ============================================================ */
+:root{--tcr-shared-header-height:64px}
+
+/* Tüm sayfalarda tek ve sabit header */
+.main > .topbar{
+  position:sticky!important;
+  inset-block-start:0!important;
+  z-index:2000!important;
+  width:100%!important;
+  min-width:0!important;
+  height:var(--tcr-shared-header-height)!important;
+  min-height:var(--tcr-shared-header-height)!important;
+  flex:0 0 var(--tcr-shared-header-height)!important;
+  display:flex!important;
+  align-items:center!important;
+  padding:0 18px!important;
+  gap:10px!important;
+  overflow:visible!important;
+  background:#fff!important;
+  border-bottom:1px solid var(--border,#d9e1ec)!important;
+  box-shadow:none!important;
+}
+.main > .topbar > .icon-btn:first-child{display:inline-grid!important}
+.main > .topbar .topbar-weather{display:flex!important}
+.main > .topbar .topbar-spacer{display:block!important;flex:1 1 auto!important;min-width:4px!important}
+.main > .topbar .topbar-actions{
+  display:flex!important;
+  align-items:center!important;
+  justify-content:flex-end!important;
+  gap:8px!important;
+  margin-left:auto!important;
+  flex:0 0 auto!important;
+  width:auto!important;
+  max-width:none!important;
+  overflow:visible!important;
+}
+.main > .topbar .topbar-actions > *,
+.main > .topbar .topbar-actions > .icon-btn,
+.main > .topbar .topbar-actions > .topbar-tool-btn,
+.main > .topbar .topbar-actions > a.icon-btn,
+.main > .topbar .topbar-actions > button.icon-btn{
+  visibility:visible!important;
+  opacity:1!important;
+}
+.main > .topbar .topbar-tool-btn,
+.main > .topbar .topbar-actions > button[aria-label="Bildirimler"],
+.main > .topbar .topbar-user,
+.main > .topbar .topbar-logout-btn{display:flex!important}
+
+/* Cari dahil hiçbir modül header üzerinde özel kural uygulayamaz */
+body[class*="tcr-page-"] .main > .topbar,
+body.tcr-page-cari-kartlar .main > .topbar,
+body.tcr-page-cari-islemler .main > .topbar,
+body.tcr-page-cari-fisleri .main > .topbar,
+body.tcr-page-cari-ekstre .main > .topbar{
+  height:var(--tcr-shared-header-height)!important;
+  min-height:var(--tcr-shared-header-height)!important;
+  padding:0 18px!important;
+}
+
+@media (max-width:767.98px){
+  :root{--tcr-shared-header-height:56px}
+  .main > .topbar,
+  body[class*="tcr-page-"] .main > .topbar{
+    height:56px!important;
+    min-height:56px!important;
+    padding:0 8px!important;
+    gap:5px!important;
+    overflow:hidden!important;
+  }
+  .main > .topbar > .icon-btn:first-child{
+    display:inline-grid!important;
+    place-items:center!important;
+    width:40px!important;height:40px!important;min-width:40px!important;
+    flex:0 0 40px!important;padding:0!important;
+  }
+  .main > .topbar .topbar-weather{
+    display:flex!important;
+    min-width:52px!important;
+    width:auto!important;
+    max-width:86px!important;
+    flex:0 1 auto!important;
+    padding:0 4px!important;
+    gap:4px!important;
+    overflow:hidden!important;
+  }
+  .main > .topbar .topbar-weather-copy{display:none!important}
+  .main > .topbar .topbar-weather-icon{flex:0 0 auto!important}
+  .main > .topbar .topbar-weather-temp{display:block!important;white-space:nowrap!important}
+  .main > .topbar .topbar-actions{gap:4px!important;min-width:0!important}
+  .main > .topbar .topbar-actions > .icon-btn,
+  .main > .topbar .topbar-actions > .topbar-tool-btn,
+  .main > .topbar .topbar-actions > a.icon-btn,
+  .main > .topbar .topbar-actions > button.icon-btn{
+    display:inline-grid!important;
+    place-items:center!important;
+    width:34px!important;height:34px!important;min-width:34px!important;
+    flex:0 0 34px!important;padding:0!important;
+  }
+  .main > .topbar .topbar-actions > button[aria-label="Bildirimler"]{display:inline-grid!important}
+  .main > .topbar .topbar-user{
+    display:flex!important;
+    align-items:center!important;
+    justify-content:center!important;
+    width:34px!important;height:34px!important;min-width:34px!important;
+    flex:0 0 34px!important;padding:0!important;border:0!important;background:transparent!important;
+  }
+  .main > .topbar .topbar-user .avatar{
+    display:grid!important;place-items:center!important;
+    width:32px!important;height:32px!important;min-width:32px!important;margin:0!important;
+  }
+  .main > .topbar .topbar-user .user-info{display:none!important}
+  .main > .topbar .topbar-logout-btn{display:inline-grid!important}
+}
+
+/* Çok dar ekran: Gösterge Paneli ile aynı öncelik sırası korunur. */
+@media (max-width:410px){
+  .main > .topbar{gap:3px!important;padding-inline:5px!important}
+  .main > .topbar .topbar-actions{gap:2px!important}
+  .main > .topbar .topbar-actions > .icon-btn,
+  .main > .topbar .topbar-actions > .topbar-tool-btn,
+  .main > .topbar .topbar-actions > a.icon-btn,
+  .main > .topbar .topbar-actions > button.icon-btn,
+  .main > .topbar .topbar-user{width:32px!important;height:32px!important;min-width:32px!important;flex-basis:32px!important}
+  .main > .topbar .topbar-weather{max-width:66px!important}
+}
+
+/* ============================================================
+   580 MASTER CLEAN — SHARED SHELL + CARI LOCK ACTION FINAL
+   Tek ortak header/slider/footer. Sayfa özel stiller shell'e dokunamaz.
+   ============================================================ */
+:root{
+  --tcr-header-h-desktop:64px;
+  --tcr-header-h-mobile:56px;
+  --tcr-sidebar-w:228px;
+}
+
+/* Header gerçekten tek ve fixed. Eski sticky/top/margin kurallarını ezer. */
+html,body{scroll-padding-top:var(--tcr-header-h-desktop)}
+.main{min-width:0!important;padding-top:var(--tcr-header-h-desktop)!important}
+.main>.topbar,
+body[class*="tcr-page-"] .main>.topbar{
+  position:fixed!important;
+  top:0!important;
+  right:0!important;
+  left:var(--tcr-sidebar-w)!important;
+  z-index:5000!important;
+  width:auto!important;
+  height:var(--tcr-header-h-desktop)!important;
+  min-height:var(--tcr-header-h-desktop)!important;
+  margin:0!important;
+  padding:0 18px!important;
+  display:flex!important;
+  align-items:center!important;
+  gap:10px!important;
+  background:#fff!important;
+  border-bottom:1px solid #d9e2ee!important;
+  box-shadow:none!important;
+  transform:none!important;
+}
+.main>.topbar .topbar-actions{display:flex!important;align-items:center!important;gap:8px!important;margin-left:auto!important}
+.main>.topbar .icon-btn,
+.main>.topbar .topbar-actions>.icon-btn,
+.main>.topbar .topbar-tool-btn,
+.main>.topbar .topbar-user,
+.main>.topbar .topbar-logout-btn{
+  box-sizing:border-box!important;
+  width:38px!important;
+  min-width:38px!important;
+  height:38px!important;
+  min-height:38px!important;
+  flex:0 0 38px!important;
+  padding:0!important;
+  border-radius:10px!important;
+  display:inline-grid!important;
+  place-items:center!important;
+}
+.main>.topbar .topbar-user .avatar{width:36px!important;height:36px!important;min-width:36px!important;display:grid!important;place-items:center!important}
+.sidebar{position:fixed!important;inset:0 auto 0 0!important;width:var(--tcr-sidebar-w)!important;height:100dvh!important}
+.sidebar-foot{display:flex!important;align-items:center!important;justify-content:flex-start!important}
+.sidebar-foot>*:not(:last-child){display:none!important}
+.app-footer{margin:0!important}
+
+@media (max-width:991.98px){
+  :root{--tcr-sidebar-w:0px}
+  .main{padding-top:var(--tcr-header-h-mobile)!important}
+  .main>.topbar,
+  body[class*="tcr-page-"] .main>.topbar{
+    left:0!important;
+    height:var(--tcr-header-h-mobile)!important;
+    min-height:var(--tcr-header-h-mobile)!important;
+    padding:0 8px!important;
+    gap:5px!important;
+    overflow:hidden!important;
+  }
+  .main>.topbar>.icon-btn:first-child{
+    width:40px!important;min-width:40px!important;height:40px!important;min-height:40px!important;flex-basis:40px!important;
+  }
+  .main>.topbar .topbar-weather{min-width:52px!important;max-width:82px!important;padding:0 4px!important;gap:4px!important}
+  .main>.topbar .topbar-weather-copy{display:none!important}
+  .main>.topbar .topbar-actions{gap:4px!important;min-width:0!important}
+  .main>.topbar .topbar-actions>.icon-btn,
+  .main>.topbar .topbar-actions>.topbar-tool-btn,
+  .main>.topbar .topbar-user,
+  .main>.topbar .topbar-logout-btn{
+    width:38px!important;min-width:38px!important;height:38px!important;min-height:38px!important;flex:0 0 38px!important;border-radius:10px!important;
+  }
+  .main>.topbar .topbar-user .avatar{width:36px!important;height:36px!important;min-width:36px!important}
+  .main>.topbar .topbar-user .user-info{display:none!important}
+}
+
+@media (max-width:410px){
+  .main>.topbar{padding-inline:5px!important;gap:3px!important}
+  .main>.topbar .topbar-actions{gap:2px!important}
+  .main>.topbar .topbar-actions>.icon-btn,
+  .main>.topbar .topbar-actions>.topbar-tool-btn,
+  .main>.topbar .topbar-user,
+  .main>.topbar .topbar-logout-btn{
+    width:36px!important;min-width:36px!important;height:36px!important;min-height:36px!important;flex-basis:36px!important;
+  }
+}
+
+/* Cari Fişleri kilit: görünür, tıklanabilir, standart mavi hover. */
+body.tcr-page-cari-fisleri .record-lock-info-btn,
+body.tcr-page-cari-fisleri .tcr-fis-actions .record-lock-info-btn,
+body.tcr-page-cari-fisleri .tcr-fis-actions button[data-record-lock]{
+  pointer-events:auto!important;
+  cursor:pointer!important;
+  opacity:1!important;
+  visibility:visible!important;
+  filter:none!important;
+  background:#fff!important;
+  color:#dc2626!important;
+  border:1px solid #ef4444!important;
+  box-shadow:none!important;
+}
+body.tcr-page-cari-fisleri .record-lock-info-btn.is-open,
+body.tcr-page-cari-fisleri .tcr-fis-actions button[data-lock-state="open"]{
+  color:#16a34a!important;
+  border-color:#22c55e!important;
+  background:#fff!important;
+}
+@media (hover:hover) and (pointer:fine){
+  body.tcr-page-cari-fisleri .record-lock-info-btn:hover,
+  body.tcr-page-cari-fisleri .tcr-fis-actions button[data-record-lock]:hover{
+    color:#1d4ed8!important;
+    border-color:#2563eb!important;
+    background:#eff6ff!important;
+    transform:none!important;
+  }
+}
+body.tcr-page-cari-fisleri .record-lock-info-btn:focus-visible,
+body.tcr-page-cari-fisleri .tcr-fis-actions button[data-record-lock]:focus-visible{
+  color:#1d4ed8!important;
+  border-color:#2563eb!important;
+  background:#eff6ff!important;
+  outline:2px solid rgba(37,99,235,.22)!important;
+  outline-offset:2px!important;
+}
+body.tcr-page-cari-fisleri .record-lock-info-btn[disabled],
+body.tcr-page-cari-fisleri .record-lock-info-btn[aria-disabled="true"]{
+  pointer-events:auto!important;
+  cursor:pointer!important;
+  opacity:1!important;
+}
