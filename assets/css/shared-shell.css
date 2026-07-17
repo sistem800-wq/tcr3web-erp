@@ -266,3 +266,60 @@ body.sidebar-open-lock{overflow:hidden!important;touch-action:none!important;}
     padding:10px 14px calc(10px + env(safe-area-inset-bottom))!important;
   }
 }
+
+/* 550 · Cari mobile/sidebar consistency fix */
+/* Sidebar typography must never change when a route becomes active. */
+#app.app > .sidebar .sidebar-nav .nav-item,
+#app.app > .sidebar .sidebar-nav .nav-item:hover,
+#app.app > .sidebar .sidebar-nav .nav-item.active,
+#app.app > .sidebar .sidebar-nav .nav-item:focus,
+#app.app > .sidebar .sidebar-nav .nav-item:active{
+  font-size:14px!important;
+  line-height:1.35!important;
+  font-weight:500!important;
+  letter-spacing:0!important;
+  transform:none!important;
+}
+#app.app > .sidebar .sidebar-nav .nav-item.active{font-weight:700!important;}
+#app.app > .sidebar .sidebar-nav .nav-item .nav-icon{width:20px!important;height:20px!important;flex:0 0 20px!important;}
+#app.app > .sidebar .sidebar-nav .nav-item .nav-icon svg{width:20px!important;height:20px!important;}
+#app.app.collapsed > .sidebar .sidebar-nav .nav-item{font-size:14px!important;}
+
+@media (min-width:1181px) and (max-width:1366px){
+  #app.app > .sidebar .sidebar-nav .nav-item,
+  #app.app > .sidebar .sidebar-nav .nav-item:hover,
+  #app.app > .sidebar .sidebar-nav .nav-item.active,
+  #app.app > .sidebar .sidebar-nav .nav-item:focus,
+  #app.app > .sidebar .sidebar-nav .nav-item:active{font-size:13px!important;}
+}
+
+/* Cari modules: mobile KPI visibility is page-specific and deterministic. */
+@media (max-width:767.98px){
+  body.tcr-page-cari #content > .tcr-ac-grid,
+  body.tcr-page-cari-islemler #content > .tcr-ac-grid,
+  body.tcr-page-cari-fisleri #content > .tcr-ac-grid,
+  body.tcr-page-cari-ekstre #content .tcr-ac-grid{
+    display:grid!important;
+    grid-template-columns:1fr!important;
+    gap:10px!important;
+    margin:0 0 12px!important;
+  }
+
+  /* Cari Kartlar mobile standard: only Borçlu / Alacaklı / Riskli. */
+  body.tcr-page-cari #content > .tcr-ac-grid > .tcr-action-card{display:none!important;}
+  body.tcr-page-cari #content > .tcr-ac-grid > .tcr-action-card:nth-child(n+4){display:flex!important;}
+
+  /* Other Cari pages: no KPI/action card may disappear on mobile. */
+  body.tcr-page-cari-islemler #content > .tcr-ac-grid > .tcr-action-card,
+  body.tcr-page-cari-islemler #content > .tcr-ac-grid > div > .tcr-action-card,
+  body.tcr-page-cari-fisleri #content > .tcr-ac-grid > .tcr-action-card,
+  body.tcr-page-cari-ekstre #content .tcr-ac-grid > .tcr-action-card,
+  body.tcr-page-cari-ekstre #content .ekstre-kpis .tcr-action-card{
+    display:flex!important;
+    width:100%!important;
+    min-width:0!important;
+  }
+
+  body.tcr-page-cari-islemler #content > .tcr-ac-grid{display:grid!important;}
+  body.tcr-page-cari-islemler #content > .tcr-ac-grid > div{display:contents!important;}
+}
