@@ -260,7 +260,6 @@
     }
 </style>
   <link rel="stylesheet" href="../assets/css/shared-shell.css?v=20260716-574" />
-  <link rel="stylesheet" href="../assets/css/master-ui-standard.css?v=20260717-546" />
 </head>
 <body>
   <div id="app" class="app"></div>
@@ -392,9 +391,8 @@
           </div>
 
           <div class="table-wrap" style="border:none">
-            <table class="data" id="cariTable">
+            <table class="data" id="cariTable" data-no-record-lock="true">
               <thead><tr>
-                <th style="width:42px"><input type="checkbox" onclick="document.querySelectorAll('#cariTable tbody input[type=checkbox]').forEach(x=>x.checked=this.checked)" /></th>
                 <th data-col="kod">Kod</th><th data-col="unvan">Ünvan</th><th data-col="tip">Tip</th><th data-col="yetkili">Yetkili</th><th data-col="sehir">Şehir</th><th data-col="vade">Vade</th><th class="num" data-col="bakiye">Bakiye</th><th data-col="durum">Durum</th>
                 <th class="cari-column-selector-head">
                   <button type="button" class="icon-btn cari-column-selector-btn" onclick="event.stopPropagation();toggleCariColumnMenu()" title="Kolon Seç">${ICONS.settings || ICONS.sliders || ICONS.filter}</button>
@@ -413,7 +411,6 @@
               <tbody>
                 ${MOCK.cari.map(c => `
                   <tr data-ad="${c.ad.toLowerCase()}" data-tip="${c.tip}" data-risk="${c.risk}" data-bakiye="${Number(c.bakiye || 0)}">
-                    <td><input type="checkbox" onclick="event.stopPropagation()" /></td>
                     <td class="mono strong" data-col="kod">${c.kod}</td>
                     <td class="strong clickable" data-col="unvan" onclick="openCariDetay('${c.kod}')">${c.ad}</td>
                     <td data-col="tip"><span class="badge ${c.tip==='Müşteri'?'badge-info':'badge-warn'}">${c.tip}</span></td>
@@ -437,7 +434,7 @@
               </tbody>
               <tfoot class="cari-bakiye-footer">
                 <tr>
-                  <td colspan="7" class="cari-bakiye-footer-label">Durum :</td>
+                  <td colspan="6" class="cari-bakiye-footer-label">Durum :</td>
                   <td colspan="3">
                     <div class="cari-bakiye-footer-values">
                       <span class="cari-footer-total cari-footer-borc">Borç: <strong id="cariFooterBorc">0,00 ₺</strong></span>

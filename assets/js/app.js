@@ -3702,6 +3702,13 @@ function createRecordLockButton(locked,dateText,days,age){
 function applyRecordLockStandard(){
   const moduleKey=getCurrentModuleKey(); const policies=getLockPolicies(); const days=Number(policies[moduleKey]??5);
   document.querySelectorAll('table.data').forEach(table=>{
+    /* Cari Kartlar tablosunda kilit sütunu/butonu kullanılmaz. */
+    if(table.id === 'cariTable'){
+      table.querySelectorAll('.record-lock-head,.record-lock-cell,.record-lock-info-btn,.record-state-head,.record-state-cell').forEach(el=>el.remove());
+      table.querySelectorAll('tr.is-record-locked').forEach(row=>row.classList.remove('is-record-locked'));
+      table.dataset.recordLockApplied='0';
+      return;
+    }
     if(
       table.closest('#tab-kilit') || table.dataset.noRecordLock === 'true' || table.id === 'ekstreTable' ||
       table.closest('.modal') || table.classList.contains('hareket-urun-table') || table.classList.contains('stok-detail-line-table')
