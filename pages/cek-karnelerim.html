@@ -1,8 +1,9 @@
 <!DOCTYPE html>
 <html lang="tr"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1.0"/><title>Tcr3WEB · Çek Karnelerim</title>
-<link rel="stylesheet" href="../assets/css/style.css?v=20260717-548"/><link rel="stylesheet" href="../assets/css/responsive-master.css?v=20260713-591"/><link rel="stylesheet" href="../assets/css/tcr-table.css?v=20260717-547"/><link rel="stylesheet" href="../assets/css/kpi-standard.css"/><link rel="stylesheet" href="../assets/css/text-readability.css"/>  <link rel="stylesheet" href="../assets/css/shared-shell.css?v=20260717-547" />
+<link rel="stylesheet" href="../assets/css/style.css?v=20260712-636"/><link rel="stylesheet" href="../assets/css/responsive-master.css?v=20260713-591"/><link rel="stylesheet" href="../assets/css/tcr-table.css?v=20260713-583"/><link rel="stylesheet" href="../assets/css/kpi-standard.css"/><link rel="stylesheet" href="../assets/css/text-readability.css"/>  <link rel="stylesheet" href="../assets/css/shared-shell.css?v=20260716-574" />
+  <link rel="stylesheet" href="../assets/css/master-ui-standard.css?v=20260717-546" />
 </head>
-<body><div id="app" class="app"></div><script src="../assets/js/app.js?v=20260717-552"></script><script src="../assets/js/tcr-actions.js?v=20260713-600"></script><script src="../assets/js/master-init.js?v=20260713-583"></script><script src="../assets/js/tcr-table.js?v=20260713-587"></script>
+<body><div id="app" class="app"></div><script src="../assets/js/app.js?v=20260712-636"></script><script src="../assets/js/tcr-actions.js?v=20260713-600"></script><script src="../assets/js/master-init.js?v=20260713-583"></script><script src="../assets/js/tcr-table.js?v=20260713-587"></script>
 <script>
 const CHECKBOOK_KEY='tcr3_checkbooks';
 function seedCheckbooks(){let rows=[];try{rows=JSON.parse(localStorage.getItem(CHECKBOOK_KEY)||'[]')}catch(e){}if(!rows.length){rows=[{id:'CKB-001',bank:'İş Bankası',branch:'Osmaniye',account:'CARİ',iban:'TR34 0006 4000 0006 4000 0006 40',bookNo:'ISB-2026-A',start:100001,end:100025,last:100004,status:'Aktif'},{id:'CKB-002',bank:'Ziraat Bankası',branch:'Bahçe',account:'Vadesiz TL',iban:'TR20 0001 0000 0002 3456 7890 12',bookNo:'ZRT-2026-B',start:200001,end:200050,last:200010,status:'Aktif'}];localStorage.setItem(CHECKBOOK_KEY,JSON.stringify(rows))}return rows}

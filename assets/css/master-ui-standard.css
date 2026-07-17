@@ -1,0 +1,128 @@
+/* TCR3WEB ERP MASTER V2 — shared sidebar and typography standard */
+:root{
+  --tcr-shell-sidebar-width:248px;
+  --tcr-sidebar-font-size:14px;
+  --tcr-sidebar-line-height:1.25;
+  --tcr-table-font-size:12px;
+  --tcr-table-head-font-size:12px;
+}
+
+/* Sidebar: one geometry and typography source on every page */
+#app.app>.sidebar{
+  width:var(--tcr-shell-sidebar-width)!important;
+  font-family:Inter,system-ui,-apple-system,"Segoe UI",sans-serif!important;
+}
+#app.app>.sidebar .sidebar-nav{padding:0 8px!important;}
+#app.app>.sidebar .nav-item{
+  min-height:40px!important;
+  padding:10px 12px!important;
+  gap:12px!important;
+  margin-bottom:2px!important;
+  border-radius:8px!important;
+  font-family:Inter,system-ui,-apple-system,"Segoe UI",sans-serif!important;
+  font-size:var(--tcr-sidebar-font-size)!important;
+  font-weight:500!important;
+  line-height:var(--tcr-sidebar-line-height)!important;
+  letter-spacing:0!important;
+}
+#app.app>.sidebar .nav-icon,
+#app.app>.sidebar .nav-icon svg{
+  width:20px!important;
+  height:20px!important;
+  min-width:20px!important;
+  flex:0 0 20px!important;
+}
+#app.app>.sidebar .nav-text{
+  display:block!important;
+  min-width:0!important;
+  font:inherit!important;
+  line-height:inherit!important;
+  opacity:1!important;
+}
+#app.app>.sidebar .sidebar-section{
+  padding:20px 12px 8px!important;
+  font-size:11px!important;
+  font-weight:600!important;
+  line-height:1.2!important;
+}
+#app.app>.sidebar .sidebar-subsection{
+  padding:8px 12px 4px 18px!important;
+  font-size:10px!important;
+  font-weight:700!important;
+  line-height:1.2!important;
+}
+
+/* Desktop collapsed state remains icon-only. */
+@media (min-width:1181px){
+  #app.app.collapsed>.sidebar{width:var(--tcr-shell-sidebar-collapsed)!important;}
+  #app.app.collapsed>.sidebar .nav-text{opacity:0!important;}
+}
+
+/* Mobile/tablet sidebar keeps exactly the same font and row geometry. */
+@media (max-width:1180px){
+  #app.app>.sidebar{width:min(86vw,300px)!important;}
+  #app.app>.sidebar .nav-item{
+    min-height:40px!important;
+    padding:10px 12px!important;
+    font-size:var(--tcr-sidebar-font-size)!important;
+  }
+  #app.app>.sidebar .nav-text{opacity:1!important;display:block!important;}
+}
+
+/* One site/table typography source */
+html,body,button,input,select,textarea,
+#content,.card,.panel,.table-wrap,table{
+  font-family:Inter,system-ui,-apple-system,"Segoe UI",sans-serif!important;
+}
+table.data thead th,
+.data thead th,
+.dop-table thead th,
+.service-table thead th,
+.form-line-table thead th{
+  background:#f3f4f6!important;
+  color:#111827!important;
+  font-size:var(--tcr-table-head-font-size)!important;
+  font-weight:700!important;
+  line-height:1.2!important;
+  letter-spacing:0!important;
+  text-transform:none!important;
+}
+table.data tbody td,
+.data tbody td,
+.dop-table tbody td,
+.service-table tbody td,
+.form-line-table tbody td{
+  color:#111827!important;
+  font-size:var(--tcr-table-font-size)!important;
+  font-weight:500!important;
+  line-height:1.35!important;
+}
+
+/* Sorting: header never changes; only the active arrow gets color. */
+.data.tcr-sortable thead th[data-tcr-sortable="true"],
+.data.tcr-sortable thead th[data-tcr-sortable="true"]:hover,
+.data.tcr-sortable thead th[data-tcr-sortable="true"]:focus-visible,
+.data.tcr-sortable thead th[aria-sort="ascending"],
+.data.tcr-sortable thead th[aria-sort="descending"]{
+  background:#f3f4f6!important;
+  color:#111827!important;
+  outline:none!important;
+}
+.data.tcr-sortable thead th .tcr-sort-indicator{color:#94a3b8!important;}
+.data.tcr-sortable thead th[aria-sort="ascending"] .tcr-sort-indicator,
+.data.tcr-sortable thead th[aria-sort="descending"] .tcr-sort-indicator{
+  color:#2563eb!important;
+}
+
+/* Cari mobile KPI cards must not disappear. */
+@media (max-width:767.98px){
+  body.tcr-cari-clean .tcr-ac-grid,
+  body.tcr-page-cari .tcr-ac-grid{
+    display:grid!important;
+    grid-template-columns:1fr!important;
+  }
+  body.tcr-cari-clean .tcr-ac-grid .tcr-action-card,
+  body.tcr-page-cari .tcr-ac-grid .tcr-action-card{
+    display:grid!important;
+  }
+}

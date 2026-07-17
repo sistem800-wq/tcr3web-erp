@@ -15,14 +15,14 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="../assets/css/style.css?v=20260717-548" />
+  <link rel="stylesheet" href="../assets/css/style.css?v=20260712-653" />
   <link rel="stylesheet" href="../assets/css/responsive-master.css?v=20260713-591" />
   <link rel="stylesheet" href="../assets/css/performance.css?v=20260711-700" />
-  <link rel="stylesheet" href="../assets/css/tcr-table.css?v=20260717-547" />
+  <link rel="stylesheet" href="../assets/css/tcr-table.css?v=20260713-583" />
   <link rel="stylesheet" href="../assets/css/kpi-standard.css?v=20260712-694" />
   <link rel="stylesheet" href="../assets/css/text-readability.css?v=20260712-657" />
   <link rel="stylesheet" href="../assets/css/cari-amount-status.css?v=20260712-621" />
-  <link rel="stylesheet" href="../assets/css/shared-shell.css?v=20260717-547" />
+  <link rel="stylesheet" href="../assets/css/shared-shell.css?v=20260717-561" />
 
   <style id="tcr-cari-single-source-final">
     /* 559 · Kilit aksiyonu sağ işlem butonlarında; Durum yalnız fiş onay durumudur */
@@ -101,47 +101,7 @@
         font-family:'JetBrains Mono',monospace;font-size:10px!important
       }
     }
-  
-    /* 556 - Cari tablo işlem erişimi ve kayıt numarası kolon standardı */
-    #cariFisTable th:first-child,
-    #cariFisTable td:first-child {
-      white-space: nowrap !important;
-      word-break: normal !important;
-      overflow-wrap: normal !important;
-    }
-    #cariFisTable td[data-label="İşlem"] {
-      position: relative !important;
-      z-index: 4 !important;
-      overflow: visible !important;
-      pointer-events: auto !important;
-    }
-    #cariFisTable td[data-label="İşlem"] .tcr-row-actions,
-    #cariFisTable td[data-label="İşlem"] .tcr-row-actions * {
-      pointer-events: auto !important;
-    }
-    #cariFisTable td[data-label="İşlem"] .icon-btn {
-      position: relative !important;
-      z-index: 5 !important;
-      cursor: pointer !important;
-      touch-action: manipulation !important;
-    }
-    @media (max-width: 767.98px) {
-      #cariFisTable tbody tr {
-        display: grid !important;
-      }
-      #cariFisTable tbody td[data-label="Fiş No"] {
-        order: -100 !important;
-        grid-column: 1 / -1 !important;
-        white-space: nowrap !important;
-        word-break: normal !important;
-        overflow-wrap: normal !important;
-      }
-      #cariFisTable tbody td[data-label="İşlem"] {
-        order: 100 !important;
-        grid-column: 1 / -1 !important;
-      }
-    }
-</style>
+  </style>
 
 
 
@@ -219,10 +179,11 @@
     }
   </style>
 
+  <link rel="stylesheet" href="../assets/css/master-ui-standard.css?v=20260717-546" />
 </head>
 <body>
   <div id="app" class="app"></div>
-  <script src="../assets/js/app.js?v=20260717-552"></script>
+  <script src="../assets/js/app.js?v=20260716-574"></script>
   <script src="../assets/js/tcr-actions.js?v=20260713-600"></script>
   <script src="../assets/js/master-init.js?v=20260713-583"></script>
   <script src="../assets/js/tcr-table.js?v=20260713-587"></script>
@@ -267,7 +228,7 @@
       return `<div class="page-head"><div><div class="breadcrumb"><a href="dashboard.html">Genel</a><span>›</span><a href="cari.html">Cari</a><span>›</span><span>Cari Fişleri</span></div><h1 class="page-title">${ICONS['file-text']} Cari Fişleri</h1><div class="page-sub">Açılış, devir ve virman fiş kayıtları</div></div><div class="page-actions"><button class="btn btn-ghost" onclick="toast('Cari fiş raporu indirildi (prototip)')">${ICONS.download} Rapor</button><button class="btn btn-primary" onclick="location.href='cari-fis-form.html?tip=acilis'">${ICONS.plus} Yeni Fiş</button></div></div>
       <div class="tcr-ac-grid">${CARI_FIS_TIPLERI.map(t=>{const c=MOCK_CARI_FIS.filter(f=>f.tip===t.id).length;const cc=t.id==='acilis'?'green':t.id==='devir'?'blue':'red';return `<button type="button" class="tcr-action-card tcr-ac-${cc}" onclick="location.href='cari-fis-form.html?tip=${t.id}'"><span class="tcr-ac-icon">${ICONS[t.iconKey]||ICONS.file}</span><span class="tcr-ac-content"><span class="tcr-ac-title">${t.label}</span><span class="tcr-ac-desc">${t.desc}</span></span><span class="tcr-ac-badge">${c}</span></button>`}).join('')}</div>
       <nav class="cari-mobile-nav" aria-label="Cari fiş hızlı işlemler"><button type="button" class="active" onclick="toggleSidebar()">${ICONS.menu}<span>Menü</span></button><button type="button" onclick="location.href='cari-fis-form.html?tip=acilis'">${ICONS.plus}<span>Yeni Fiş</span></button><button type="button" onclick="filterCariFisTip('acilis');scrollToCariFisTable()">${ICONS.inbox}<span>Açılış</span></button><button type="button" onclick="filterCariFisTip('devir');scrollToCariFisTable()">${ICONS['trend-up']}<span>Devir</span></button><button type="button" onclick="filterCariFisTip('virman');scrollToCariFisTable()">${ICONS.send}<span>Virman</span></button></nav>
-      <div class="card cari-list-card"><div class="card-body" style="padding:var(--s-4)"><div class="toolbar"><div class="toolbar-search"><span class="toolbar-search-icon">${ICONS.search}</span><input type="text" placeholder="Fiş no, cari veya açıklama ara..." oninput="filterCariFisTable(this.value)" /></div><select class="filter-select" onchange="filterCariFisTip(this.value)"><option value="">Tüm Tipler</option>${CARI_FIS_TIPLERI.map(t=>`<option value="${t.id}">${t.label}</option>`).join('')}</select><select class="filter-select" onchange="filterCariFisDurum(this.value)"><option value="">Tüm Durumlar</option><option>Onaylandı</option><option>Bekliyor</option><option>Taslak</option></select><div class="toolbar-spacer"></div></div><div class="table-wrap" style="border:none"><table class="data" id="cariFisTable" data-no-record-lock="true"><thead><tr><th>Fiş No</th><th>Tip</th><th>Tarih</th><th>Cari / İçerik</th><th class="num">Kalem</th><th class="num">Borç</th><th class="num">Alacak</th><th>Durum</th><th>Açıklama</th><th>İşlem</th></tr></thead><tbody>${fisRows}</tbody><tfoot class="cari-bakiye-footer"><tr><td colspan="4" class="cari-bakiye-footer-label">Toplam:</td><td colspan="6"><div class="cari-bakiye-footer-values"><span class="cari-footer-total cari-footer-borc">Borç: <strong id="cfFooterBorc">0,00 ₺</strong></span><span class="cari-footer-total cari-footer-alacak">Alacak: <strong id="cfFooterAlacak">0,00 ₺</strong></span><span class="cari-footer-total cari-footer-net">Net: <strong id="cfFooterNet">0,00 ₺</strong></span></div></td></tr></tfoot></table></div></div></div>`;
+      <div class="card cari-list-card"><div class="card-body" style="padding:var(--s-4)"><div class="toolbar"><div class="toolbar-search"><span class="toolbar-search-icon">${ICONS.search}</span><input type="text" placeholder="Fiş no, cari veya açıklama ara..." oninput="filterCariFisTable(this.value)" /></div><select class="filter-select" onchange="filterCariFisTip(this.value)"><option value="">Tüm Tipler</option>${CARI_FIS_TIPLERI.map(t=>`<option value="${t.id}">${t.label}</option>`).join('')}</select><select class="filter-select" onchange="filterCariFisDurum(this.value)"><option value="">Tüm Durumlar</option><option>Onaylandı</option><option>Bekliyor</option><option>Taslak</option></select><div class="toolbar-spacer"></div></div><div class="table-wrap" style="border:none"><table class="data" id="cariFisTable"><thead><tr><th>Fiş No</th><th>Tip</th><th>Tarih</th><th>Cari / İçerik</th><th class="num">Kalem</th><th class="num">Borç</th><th class="num">Alacak</th><th>Durum</th><th>Açıklama</th><th>İşlem</th></tr></thead><tbody>${fisRows}</tbody><tfoot class="cari-bakiye-footer"><tr><td colspan="4" class="cari-bakiye-footer-label">Toplam:</td><td colspan="6"><div class="cari-bakiye-footer-values"><span class="cari-footer-total cari-footer-borc">Borç: <strong id="cfFooterBorc">0,00 ₺</strong></span><span class="cari-footer-total cari-footer-alacak">Alacak: <strong id="cfFooterAlacak">0,00 ₺</strong></span><span class="cari-footer-total cari-footer-net">Net: <strong id="cfFooterNet">0,00 ₺</strong></span></div></td></tr></tfoot></table></div></div></div>`;
     });
 
     function filterCariFisTable(v) {
@@ -356,25 +317,66 @@
 
   
 
+    function tcrNormalizeCariActions(tableId) {
+      const table = document.getElementById(tableId);
+      if (!table) return;
 
-  
+      table.querySelectorAll('tbody tr').forEach((row) => {
+        const cell = row.querySelector('td[data-label="İşlem"]') || row.lastElementChild;
+        if (!cell) return;
 
-    /* 556 - İşlem butonları tablo sıralama/satır olaylarından bağımsız çalışır */
-    (function initcariFisTableActionButtons() {
-      const bind = () => {
-        const table = document.getElementById('cariFisTable');
-        if (!table || table.dataset.actionClickReady === '1') return;
-        table.dataset.actionClickReady = '1';
-        table.addEventListener('click', (event) => {
-          const button = event.target.closest('td[data-label="İşlem"] button');
-          if (!button) return;
-          event.stopPropagation();
-        }, false);
-      };
-      document.addEventListener('DOMContentLoaded', bind, {once:true});
-      window.addEventListener('load', bind, {once:true});
-      setTimeout(bind, 100);
-    })();
-</script>
+        let group = cell.querySelector('.tcr-row-actions');
+        if (!group) {
+          group = document.createElement('div');
+          group.className = 'tcr-row-actions';
+          cell.appendChild(group);
+        }
+
+        const allButtons = Array.from(cell.querySelectorAll('button'));
+        const isLock = (btn) => {
+          const title = (btn.getAttribute('title') || btn.getAttribute('aria-label') || '').toLocaleLowerCase('tr-TR');
+          return btn.hasAttribute('data-tcr-lock-action') ||
+            btn.classList.contains('tcr-lock-open') ||
+            btn.classList.contains('tcr-lock-closed') ||
+            title.includes('kilit') || title.includes('düzenlenebilir');
+        };
+
+        const lockButtons = allButtons.filter(isLock);
+        const canonicalLock = lockButtons.find(btn => btn.hasAttribute('data-tcr-lock-action')) || lockButtons[0];
+        lockButtons.forEach(btn => { if (btn !== canonicalLock) btn.remove(); });
+
+        const live = Array.from(cell.querySelectorAll('button'));
+        const view = live.find(btn => /gör|gor/i.test(btn.getAttribute('title') || btn.getAttribute('aria-label') || ''));
+        const edit = live.find(btn => /düzenle|duzenle/i.test(btn.getAttribute('title') || btn.getAttribute('aria-label') || ''));
+        const more = live.find(btn => /diğer|diger|menü|menu/i.test(btn.getAttribute('title') || btn.getAttribute('aria-label') || ''));
+
+        [view, edit, canonicalLock, more].filter(Boolean).forEach(btn => group.appendChild(btn));
+
+        Array.from(cell.children).forEach(child => {
+          if (child !== group && child.matches?.('button, .tcr-row-actions')) child.remove();
+        });
+      });
+    }
+
+    function tcrInitCariActionGuard(tableId) {
+      const run = () => tcrNormalizeCariActions(tableId);
+      run();
+      setTimeout(run, 60);
+      setTimeout(run, 250);
+      const table = document.getElementById(tableId);
+      if (!table || table.dataset.actionGuard === '1') return;
+      table.dataset.actionGuard = '1';
+      let queued = false;
+      new MutationObserver(() => {
+        if (queued) return;
+        queued = true;
+        requestAnimationFrame(() => { queued = false; run(); });
+      }).observe(table, {subtree:true, childList:true, attributes:true, attributeFilter:['class','title','aria-label']});
+    }
+
+    document.addEventListener('DOMContentLoaded', () => tcrInitCariActionGuard('cariFisTable'));
+    window.addEventListener('load', () => tcrInitCariActionGuard('cariFisTable'));
+
+  </script>
 </body>
 </html>
