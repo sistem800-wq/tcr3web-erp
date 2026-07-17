@@ -2007,32 +2007,31 @@ html.tcr-ekstre-page .ekstre-filter-card .tcr-search-clear-btn{display:none!impo
   }
 }
 
-/* 542 — Pagination size control: table header right, immediately before column selector. */
-.data thead th:has(.tcr-table-page-size--header) {
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
-  gap: 6px;
-  min-width: 142px;
-  white-space: nowrap;
+
+
+/* MASTER TABLE CONTROLS — page size and column selector live in toolbar, never inside thead. */
+.toolbar{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.toolbar-spacer{flex:1 1 auto;min-width:12px}
+.tcr-table-header-controls{
+  margin-left:auto;display:flex;align-items:center;justify-content:flex-end;gap:8px;
+  flex:0 0 auto;min-height:38px;position:relative;z-index:20;
 }
-.tcr-table-page-size--header {
-  margin-left: auto;
-  gap: 0;
+.tcr-table-page-size--toolbar{
+  display:flex;align-items:center;gap:6px;margin:0!important;flex:0 0 auto;
 }
-.tcr-table-page-size--header .tcr-table-page-size-label {
-  display: none;
+.tcr-table-page-size--toolbar .tcr-table-page-size-label{display:none!important}
+.tcr-table-page-size--toolbar .tcr-table-page-size-select{
+  width:76px;min-width:76px;height:36px;padding:0 26px 0 10px;
+  border:1px solid #cbd5e1;border-radius:9px;background:#fff;color:#0f172a;
+  font:700 12px/1 Inter,system-ui,sans-serif;box-shadow:none;cursor:pointer;
 }
-.tcr-table-page-size--header .tcr-table-page-size-select {
-  width: 70px;
-  min-width: 70px;
-  height: 32px;
-  padding: 0 24px 0 9px;
-  border-radius: 8px;
-  font-size: 12px;
-  background-color: #fff;
+.tcr-column-selector-wrap,.cari-column-selector-wrap{position:relative;display:flex;align-items:center;flex:0 0 auto}
+.tcr-column-selector-btn,.cari-column-selector-btn{
+  width:36px!important;height:36px!important;min-width:36px!important;display:inline-flex!important;
+  align-items:center!important;justify-content:center!important;margin:0!important;
 }
-@media (max-width: 767.98px) {
-  .data thead th:has(.tcr-table-page-size--header) { min-width: 124px; gap: 4px; }
-  .tcr-table-page-size--header .tcr-table-page-size-select { width: 62px; min-width: 62px; height: 30px; }
+.tcr-column-selector-menu,.cari-column-menu{z-index:10050!important}
+@media(max-width:767.98px){
+  .tcr-table-header-controls{width:100%;margin-left:0;justify-content:flex-end;order:20}
+  .tcr-table-page-size--toolbar .tcr-table-page-size-select{width:72px;min-width:72px;height:36px}
 }

@@ -259,7 +259,7 @@
       #stokHareketDetayModal .stok-detail-line-table tbody td:nth-child(6){grid-column:2;grid-row:3}
     }
 
-    /* 544 · Cari Kartlar sabit kolon yapısı */
+    /* Cari Kartlar · doğrudan tablo yerleşimi */
     #cariTable{width:100%!important;min-width:1080px!important;table-layout:fixed!important}
     #cariTable th,#cariTable td{box-sizing:border-box}
     #cariTable th[data-col="kod"]{width:88px}
@@ -270,13 +270,17 @@
     #cariTable th[data-col="vade"]{width:90px}
     #cariTable th[data-col="bakiye"]{width:130px}
     #cariTable th[data-col="durum"]{width:100px}
-    #cariTable .cari-column-selector-head{position:sticky!important;right:0!important;z-index:12!important;width:238px!important;min-width:238px!important;max-width:238px!important;background:#f1f5f9!important;box-shadow:-10px 0 16px -14px rgba(15,23,42,.65)!important}
-    #cariTable tbody td:last-child{position:sticky!important;right:0!important;z-index:4!important;width:238px!important;min-width:238px!important;max-width:238px!important;background:#fff!important;box-shadow:-10px 0 16px -14px rgba(15,23,42,.42)!important}
-    #cariTable tbody tr:hover td:last-child{background:#eef4fb!important}
-    #cariTable .cari-column-selector-head>.cari-column-selector-btn{margin-left:auto!important}
-    #cariColumnMenu{position:fixed!important;top:auto!important;left:auto!important;right:24px!important;z-index:10050!important}
+    #cariTable .tcr-action-column{position:sticky!important;right:0!important;z-index:4!important;width:238px!important;min-width:238px!important;max-width:238px!important;background:#fff!important;box-shadow:-10px 0 16px -14px rgba(15,23,42,.42)!important}
+    #cariTable thead .tcr-action-column{z-index:9!important;background:#f1f5f9!important;text-align:right!important;padding-right:14px!important}
+    #cariTable tbody tr:hover .tcr-action-column{background:#eef4fb!important}
     #cariTable .cari-col-hidden{display:none!important}
-    @media(max-width:767.98px){#cariTable{min-width:0!important;table-layout:auto!important}#cariTable .cari-column-selector-head,#cariTable tbody td:last-child{position:static!important;width:auto!important;min-width:0!important;max-width:none!important;box-shadow:none!important}#cariColumnMenu{top:72px!important;left:12px!important;right:12px!important}}
+    .cari-column-selector-wrap{position:relative;display:flex;align-items:center}
+    #cariColumnMenu{position:fixed!important;top:auto!important;left:auto!important;right:24px!important;z-index:10050!important}
+    @media(max-width:767.98px){
+      #cariTable{min-width:0!important;table-layout:auto!important}
+      #cariTable .tcr-action-column{position:static!important;width:auto!important;min-width:0!important;max-width:none!important;box-shadow:none!important}
+      #cariColumnMenu{top:72px!important;left:12px!important;right:12px!important}
+    }
 </style>
   <link rel="stylesheet" href="../assets/css/shared-shell.css?v=20260716-574" />
 </head>
@@ -407,25 +411,27 @@
               <option>Kayseri</option>
             </select>
             <div class="toolbar-spacer"></div>
+            <div class="tcr-table-header-controls">
+              <div class="cari-column-selector-wrap">
+                <button type="button" class="icon-btn cari-column-selector-btn" onclick="event.stopPropagation();toggleCariColumnMenu()" title="Kolon Seç">${ICONS.settings || ICONS.sliders || ICONS.filter}</button>
+                <div id="cariColumnMenu" class="cari-column-menu" onclick="event.stopPropagation()">
+                  <label><input type="checkbox" checked data-column-toggle="kod" onchange="toggleCariColumn(this)"> Kod</label>
+                  <label><input type="checkbox" checked data-column-toggle="unvan" onchange="toggleCariColumn(this)"> Ünvan</label>
+                  <label><input type="checkbox" checked data-column-toggle="tip" onchange="toggleCariColumn(this)"> Tip</label>
+                  <label><input type="checkbox" checked data-column-toggle="yetkili" onchange="toggleCariColumn(this)"> Yetkili</label>
+                  <label><input type="checkbox" checked data-column-toggle="sehir" onchange="toggleCariColumn(this)"> Şehir</label>
+                  <label><input type="checkbox" checked data-column-toggle="vade" onchange="toggleCariColumn(this)"> Vade</label>
+                  <label><input type="checkbox" checked data-column-toggle="bakiye" onchange="toggleCariColumn(this)"> Bakiye</label>
+                  <label><input type="checkbox" checked data-column-toggle="durum" onchange="toggleCariColumn(this)"> Durum</label>
+                </div>
+              </div>
+            </div>
           </div>
 
           <div class="table-wrap" style="border:none">
             <table class="data" id="cariTable" data-no-record-lock="true" data-no-column-selector="true">
               <thead><tr>
-                <th data-col="kod">Kod</th><th data-col="unvan">Ünvan</th><th data-col="tip">Tip</th><th data-col="yetkili">Yetkili</th><th data-col="sehir">Şehir</th><th data-col="vade">Vade</th><th class="num" data-col="bakiye">Bakiye</th><th data-col="durum">Durum</th>
-                <th class="cari-column-selector-head">
-                  <button type="button" class="icon-btn cari-column-selector-btn" onclick="event.stopPropagation();toggleCariColumnMenu()" title="Kolon Seç">${ICONS.settings || ICONS.sliders || ICONS.filter}</button>
-                  <div id="cariColumnMenu" class="cari-column-menu" onclick="event.stopPropagation()">
-                    <label><input type="checkbox" checked data-column-toggle="kod" onchange="toggleCariColumn(this)"> Kod</label>
-                    <label><input type="checkbox" checked data-column-toggle="unvan" onchange="toggleCariColumn(this)"> Ünvan</label>
-                    <label><input type="checkbox" checked data-column-toggle="tip" onchange="toggleCariColumn(this)"> Tip</label>
-                    <label><input type="checkbox" checked data-column-toggle="yetkili" onchange="toggleCariColumn(this)"> Yetkili</label>
-                    <label><input type="checkbox" checked data-column-toggle="sehir" onchange="toggleCariColumn(this)"> Şehir</label>
-                    <label><input type="checkbox" checked data-column-toggle="vade" onchange="toggleCariColumn(this)"> Vade</label>
-                    <label><input type="checkbox" checked data-column-toggle="bakiye" onchange="toggleCariColumn(this)"> Bakiye</label>
-                    <label><input type="checkbox" checked data-column-toggle="durum" onchange="toggleCariColumn(this)"> Durum</label>
-                  </div>
-                </th>
+                <th data-col="kod">Kod</th><th data-col="unvan">Ünvan</th><th data-col="tip">Tip</th><th data-col="yetkili">Yetkili</th><th data-col="sehir">Şehir</th><th data-col="vade">Vade</th><th class="num" data-col="bakiye">Bakiye</th><th data-col="durum">Durum</th><th class="tcr-action-column" data-sort="off">İşlem</th>
               </tr></thead>
               <tbody>
                 ${MOCK.cari.map(c => `

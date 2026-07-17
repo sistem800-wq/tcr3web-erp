@@ -343,6 +343,18 @@
     });
   }
 
+  function findTableToolbar(table) {
+    const scope = table.closest('.card-body, .panel-body, .content-card, section') || table.parentElement;
+    let toolbar = scope?.querySelector(':scope > .toolbar, :scope > .tcr-table-toolbar, .toolbar');
+    if (!toolbar) {
+      toolbar = document.createElement('div');
+      toolbar.className = 'toolbar tcr-table-generated-toolbar';
+      const wrap = table.closest('.table-wrap') || table;
+      wrap.parentElement.insertBefore(toolbar, wrap);
+    }
+    return toolbar;
+  }
+
   function enhance(table) {
     if (!isEligibleTable(table)) return;
     const headRow = table.tHead.rows[0];
@@ -356,11 +368,6 @@
     table.classList.add('tcr-column-managed');
     const key = tableKey(table);
     const state = loadState(key);
-
-    const selectorTh = actionIndex >= 0 ? headRow.cells[actionIndex] : document.createElement('th');
-    selectorTh.classList.add('tcr-column-selector-head');
-    selectorTh.setAttribute('aria-label', actionIndex >= 0 ? 'İşlemler ve kolon seçimi' : 'Kolon seçimi');
-    if (actionIndex < 0) selectorTh.className = 'tcr-column-selector-head';
     const wrap = document.createElement('div');
     wrap.className = 'tcr-column-selector-wrap';
     const button = document.createElement('button');
@@ -372,7 +379,6 @@
     button.innerHTML = settingsIcon;
     const menu = document.createElement('div');
     menu.className = 'tcr-column-selector-menu';
-    menu.innerHTML = '';
 
     candidates.forEach(({ index, label }) => {
       const id = `${key.replace(/[^a-z0-9]/gi, '-')}-${index}`;
@@ -400,30 +406,22 @@
       button.setAttribute('aria-expanded', String(opening));
     });
     menu.addEventListener('click', event => event.stopPropagation());
-
-    const pageSizeControl = table._tcrPagination?.control || (() => {
-      const body = table.closest('.card-body, .panel-body, .content-card, section') || table.parentElement;
-      return body?.querySelector('.tcr-table-page-size') || null;
-    })();
-    if (pageSizeControl) {
-      pageSizeControl.classList.add('tcr-table-page-size-in-header');
-      wrap.append(pageSizeControl);
-    }
     wrap.append(button, menu);
-    if (actionIndex >= 0) {
-      selectorTh.replaceChildren(wrap);
-      markActionCells(table, actionIndex);
-    } else {
-      selectorTh.appendChild(wrap);
-      headRow.appendChild(selectorTh);
-      ensureBodyCells(table);
+
+    const toolbar = findTableToolbar(table);
+    let controls = toolbar.querySelector('.tcr-table-header-controls');
+    if (!controls) {
+      controls = document.createElement('div');
+      controls.className = 'tcr-table-header-controls';
+      toolbar.appendChild(controls);
     }
+    controls.appendChild(wrap);
+    markActionCells(table, actionIndex);
   }
 
   function scan() {
     scheduled = false;
     document.querySelectorAll('#content table.data').forEach(enhance);
-    document.querySelectorAll('#content table.data.tcr-column-managed').forEach(ensureBodyCells);
   }
 
   function scheduleScan() {
