@@ -2176,3 +2176,101 @@ table.data tbody td,
   table.data tbody td,
   .data tbody td{font-size:12px!important;line-height:18px!important;}
 }
+
+/* 548 · FINAL MASTER TABLE TYPOGRAPHY — one standard for every module */
+:root{
+  --tcr-master-font:Inter,system-ui,-apple-system,"Segoe UI",Arial,sans-serif;
+  --tcr-table-body-size:13px;
+  --tcr-table-head-size:10.5px;
+  --tcr-table-head-weight:600;
+}
+#content table.data,
+#content table.data th,
+#content table.data td,
+#content .table-tools,
+#content .tcr-table-generated-toolbar,
+#content .tcr-table-pagination-footer{
+  font-family:var(--tcr-master-font)!important;
+}
+#content table.data>thead>tr>th{
+  font-size:var(--tcr-table-head-size)!important;
+  line-height:15px!important;
+  font-weight:var(--tcr-table-head-weight)!important;
+  letter-spacing:.01em!important;
+  color:#334155!important;
+  background:#f6f8fb!important;
+  text-transform:uppercase!important;
+  box-shadow:none!important;
+  outline:0!important;
+  border-top-color:#e2e8f0!important;
+  border-bottom-color:#dbe3ec!important;
+}
+#content table.data>tbody>tr>td{
+  font-size:var(--tcr-table-body-size)!important;
+  line-height:20px!important;
+  font-weight:500!important;
+  color:#0f172a!important;
+}
+/* Sorted selection is deliberately passive: only arrow changes color. */
+#content table.data.tcr-sortable>thead>tr>th[data-tcr-sortable="true"],
+#content table.data.tcr-sortable>thead>tr>th[data-tcr-sortable="true"]:hover,
+#content table.data.tcr-sortable>thead>tr>th[data-tcr-sortable="true"]:focus-visible,
+#content table.data.tcr-sortable>thead>tr>th[aria-sort="ascending"],
+#content table.data.tcr-sortable>thead>tr>th[aria-sort="descending"]{
+  color:#334155!important;
+  background:#f6f8fb!important;
+  font-weight:var(--tcr-table-head-weight)!important;
+  border-bottom-color:#dbe3ec!important;
+  box-shadow:none!important;
+  outline:0!important;
+}
+#content table.data.tcr-sortable>thead>tr>th .tcr-sort-indicator{
+  color:#a8b4c4!important;
+  opacity:.38!important;
+}
+#content table.data.tcr-sortable>thead>tr>th[aria-sort="ascending"] .tcr-sort-indicator,
+#content table.data.tcr-sortable>thead>tr>th[aria-sort="descending"] .tcr-sort-indicator{
+  color:#2563eb!important;
+  opacity:1!important;
+}
+/* Cari Kartlar Windows: same shared header scale, no dominant selected column. */
+@media(min-width:1181px){
+  body.tcr-page-cari #content #cariTable>thead>tr>th{
+    font-size:10.5px!important;font-weight:600!important;color:#334155!important;background:#f6f8fb!important;
+  }
+  body.tcr-page-cari #content #cariTable>thead>tr>th[aria-sort="ascending"],
+  body.tcr-page-cari #content #cariTable>thead>tr>th[aria-sort="descending"]{
+    color:#334155!important;background:#f6f8fb!important;border-bottom-color:#dbe3ec!important;box-shadow:none!important;
+  }
+}
+
+/* 547 · MASTER TABLE TYPOGRAPHY — one font scale for every module */
+:root{
+  --tcr-table-head-font-size:12px;
+  --tcr-table-body-font-size:13px;
+}
+table.data,
+.tcr-table,
+.table{
+  font-family:Inter,system-ui,-apple-system,"Segoe UI",Arial,sans-serif!important;
+}
+table.data thead th,
+.tcr-table thead th,
+.table thead th{
+  font-size:var(--tcr-table-head-font-size)!important;
+  line-height:16px!important;
+  font-weight:700!important;
+  letter-spacing:.015em!important;
+  color:#111827!important;
+}
+table.data tbody td,
+.tcr-table tbody td,
+.table tbody td{
+  font-size:var(--tcr-table-body-font-size)!important;
+  line-height:18px!important;
+  font-weight:500!important;
+  color:#111827!important;
+}
+table.data tbody td:first-child,
+.tcr-table tbody td:first-child,
+.table tbody td:first-child{font-weight:600!important;}

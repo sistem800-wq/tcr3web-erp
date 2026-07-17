@@ -5,7 +5,7 @@ const RUNTIME_CACHE = 'tcr3web-runtime-' + TCR3_CACHE_VERSION;
 const APP_SHELL = './index.html?pwa=1&v=600';
 const CORE_ASSETS = [
   './', './index.html', './pages/dashboard.html', './manifest.webmanifest',
-  './assets/css/style.css?v=20260711-697',
+  './assets/css/style.css?v=20260717-548',
   './assets/css/mobile-tablet-framework.css?v=20260715-600',
   './assets/css/performance.css?v=20260711-697',
   './assets/js/app.js?v=20260711-697',
