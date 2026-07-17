@@ -323,3 +323,68 @@ body.sidebar-open-lock{overflow:hidden!important;touch-action:none!important;}
   body.tcr-page-cari-islemler #content > .tcr-ac-grid{display:grid!important;}
   body.tcr-page-cari-islemler #content > .tcr-ac-grid > div{display:contents!important;}
 }
+
+/* 549 · MASTER sidebar typography lock
+   Sidebar size and typography are route-independent. */
+:root{
+  --tcr-ui-font: Inter, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --tcr-ui-font-size: 14px;
+  --tcr-sidebar-font-size: 14px;
+  --tcr-sidebar-row-height: 40px;
+}
+#app.app > .sidebar,
+#app.app > .sidebar *{
+  font-family:var(--tcr-ui-font)!important;
+}
+#app.app > .sidebar .sidebar-nav{
+  padding-inline:8px!important;
+}
+#app.app > .sidebar .sidebar-nav .nav-item,
+#app.app > .sidebar .sidebar-nav .nav-item:hover,
+#app.app > .sidebar .sidebar-nav .nav-item:focus,
+#app.app > .sidebar .sidebar-nav .nav-item:active,
+#app.app > .sidebar .sidebar-nav .nav-item.active{
+  min-height:var(--tcr-sidebar-row-height)!important;
+  padding:9px 12px!important;
+  gap:10px!important;
+  margin-bottom:2px!important;
+  border-radius:10px!important;
+  font-size:var(--tcr-sidebar-font-size)!important;
+  line-height:20px!important;
+  letter-spacing:0!important;
+  transform:none!important;
+}
+#app.app > .sidebar .sidebar-nav .nav-item:not(.active){font-weight:500!important;}
+#app.app > .sidebar .sidebar-nav .nav-item.active{font-weight:700!important;}
+#app.app > .sidebar .sidebar-nav .nav-text{
+  font-size:inherit!important;
+  line-height:inherit!important;
+}
+#app.app > .sidebar .sidebar-nav .nav-icon,
+#app.app > .sidebar .sidebar-nav .nav-icon svg{
+  width:20px!important;
+  height:20px!important;
+  min-width:20px!important;
+  flex:0 0 20px!important;
+}
+/* Do not shrink the menu at 1366px/Windows scaling. */
+@media (min-width:769px){
+  #app.app > .sidebar .sidebar-nav .nav-item,
+  #app.app > .sidebar .sidebar-nav .nav-item:hover,
+  #app.app > .sidebar .sidebar-nav .nav-item:focus,
+  #app.app > .sidebar .sidebar-nav .nav-item:active,
+  #app.app > .sidebar .sidebar-nav .nav-item.active{
+    font-size:14px!important;
+  }
+}
+@media (max-width:768px){
+  #app.app > .sidebar .sidebar-nav .nav-item,
+  #app.app > .sidebar .sidebar-nav .nav-item:hover,
+  #app.app > .sidebar .sidebar-nav .nav-item:focus,
+  #app.app > .sidebar .sidebar-nav .nav-item:active,
+  #app.app > .sidebar .sidebar-nav .nav-item.active{
+    min-height:42px!important;
+    padding:10px 12px!important;
+    font-size:14px!important;
+  }
+}

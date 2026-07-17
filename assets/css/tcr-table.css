@@ -2116,3 +2116,63 @@ html.tcr-ekstre-page .ekstre-filter-card .tcr-search-clear-btn{display:none!impo
   #content #ekstreTable.data.tcr-mobile-two-row > tbody > tr > td:nth-child(7){grid-column:1/3!important;grid-row:4!important}
   #content #ekstreTable.data.tcr-mobile-two-row > tbody > tr > td:nth-child(8){grid-column:1/3!important;grid-row:5!important}
 }
+
+/* 549 · MASTER table typography and sort indicator standard */
+:root{
+  --tcr-ui-font: Inter, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --tcr-table-font-size: 13px;
+  --tcr-table-head-font-size: 11px;
+  --tcr-table-head-weight: 700;
+  --tcr-table-row-weight: 500;
+}
+table.data,
+.data,
+.table-wrap,
+.tcr-table-generated-toolbar,
+.tcr-table-pagination-footer{
+  font-family:var(--tcr-ui-font)!important;
+}
+table.data thead th,
+.data thead th{
+  font-family:var(--tcr-ui-font)!important;
+  font-size:var(--tcr-table-head-font-size)!important;
+  line-height:16px!important;
+  font-weight:var(--tcr-table-head-weight)!important;
+  letter-spacing:.015em!important;
+  color:#111827!important;
+  background:#f5f7fa!important;
+  text-transform:uppercase!important;
+}
+table.data tbody td,
+.data tbody td{
+  font-family:var(--tcr-ui-font)!important;
+  font-size:var(--tcr-table-font-size)!important;
+  line-height:20px!important;
+  font-weight:var(--tcr-table-row-weight)!important;
+}
+/* Sorting must color only the arrow; header background/text never changes. */
+.data.tcr-sortable thead th[data-tcr-sortable="true"],
+.data.tcr-sortable thead th[data-tcr-sortable="true"]:hover,
+.data.tcr-sortable thead th[data-tcr-sortable="true"]:focus-visible,
+.data.tcr-sortable thead th[aria-sort="ascending"],
+.data.tcr-sortable thead th[aria-sort="descending"]{
+  color:#111827!important;
+  background:#f5f7fa!important;
+  font-weight:var(--tcr-table-head-weight)!important;
+  box-shadow:none!important;
+  outline:none!important;
+  border-bottom-color:var(--border, #dbe3ec)!important;
+}
+.data.tcr-sortable thead th[aria-sort="ascending"] .tcr-sort-indicator,
+.data.tcr-sortable thead th[aria-sort="descending"] .tcr-sort-indicator{
+  color:#2563eb!important;
+}
+.data.tcr-sortable thead th:not([aria-sort="ascending"]):not([aria-sort="descending"]) .tcr-sort-indicator{
+  color:#94a3b8!important;
+}
+@media (max-width:767.98px){
+  table.data thead th,
+  .data thead th{font-size:10px!important;line-height:14px!important;}
+  table.data tbody td,
+  .data tbody td{font-size:12px!important;line-height:18px!important;}
+}
