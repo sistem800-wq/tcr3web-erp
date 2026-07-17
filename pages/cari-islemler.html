@@ -198,7 +198,6 @@
     }
   </style>
 
-  <link rel="stylesheet" href="../assets/css/master-ui-standard.css?v=20260717-546" />
 </head>
 <body>
   <div id="app" class="app"></div>
@@ -303,7 +302,7 @@
         <td data-label="İşlem"><div class="tcr-row-actions">
           <button type="button" class="icon-btn" title="Gör" onclick="openCariIslemDetail('${row.no}')">${CI_SVG_EYE}</button>
           <button type="button" class="icon-btn success" title="Düzenle" onclick="openCariIslemModal('${row.tip}','${row.no}')">${CI_SVG_EDIT}</button>
-          <button type="button" data-tcr-lock-action="1" class="icon-btn ${locked?'tcr-lock-closed':'tcr-lock-open'}" title="${locked?'Kayıt kilitli':'Kayıt düzenlenebilir'}" onclick="showCariLockInfo('${row.no}',${locked})">${locked?CI_SVG_LOCK:CI_SVG_LOCK_OPEN}</button>
+          
           <button type="button" class="icon-btn ci-output-trigger" title="Diğer işlemler" onclick="toggleCariOutputMenu(event,'${row.no}')">${CI_SVG_MORE}</button>
         </div></td>
       </tr>`;
@@ -322,7 +321,7 @@
       </div>
       <nav class="cari-mobile-nav" aria-label="Cari işlem hızlı işlemler"><button type="button" class="active" onclick="toggleSidebar()">${ICONS.menu}<span>Menü</span></button><button type="button" onclick="openCariIslemModal('tahsilat')">${ICONS.cash}<span>Tahsilat</span></button><button type="button" onclick="openCariIslemModal('odeme')">${ICONS.wallet}<span>Ödeme</span></button><button type="button" onclick="openCariIslemModal('cek_islemi')">${ICONS.file_check}<span>Çek</span></button><button type="button" onclick="openCariIslemModal('senet_islemi')">${ICONS.file_text}<span>Senet</span></button></nav>
       <div class="card cari-list-card"><div class="card-body" style="padding:var(--s-4)"><div class="toolbar"><div class="toolbar-search"><span class="toolbar-search-icon">${ICONS.search}</span><input type="text" placeholder="İşlem no, cari veya açıklama ara..." oninput="filterCariIslemTable(this.value)" /></div><select class="filter-select" onchange="filterCariIslemTip(this.value)"><option value="">Tüm Tipler</option>${CARI_ISLEM_TIPLERI.map(t=>`<option value="${t.id}">${t.label}</option>`).join('')}</select><select class="filter-select" onchange="filterCariIslemDurum(this.value)"><option value="">Tüm Durumlar</option><option>Onaylandı</option><option>Bekliyor</option><option>Taslak</option></select><div class="toolbar-spacer"></div></div>
-      <div class="table-wrap ci-table-wrap" style="border:none"><table class="data" id="cariIslemTable"><thead><tr><th>İşlem No</th><th>Tip</th><th>Tarih</th><th>Cari</th><th>Kasa / Banka / Portföy</th><th class="num">Tutar</th><th>Durum</th><th>Açıklama</th><th>İşlem</th></tr></thead><tbody>${rows}</tbody><tfoot class="cari-bakiye-footer"><tr><td colspan="5" class="cari-bakiye-footer-label">Toplam:</td><td colspan="4"><div class="cari-bakiye-footer-values"><span class="cari-footer-total cari-footer-borc">Giriş: <strong id="ciFooterGiris">0,00 ₺</strong></span><span class="cari-footer-total cari-footer-alacak">Çıkış: <strong id="ciFooterCikis">0,00 ₺</strong></span><span class="cari-footer-total cari-footer-net">Net: <strong id="ciFooterNet">0,00 ₺</strong></span></div></td></tr></tfoot></table></div></div></div>
+      <div class="table-wrap ci-table-wrap" style="border:none"><table class="data" id="cariIslemTable" data-no-record-lock="true"><thead><tr><th>İşlem No</th><th>Tip</th><th>Tarih</th><th>Cari</th><th>Kasa / Banka / Portföy</th><th class="num">Tutar</th><th>Durum</th><th>Açıklama</th><th>İşlem</th></tr></thead><tbody>${rows}</tbody><tfoot class="cari-bakiye-footer"><tr><td colspan="5" class="cari-bakiye-footer-label">Toplam:</td><td colspan="4"><div class="cari-bakiye-footer-values"><span class="cari-footer-total cari-footer-borc">Giriş: <strong id="ciFooterGiris">0,00 ₺</strong></span><span class="cari-footer-total cari-footer-alacak">Çıkış: <strong id="ciFooterCikis">0,00 ₺</strong></span><span class="cari-footer-total cari-footer-net">Net: <strong id="ciFooterNet">0,00 ₺</strong></span></div></td></tr></tfoot></table></div></div></div>
       ${modalHtml('cariOdemeModal', 'Cari İşlem', `
         <div class="form-grid-2">
           <div class="form-field"><label class="form-label">İşlem No</label><input class="form-input mono" id="co-no" value="YENİ" readonly /></div>

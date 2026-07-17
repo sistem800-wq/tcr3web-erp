@@ -258,6 +258,25 @@
       #hareketDetayModal .hareket-urun-table tbody td:nth-child(6),
       #stokHareketDetayModal .stok-detail-line-table tbody td:nth-child(6){grid-column:2;grid-row:3}
     }
+
+    /* 544 · Cari Kartlar sabit kolon yapısı */
+    #cariTable{width:100%!important;min-width:1080px!important;table-layout:fixed!important}
+    #cariTable th,#cariTable td{box-sizing:border-box}
+    #cariTable th[data-col="kod"]{width:88px}
+    #cariTable th[data-col="unvan"]{width:220px}
+    #cariTable th[data-col="tip"]{width:120px}
+    #cariTable th[data-col="yetkili"]{width:140px}
+    #cariTable th[data-col="sehir"]{width:110px}
+    #cariTable th[data-col="vade"]{width:90px}
+    #cariTable th[data-col="bakiye"]{width:130px}
+    #cariTable th[data-col="durum"]{width:100px}
+    #cariTable .cari-column-selector-head{position:sticky!important;right:0!important;z-index:12!important;width:238px!important;min-width:238px!important;max-width:238px!important;background:#f1f5f9!important;box-shadow:-10px 0 16px -14px rgba(15,23,42,.65)!important}
+    #cariTable tbody td:last-child{position:sticky!important;right:0!important;z-index:4!important;width:238px!important;min-width:238px!important;max-width:238px!important;background:#fff!important;box-shadow:-10px 0 16px -14px rgba(15,23,42,.42)!important}
+    #cariTable tbody tr:hover td:last-child{background:#eef4fb!important}
+    #cariTable .cari-column-selector-head>.cari-column-selector-btn{margin-left:auto!important}
+    #cariColumnMenu{position:fixed!important;top:auto!important;left:auto!important;right:24px!important;z-index:10050!important}
+    #cariTable .cari-col-hidden{display:none!important}
+    @media(max-width:767.98px){#cariTable{min-width:0!important;table-layout:auto!important}#cariTable .cari-column-selector-head,#cariTable tbody td:last-child{position:static!important;width:auto!important;min-width:0!important;max-width:none!important;box-shadow:none!important}#cariColumnMenu{top:72px!important;left:12px!important;right:12px!important}}
 </style>
   <link rel="stylesheet" href="../assets/css/shared-shell.css?v=20260716-574" />
 </head>
@@ -391,7 +410,7 @@
           </div>
 
           <div class="table-wrap" style="border:none">
-            <table class="data" id="cariTable" data-no-record-lock="true">
+            <table class="data" id="cariTable" data-no-record-lock="true" data-no-column-selector="true">
               <thead><tr>
                 <th data-col="kod">Kod</th><th data-col="unvan">Ünvan</th><th data-col="tip">Tip</th><th data-col="yetkili">Yetkili</th><th data-col="sehir">Şehir</th><th data-col="vade">Vade</th><th class="num" data-col="bakiye">Bakiye</th><th data-col="durum">Durum</th>
                 <th class="cari-column-selector-head">
@@ -790,7 +809,16 @@
       openModal('cariActivityModal');
     }
     function toggleCariColumnMenu() {
-      document.getElementById('cariColumnMenu')?.classList.toggle('open');
+      const menu=document.getElementById('cariColumnMenu');
+      const btn=document.querySelector('.cari-column-selector-btn');
+      if(!menu||!btn) return;
+      const willOpen=!menu.classList.contains('open');
+      menu.classList.toggle('open',willOpen);
+      if(willOpen && window.innerWidth>767){
+        const r=btn.getBoundingClientRect();
+        menu.style.top=Math.min(window.innerHeight-430,r.bottom+8)+'px';
+        menu.style.right=Math.max(16,window.innerWidth-r.right)+'px';
+      }
     }
     function toggleCariColumn(input) {
       const col = input.dataset.columnToggle;

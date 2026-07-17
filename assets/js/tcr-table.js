@@ -241,23 +241,31 @@
     const select = control.querySelector('select');
     select.value = savedSize;
 
-    let toolbar = findToolbar(table);
-    if (toolbar) {
-      const enhancedRow = toolbar.querySelector('.tcr-search-action-row');
-      if (enhancedRow) {
-        enhancedRow.insertBefore(control, enhancedRow.firstChild);
-      } else {
-        const search = toolbar.querySelector('.toolbar-search, [class*="search"], input[type="search"], input[placeholder*="ara" i]');
-        const target = search?.closest('.toolbar-search, .form-group, .input-icon') || search;
-        if (target && target.parentElement === toolbar) toolbar.insertBefore(control, target);
-        else toolbar.insertBefore(control, toolbar.firstChild);
-      }
+    const headerRow = table.tHead?.rows[table.tHead.rows.length - 1];
+    const selectorHead = headerRow?.querySelector('.cari-column-selector-head, .tcr-column-selector-head, th:has(.cari-column-selector-btn), th:has(.tcr-column-selector-btn)');
+    let toolbar = null;
+
+    if (selectorHead) {
+      control.classList.add('tcr-table-page-size--header');
+      const selectorButton = selectorHead.querySelector('.cari-column-selector-btn, .tcr-column-selector-btn, button');
+      if (selectorButton) selectorHead.insertBefore(control, selectorButton);
+      else selectorHead.insertBefore(control, selectorHead.firstChild);
     } else {
-      toolbar = document.createElement('div');
-      toolbar.className = 'tcr-table-generated-toolbar';
-      toolbar.appendChild(control);
-      const wrap = table.closest('.table-wrap') || table;
-      wrap.parentElement.insertBefore(toolbar, wrap);
+      toolbar = findToolbar(table);
+      if (toolbar) {
+        const enhancedRow = toolbar.querySelector('.tcr-search-action-row');
+        if (enhancedRow) {
+          enhancedRow.appendChild(control);
+        } else {
+          toolbar.appendChild(control);
+        }
+      } else {
+        toolbar = document.createElement('div');
+        toolbar.className = 'tcr-table-generated-toolbar';
+        toolbar.appendChild(control);
+        const wrap = table.closest('.table-wrap') || table;
+        wrap.parentElement.insertBefore(toolbar, wrap);
+      }
     }
 
     const footer = document.createElement('div');

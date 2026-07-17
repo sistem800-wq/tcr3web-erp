@@ -401,6 +401,14 @@
     });
     menu.addEventListener('click', event => event.stopPropagation());
 
+    const pageSizeControl = table._tcrPagination?.control || (() => {
+      const body = table.closest('.card-body, .panel-body, .content-card, section') || table.parentElement;
+      return body?.querySelector('.tcr-table-page-size') || null;
+    })();
+    if (pageSizeControl) {
+      pageSizeControl.classList.add('tcr-table-page-size-in-header');
+      wrap.append(pageSizeControl);
+    }
     wrap.append(button, menu);
     if (actionIndex >= 0) {
       selectorTh.replaceChildren(wrap);
@@ -519,3 +527,18 @@
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else init();
   window.addEventListener('load',()=>{if(!document.querySelector('.tcr-metro-actions'))init();});
 })();
+
+
+/* 544 · Kolon menüsü viewport'a sabitlenir; tablo genişliği değişmez. */
+document.addEventListener('click',function(e){
+  const btn=e.target.closest('.tcr-column-selector-btn');
+  if(!btn) return;
+  requestAnimationFrame(function(){
+    const menu=btn.parentElement?.querySelector('.tcr-column-selector-menu');
+    if(!menu||!menu.classList.contains('open')||window.innerWidth<=767) return;
+    const r=btn.getBoundingClientRect();
+    menu.style.top=Math.min(window.innerHeight-440,r.bottom+8)+'px';
+    menu.style.right=Math.max(16,window.innerWidth-r.right)+'px';
+    menu.style.left='auto';
+  });
+},true);

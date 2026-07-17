@@ -1,8 +1,6 @@
-TCR3WEB ERP MASTER V2 — Paket 546
+TCR3WEB ERP MASTER V2 — Paket 544
 
-- Sidebar genişliği, menü fontu, satır yüksekliği ve ikon ölçüsü tek ortak CSS dosyasına bağlandı.
-- Sayfa değişiminde sidebar font küçülmesi engellendi.
-- Site ve tablo fontları ortak Inter standardına bağlandı.
-- Tablo header zemini ve yazısı sabitlendi.
-- Sıralamada yalnız aktif ok mavi; header başlığı ve zemini değişmez.
-- Cari mobil KPI kartlarının gizlenmesi kaldırıldı.
+- Kayıt kilidi tablo sütunlarından ve tüm tablo işlem butonlarından kaldırıldı.
+- Cari Kartlar seçim checkbox sütunu kaldırıldı.
+- Kolon seçme düğmesi sağda sabit tutuldu.
+- Kolon görünürlüğü değiştiğinde tablo genişliği ve işlem alanı bozulmaz.

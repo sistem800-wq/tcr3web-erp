@@ -2006,3 +2006,33 @@ html.tcr-ekstre-page .ekstre-filter-card .tcr-search-clear-btn{display:none!impo
     font-size:11px!important;padding-left:8px!important;padding-right:8px!important;
   }
 }
+
+/* 542 — Pagination size control: table header right, immediately before column selector. */
+.data thead th:has(.tcr-table-page-size--header) {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 6px;
+  min-width: 142px;
+  white-space: nowrap;
+}
+.tcr-table-page-size--header {
+  margin-left: auto;
+  gap: 0;
+}
+.tcr-table-page-size--header .tcr-table-page-size-label {
+  display: none;
+}
+.tcr-table-page-size--header .tcr-table-page-size-select {
+  width: 70px;
+  min-width: 70px;
+  height: 32px;
+  padding: 0 24px 0 9px;
+  border-radius: 8px;
+  font-size: 12px;
+  background-color: #fff;
+}
+@media (max-width: 767.98px) {
+  .data thead th:has(.tcr-table-page-size--header) { min-width: 124px; gap: 4px; }
+  .tcr-table-page-size--header .tcr-table-page-size-select { width: 62px; min-width: 62px; height: 30px; }
+}
