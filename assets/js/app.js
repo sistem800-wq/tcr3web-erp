@@ -3711,7 +3711,7 @@ function applyRecordLockStandard(){
     const isLineItemsTable=table.classList.contains('form-line-table') || /kalemler|kalemleri|ürün kalemleri|sipariş kalemleri|teklif kalemleri|fatura kalemleri|cari hesap kalemleri/i.test(sectionTitle.trim());
     if(isLineItemsTable){table.querySelectorAll('.record-state-head,.record-state-cell').forEach(el=>el.remove());return;}
 
-    const actionButtonMode=['cari-islemler','cari-fisleri'].includes(moduleKey);
+    const actionButtonMode=['cari','cari-islemler','cari-fisleri'].includes(moduleKey);
     const headRow=table.tHead?.rows?.[0]; if(!headRow) return;
 
     /* Önce eski kırmızı/yeşil nokta sütunlarını temizle. */
@@ -3728,7 +3728,7 @@ function applyRecordLockStandard(){
       if(actionButtonMode){
         const actionCell=row.cells[row.cells.length-1];
         if(actionCell && !actionCell.querySelector('.record-lock-info-btn')){
-          const actionWrap=actionCell.querySelector('.table-actions,.row-actions,.finance-actions,.actions')||actionCell;
+          const actionWrap=actionCell.querySelector('.tcr-row-actions,.table-actions,.row-actions,.finance-actions,.actions,.flex')||actionCell;
           const lockBtn=createRecordLockButton(locked,dateText,days,age);
           const menuBtn=[...actionWrap.querySelectorAll('button,a')].find(el=>/menü|menu|diğer|diger|more|\.\.\./i.test([el.title,el.getAttribute('aria-label'),el.textContent].filter(Boolean).join(' ')));
           if(menuBtn) actionWrap.insertBefore(lockBtn,menuBtn); else actionWrap.appendChild(lockBtn);

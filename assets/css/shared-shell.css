@@ -108,381 +108,161 @@ body.sidebar-open-lock{overflow:hidden!important;touch-action:none!important;}
   body:has(#cariFisTable) #content .tcr-action-card{width:100%!important;min-width:0!important;}
 }
 
-/* 578 · Cari Ekstre mobile KPI visibility
-   All period cards remain visible. Tablet uses 2 columns, phone uses 1 column. */
+/* 565 · MASTER CLEAN — desktop full-width content
+   Desktop shell uses one positioning model only: fixed sidebar + main margin.
+   This prevents the sidebar width being deducted twice and removes the empty
+   strip on the right side of every module. */
+@media (min-width:1181px){
+  html,body{width:100%!important;max-width:none!important;overflow-x:hidden!important;}
+  #app.app{
+    display:block!important;
+    width:100%!important;
+    max-width:none!important;
+    min-width:0!important;
+    margin:0!important;
+    padding:0!important;
+    grid-template-columns:none!important;
+  }
+  #app.app>.main,
+  #app.app.collapsed>.main{
+    position:relative!important;
+    display:flex!important;
+    flex-direction:column!important;
+    min-width:0!important;
+    max-width:none!important;
+    width:auto!important;
+    right:auto!important;
+    transform:none!important;
+    box-sizing:border-box!important;
+  }
+  #app.app>.main{margin-left:var(--tcr-shell-sidebar-width)!important;}
+  #app.app.collapsed>.main{margin-left:var(--tcr-shell-sidebar-collapsed)!important;}
+
+  #app.app>.main>#content.content{
+    display:block!important;
+    width:auto!important;
+    max-width:none!important;
+    min-width:0!important;
+    margin:0!important;
+    box-sizing:border-box!important;
+  }
+  #app.app>.main>#content.content>.page-head,
+  #app.app>.main>#content.content>.tcr-ac-grid,
+  #app.app>.main>#content.content>.card,
+  #app.app>.main>#content.content>.panel,
+  #app.app>.main>#content.content>.section-card,
+  #app.app>.main>#content.content>.table-card{
+    width:100%!important;
+    max-width:none!important;
+    min-width:0!important;
+    box-sizing:border-box!important;
+  }
+  #app.app>.main>#content.content .table-wrap,
+  #app.app>.main>#content.content .ci-table-wrap{
+    width:100%!important;
+    max-width:none!important;
+    min-width:0!important;
+    box-sizing:border-box!important;
+  }
+}
+
+
+/* 557 · Cari MASTER tablo/işlem alanı kesin düzeltme */
+#cariTable th:last-child,#cariTable td:last-child{
+  width:260px!important;min-width:260px!important;max-width:260px!important;
+  white-space:nowrap!important;text-align:right!important;
+}
+#cariTable td:last-child>.flex{
+  display:flex!important;flex-flow:row nowrap!important;align-items:center!important;
+  justify-content:flex-end!important;gap:6px!important;width:100%!important;white-space:nowrap!important;
+}
+#cariTable td:last-child>.flex .icon-btn,
+#cariTable td:last-child>.flex .record-lock-info-btn{
+  flex:0 0 30px!important;width:30px!important;height:30px!important;margin:0!important;
+}
+#cariIslemTable th:last-child,#cariIslemTable td:last-child{
+  width:178px!important;min-width:178px!important;white-space:nowrap!important;text-align:right!important;
+}
+#cariFisTable th:last-child,#cariFisTable td:last-child{
+  width:132px!important;min-width:132px!important;white-space:nowrap!important;text-align:right!important;
+}
+#cariIslemTable .tcr-row-actions,#cariFisTable .tcr-row-actions{
+  display:flex!important;flex-flow:row nowrap!important;align-items:center!important;
+  justify-content:flex-end!important;gap:6px!important;width:max-content!important;
+  margin-left:auto!important;white-space:nowrap!important;
+}
+#cariIslemTable .tcr-row-actions .icon-btn,#cariFisTable .tcr-row-actions .icon-btn{
+  flex:0 0 34px!important;width:34px!important;height:34px!important;margin:0!important;
+}
+.record-lock-info-btn{background:#fff!important}
+.record-lock-info-btn.is-open{color:#16a34a!important;border-color:#16a34a!important}
+.record-lock-info-btn.is-locked{color:#dc2626!important;border-color:#dc2626!important}
+@media(max-width:991.98px){
+  #cariTable th:last-child,#cariTable td:last-child,
+  #cariIslemTable th:last-child,#cariIslemTable td:last-child,
+  #cariFisTable th:last-child,#cariFisTable td:last-child{
+    width:auto!important;min-width:0!important;max-width:none!important;
+  }
+  #cariTable td:last-child>.flex,#cariIslemTable .tcr-row-actions,#cariFisTable .tcr-row-actions{
+    justify-content:flex-start!important;margin-left:0!important;width:auto!important;flex-wrap:nowrap!important;
+  }
+}
+
+/* 555 — Header/content vertical offset final
+   Fixed header boşluğu yalnız #content tarafından verilir.
+   Eski responsive katmanların .main padding-top değerleri çift boşluk
+   oluşturduğu için ana taşıyıcıda kesin olarak sıfırlanır. */
+#app.app > .main,
+#app.app.collapsed > .main{
+  padding-top:0!important;
+}
+
 @media (max-width:1180px){
-  body:has(#ekstreTable) #content .tcr-ac-grid{
-    display:grid!important;
-    grid-template-columns:repeat(2,minmax(0,1fr))!important;
-    gap:10px!important;
-    width:100%!important;
-  }
-  body:has(#ekstreTable) #content .tcr-ac-grid>.ekstre-period-card{
-    display:flex!important;
-    visibility:visible!important;
-    opacity:1!important;
-    width:100%!important;
-    min-width:0!important;
-    margin:0!important;
-  }
-}
-@media (max-width:767px){
-  body:has(#ekstreTable) #content .tcr-ac-grid{
-    grid-template-columns:1fr!important;
-    gap:9px!important;
-  }
-  body:has(#ekstreTable) #content .tcr-ac-grid>.ekstre-period-card{
-    min-height:68px!important;
-  }
-}
-
-/* 577 · Mobile page head, KPI visibility and shell spacing hard fix */
-@media (max-width: 767px){
-  /* The fixed header owns its height. No second spacer is allowed. */
-  #app.app > .main{
+  #app.app > .main,
+  #app.app.collapsed > .main{
     padding-top:0!important;
-    margin-top:0!important;
   }
   #app.app > .main > #content.content{
-    margin-top:0!important;
-    padding-top:calc(var(--tcr-shell-header-height) + 4px)!important;
-  }
-  #app.app > .main > #content.content > :first-child{
-    margin-top:0!important;
-  }
-
-  /* Cari İşlemleri: page title and only the two financial KPI cards. */
-  body:has(#cariIslemTable) #content > .page-head{
-    display:block!important;
-    visibility:visible!important;
-    opacity:1!important;
-    margin:0 0 10px!important;
-  }
-  body:has(#cariIslemTable) #content > .page-head .breadcrumb,
-  body:has(#cariIslemTable) #content > .page-head .page-sub,
-  body:has(#cariIslemTable) #content > .page-head .page-actions{
-    display:none!important;
-  }
-  body:has(#cariIslemTable) #content > .page-head .page-title{
-    display:flex!important;
-    visibility:visible!important;
-    opacity:1!important;
-    align-items:center!important;
-    gap:7px!important;
-    margin:0!important;
-    font-size:20px!important;
-    line-height:1.25!important;
-  }
-  body:has(#cariIslemTable) #content > .tcr-ac-grid.cols-2{
-    display:block!important;
-    visibility:visible!important;
-    opacity:1!important;
-    margin:0 0 10px!important;
-  }
-  body:has(#cariIslemTable) #content > .tcr-ac-grid.cols-2 > div:first-child{
-    display:block!important;
-  }
-  body:has(#cariIslemTable) #content > .tcr-ac-grid.cols-2 > div:last-child{
-    display:none!important;
-  }
-  body:has(#cariIslemTable) #content > .tcr-ac-grid.cols-2 > div:first-child > .tcr-ac-grid.cols-2{
-    display:grid!important;
-    grid-template-columns:repeat(2,minmax(0,1fr))!important;
-    gap:8px!important;
-    width:100%!important;
-  }
-  body:has(#cariIslemTable) #content .tcr-action-card{
-    display:flex!important;
-    visibility:visible!important;
-    opacity:1!important;
-    min-width:0!important;
-    width:100%!important;
-    margin:0!important;
-  }
-
-  /* Cari Fişleri: all three KPI cards stack vertically. */
-  body:has(#cariFisTable) #content > .tcr-ac-grid.cols-3{
-    display:grid!important;
-    visibility:visible!important;
-    opacity:1!important;
-    grid-template-columns:1fr!important;
-    gap:8px!important;
-    width:100%!important;
-    margin:0 0 10px!important;
-  }
-  body:has(#cariFisTable) #content > .tcr-ac-grid.cols-3 > .tcr-action-card{
-    display:flex!important;
-    visibility:visible!important;
-    opacity:1!important;
-    width:100%!important;
-    min-width:0!important;
-    margin:0!important;
+    padding-top:calc(var(--tcr-shell-header-height) + 10px)!important;
   }
 }
 
-@media (max-width: 390px){
-  body:has(#cariIslemTable) #content > .tcr-ac-grid.cols-2 > div:first-child > .tcr-ac-grid.cols-2{
-    grid-template-columns:1fr!important;
-  }
+/* 552 · MASTER footer yerleşim düzeltmesi
+   Footer artık eski sabit/left ofset kurallarından etkilenmez.
+   Main kolonunun gerçek genişliğinde, içerikten sonra ve sayfanın altında durur. */
+#app.app > .main{
+  min-height:100dvh!important;
+  display:flex!important;
+  flex-direction:column!important;
 }
-
-/* 576 · Tablet parity for Cari responsive framework */
-@media (min-width:768px) and (max-width:1024px){
-  /* Shared shell: tablet uses the same compact header/content rhythm as mobile. */
-  #app.app > .main{
-    padding-top:0!important;
-    margin-top:0!important;
-  }
-  #app.app > .main > #content.content{
-    margin-top:0!important;
-    padding-top:calc(var(--tcr-shell-header-height) + 8px)!important;
-  }
-  #app.app > .main > #content.content > :first-child{
-    margin-top:0!important;
-  }
-
-  /* Cari İşlemleri: title and Tahsilat/Ödeme KPI cards stay visible on tablet. */
-  body:has(#cariIslemTable) #content > .page-head{
-    display:block!important;
-    visibility:visible!important;
-    opacity:1!important;
-    margin:0 0 12px!important;
-  }
-  body:has(#cariIslemTable) #content > .page-head .page-actions{
-    display:none!important;
-  }
-  body:has(#cariIslemTable) #content > .page-head .page-title{
-    display:flex!important;
-    visibility:visible!important;
-    opacity:1!important;
-    align-items:center!important;
-    gap:8px!important;
-    margin:0!important;
-  }
-  body:has(#cariIslemTable) #content > .tcr-ac-grid.cols-2{
-    display:block!important;
-    visibility:visible!important;
-    opacity:1!important;
-    margin:0 0 12px!important;
-  }
-  body:has(#cariIslemTable) #content > .tcr-ac-grid.cols-2 > div:first-child{
-    display:block!important;
-  }
-  body:has(#cariIslemTable) #content > .tcr-ac-grid.cols-2 > div:last-child{
-    display:none!important;
-  }
-  body:has(#cariIslemTable) #content > .tcr-ac-grid.cols-2 > div:first-child > .tcr-ac-grid.cols-2{
-    display:grid!important;
-    grid-template-columns:repeat(2,minmax(0,1fr))!important;
-    gap:10px!important;
-    width:100%!important;
-  }
-  body:has(#cariIslemTable) #content .tcr-action-card{
-    display:flex!important;
-    visibility:visible!important;
-    opacity:1!important;
-    min-width:0!important;
-    width:100%!important;
-    margin:0!important;
-  }
-
-  /* Cari Fişleri: all KPI cards stay visible; two columns, last card spans full row. */
-  body:has(#cariFisTable) #content > .tcr-ac-grid.cols-3{
-    display:grid!important;
-    visibility:visible!important;
-    opacity:1!important;
-    grid-template-columns:repeat(2,minmax(0,1fr))!important;
-    gap:10px!important;
-    width:100%!important;
-    margin:0 0 12px!important;
-  }
-  body:has(#cariFisTable) #content > .tcr-ac-grid.cols-3 > .tcr-action-card{
-    display:flex!important;
-    visibility:visible!important;
-    opacity:1!important;
-    width:100%!important;
-    min-width:0!important;
-    margin:0!important;
-  }
-  body:has(#cariFisTable) #content > .tcr-ac-grid.cols-3 > .tcr-action-card:last-child{
-    grid-column:1 / -1!important;
-  }
-
-  /* Cari Ekstre: period KPI cards remain visible in a balanced 2x2 grid. */
-  body:has(#ekstreTable) #content .tcr-ac-grid{
-    display:grid!important;
-    visibility:visible!important;
-    opacity:1!important;
-    grid-template-columns:repeat(2,minmax(0,1fr))!important;
-    gap:10px!important;
-  }
-  body:has(#ekstreTable) #content .tcr-ac-grid > .ekstre-period-card{
-    display:flex!important;
-    visibility:visible!important;
-    opacity:1!important;
-    width:100%!important;
-    min-width:0!important;
-    margin:0!important;
-  }
+#app.app > .main > #content.content{
+  flex:1 0 auto!important;
 }
-
-/* 575 · Permanent small KPI alignment standard
-   Icon left, text center, counter fixed to the far right on desktop/tablet/mobile. */
-#content .tcr-action-card{
-  position:relative!important;
-  display:grid!important;
-  grid-template-columns:auto minmax(0,1fr) auto!important;
-  align-items:center!important;
-  column-gap:12px!important;
-}
-#content .tcr-action-card>.tcr-ac-icon{
-  grid-column:1!important;
-  justify-self:start!important;
-  align-self:center!important;
-  margin:0!important;
-}
-#content .tcr-action-card>.tcr-ac-content{
-  grid-column:2!important;
-  min-width:0!important;
-  width:100%!important;
-  margin:0!important;
-}
-#content .tcr-action-card>.tcr-ac-badge{
-  grid-column:3!important;
-  justify-self:end!important;
-  align-self:center!important;
+#app.app > .main > .app-footer{
   position:static!important;
   inset:auto!important;
-  margin:0!important;
+  left:auto!important;
+  right:auto!important;
+  bottom:auto!important;
+  width:100%!important;
+  max-width:none!important;
+  margin:24px 0 0!important;
+  padding:12px 24px!important;
+  box-sizing:border-box!important;
   flex:0 0 auto!important;
-}
-@media (max-width:1180px){
-  #content .tcr-action-card{
-    grid-template-columns:auto minmax(0,1fr) auto!important;
-    column-gap:10px!important;
-  }
-}
-
-/* 574 · Cari İşlemleri son düzenleme: açıklama, durum ve kilit aksiyonu */
-body.tcr-page-cari-islemler #cariIslemTable .record-state-head,
-body.tcr-page-cari-islemler #cariIslemTable .record-state-cell,
-body.tcr-page-cari-islemler #cariIslemTable .record-state-dot{
-  display:none!important;
-}
-body.tcr-page-cari-islemler #cariIslemTable td[data-label="Açıklama"],
-body.tcr-page-cari-islemler #cariIslemTable tbody tr:hover td[data-label="Açıklama"],
-body.tcr-page-cari-islemler #cariIslemTable tbody tr:focus-within td[data-label="Açıklama"]{
-  opacity:1!important;
-  visibility:visible!important;
-  color:#0f172a!important;
-  background:#fff!important;
-  -webkit-text-fill-color:#0f172a!important;
-}
-body.tcr-page-cari-islemler #cariIslemTable td[data-label="Açıklama"]::before,
-body.tcr-page-cari-islemler #cariIslemTable tbody tr:hover td[data-label="Açıklama"]::before{
-  color:#45617f!important;
-  opacity:1!important;
-  visibility:visible!important;
-}
-body.tcr-page-cari-islemler #cariIslemTable .ci-actions{
-  display:flex!important;
-  align-items:center!important;
-  justify-content:flex-start!important;
-  gap:6px!important;
-}
-body.tcr-page-cari-islemler #cariIslemTable .record-lock-info-btn{
-  position:static!important;
-  order:3!important;
-  width:34px!important;
-  height:34px!important;
-  min-width:34px!important;
-  flex:0 0 34px!important;
-  margin:0!important;
-  padding:0!important;
-  display:inline-grid!important;
-  place-items:center!important;
-  border-radius:9px!important;
-  background:#fff!important;
   transform:none!important;
+  z-index:10!important;
 }
-body.tcr-page-cari-islemler #cariIslemTable .record-lock-info-btn svg{width:17px!important;height:17px!important}
-body.tcr-page-cari-islemler #cariIslemTable .record-lock-info-btn.is-open{color:#16a34a!important;border:1px solid #22c55e!important}
-body.tcr-page-cari-islemler #cariIslemTable .record-lock-info-btn.is-locked{color:#dc2626!important;border:1px solid #ef4444!important}
-@media (hover:hover) and (pointer:fine){
-  body.tcr-page-cari-islemler #cariIslemTable .record-lock-info-btn:hover{
-    color:#1d4ed8!important;
-    border-color:#2563eb!important;
-    background:#eff6ff!important;
-    box-shadow:none!important;
-    transform:none!important;
-  }
+#app.app > .main > .app-footer .app-footer-inner{
+  width:100%!important;
+  min-height:var(--tcr-shell-footer-height)!important;
+  margin:0!important;
+  box-sizing:border-box!important;
 }
-body.tcr-page-cari-islemler #cariIslemTable .ci-output-trigger{order:4!important}
-
-.record-lock-info-overlay{position:fixed;inset:0;z-index:2147483600;display:none;align-items:center;justify-content:center;padding:18px;background:rgba(15,23,42,.48)}
-.record-lock-info-overlay.is-open{display:flex}
-.record-lock-info-dialog{width:min(430px,100%);border:1px solid #d7e1ee;border-radius:16px;background:#fff;box-shadow:0 24px 70px rgba(15,23,42,.28);overflow:hidden}
-.record-lock-info-head,.record-lock-info-foot{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 16px;border-bottom:1px solid #e2e8f0}
-.record-lock-info-foot{justify-content:flex-end;border-top:1px solid #e2e8f0;border-bottom:0}
-.record-lock-info-close{cursor:pointer}
-.record-lock-info-head .record-lock-info-close{width:34px;height:34px;border:1px solid #fecaca;border-radius:9px;background:#fff;color:#dc2626;font-size:22px;line-height:1}
-.record-lock-info-body{padding:16px}
-.record-lock-info-status{display:flex;align-items:center;gap:12px;padding:13px;border:1px solid;border-radius:12px;margin-bottom:14px}
-.record-lock-info-status svg{width:25px;height:25px;flex:0 0 25px}
-.record-lock-info-status strong,.record-lock-info-status span{display:block}.record-lock-info-status span{margin-top:2px;font-size:12px}
-.record-lock-info-status.is-open{border-color:#86efac;background:#f0fdf4;color:#166534}.record-lock-info-status.is-locked{border-color:#fca5a5;background:#fef2f2;color:#991b1b}
-.record-lock-info-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin:0}
-.record-lock-info-grid div{padding:10px;border:1px solid #e2e8f0;border-radius:10px;background:#f8fafc}.record-lock-info-grid dt{font-size:10px;font-weight:800;text-transform:uppercase;color:#64748b}.record-lock-info-grid dd{margin:4px 0 0;font-weight:800;color:#0f172a}
-@media(max-width:520px){.record-lock-info-grid{grid-template-columns:1fr}}
-
-
-
-/* 570 · Kilit / iş durumu ayrımı */
-.record-state-head,.record-state-cell,.record-state-dot{display:none!important}
-.record-lock-head,.record-lock-cell{width:58px!important;min-width:58px!important;max-width:58px!important;text-align:center!important}
-.record-lock-cell .record-lock-info-btn{margin:auto!important}
-.record-lock-info-btn{display:inline-flex!important;align-items:center!important;justify-content:center!important;width:36px!important;height:36px!important;padding:0!important;border-radius:9px!important;background:#fff!important;cursor:pointer!important;pointer-events:auto!important}
-.record-lock-info-btn.is-open{color:#16a34a!important;border:1px solid #22c55e!important}
-.record-lock-info-btn.is-locked{color:#dc2626!important;border:1px solid #ef4444!important}
-@media (hover:hover) and (pointer:fine){.record-lock-info-btn:hover{color:#fff!important;background:#1d4ed8!important;border-color:#1d4ed8!important}}
-#cariIslemTable th:first-child,#cariFisTable th:first-child{ /* İlk gerçek kolon iş durumudur; kilit ayrı aksiyon butonudur. */ }
-
-/* ============================================================
-   568 — Cari Fişleri desktop action buttons: single row
-   Gör → Düzenle → Kilit masaüstünde asla alt satıra düşmez.
-   Mobil kart bileşenine müdahale etmez.
-   ============================================================ */
-@media (min-width: 992px) {
-  #cariFisTable th:last-child,
-  #cariFisTable td:last-child {
-    width: 132px !important;
-    min-width: 132px !important;
-    max-width: 132px !important;
-    white-space: nowrap !important;
-    text-align: center !important;
-  }
-
-  #cariFisTable td:last-child > div,
-  #cariFisTable td:last-child .flex,
-  #cariFisTable td:last-child .row-actions,
-  #cariFisTable td:last-child .action-buttons {
-    display: inline-flex !important;
-    flex-direction: row !important;
-    flex-wrap: nowrap !important;
-    align-items: center !important;
-    justify-content: center !important;
-    gap: 6px !important;
-    width: auto !important;
-    min-width: max-content !important;
-    white-space: nowrap !important;
-  }
-
-  #cariFisTable td:last-child .icon-btn,
-  #cariFisTable td:last-child .record-lock-info-btn {
-    flex: 0 0 32px !important;
-    width: 32px !important;
-    min-width: 32px !important;
-    height: 32px !important;
-    margin: 0 !important;
+@media(max-width:1180px){
+  #app.app > .main > .app-footer{
+    width:100%!important;
+    margin-top:18px!important;
+    padding:10px 14px calc(10px + env(safe-area-inset-bottom))!important;
   }
 }
