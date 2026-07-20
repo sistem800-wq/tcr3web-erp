@@ -27,3 +27,11 @@ button.tcr-action-card,[onclick].tcr-action-card,a.tcr-action-card{cursor:pointe
 .tcr-action-card{
   cursor:pointer!important;
 }
+
+/* 530 — Kısaltılmış KPI metninde otomatik hint standardı.
+   JS yalnız gerçek overflow oluştuğunda data-tcr-auto-hint ekler. */
+.tcr-action-card [data-tcr-auto-hint="true"],
+.erp-status-kpi [data-tcr-auto-hint="true"],
+.kpi-card [data-tcr-auto-hint="true"]{
+  cursor:help!important;
+}

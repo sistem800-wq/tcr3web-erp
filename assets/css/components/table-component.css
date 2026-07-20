@@ -1,0 +1,147 @@
+/* Table component boundary */
+.tcr-page-table [data-table-body]{overflow-x:auto}
+.tcr-page-table table.data{margin:0;border:0;border-radius:0}
+.tcr-page-table [data-table-footer]{border-top:1px solid #dbe4ee;background:#fff}
+@media(max-width:767.98px){.tcr-page-table{border:0;background:transparent;box-shadow:none;overflow:visible}.tcr-page-table [data-table-body]{overflow:visible}}
+
+/* 531 · Mobil kart: başlıklar görünür, vurgu çizgisi yalnız ilk hücrede. */
+@media(max-width:767.98px){
+  body.tcr-cari-clean .tcr-page-table table.data tbody tr,
+  body.tcr-cari-clean .tcr-page-table table.tcr-mobile-cards tbody tr{
+    border-left:1px solid var(--tcr-mobile-border,#d7e0ed)!important;
+    overflow:hidden!important;
+  }
+
+  body.tcr-cari-clean .tcr-page-table table.data tbody td:first-child,
+  body.tcr-cari-clean .tcr-page-table table.tcr-mobile-cards tbody td:first-child{
+    position:relative!important;
+    padding-left:12px!important;
+  }
+
+  body.tcr-cari-clean .tcr-page-table table.data tbody td:first-child::after,
+  body.tcr-cari-clean .tcr-page-table table.tcr-mobile-cards tbody td:first-child::after{
+    content:"";
+    position:absolute;
+    left:0;
+    top:0;
+    bottom:0;
+    width:5px;
+    border-radius:0 4px 4px 0;
+    background:var(--tcr-mobile-primary,#0b67b2);
+    pointer-events:none;
+  }
+
+  body.tcr-cari-clean .tcr-page-table table.data tbody td::before,
+  body.tcr-cari-clean .tcr-page-table table.tcr-mobile-cards tbody td::before{
+    content:attr(data-label)!important;
+    display:block!important;
+    min-height:10px;
+    margin:0 0 3px!important;
+    color:#40577a!important;
+    font-size:9px!important;
+    line-height:1.1!important;
+    font-weight:800!important;
+    letter-spacing:.02em!important;
+    text-transform:uppercase!important;
+    white-space:normal!important;
+  }
+
+  body.tcr-cari-clean .tcr-page-table table.data tbody td.tcr-action-column::before,
+  body.tcr-cari-clean .tcr-page-table table.tcr-mobile-cards tbody td.tcr-action-column::before,
+  body.tcr-cari-clean .tcr-page-table table.data tbody td[data-label="İşlem"]::before,
+  body.tcr-cari-clean .tcr-page-table table.tcr-mobile-cards tbody td[data-label="İşlem"]::before{
+    display:none!important;
+  }
+
+  body.tcr-cari-clean .tcr-page-table table.data tbody tr:hover,
+  body.tcr-cari-clean .tcr-page-table table.tcr-mobile-cards tbody tr:hover{
+    border-left-color:var(--tcr-mobile-border,#d7e0ed)!important;
+  }
+
+  body.tcr-cari-clean .tcr-page-table table.data tbody tr:hover td:first-child::after,
+  body.tcr-cari-clean .tcr-page-table table.tcr-mobile-cards tbody tr:hover td:first-child::after{
+    background:var(--tcr-mobile-primary,#0b67b2)!important;
+  }
+}
+
+/* 529 · Mobil kayıt hücresi standardı
+   - Kod / İşlem No / Hareket No / Fiş No vb. ilk hücredir.
+   - Durum ikinci hücredir.
+   - Sol vurgu çizgisi yalnız ilk hücrede ve yalnız hover/focus sırasında görünür. */
+@media (max-width:767.98px){
+  body.tcr-cari-clean .tcr-page-table table.data tbody tr,
+  body.tcr-cari-clean .tcr-page-table table.tcr-mobile-cards tbody tr{
+    border-left:1px solid var(--tcr-mobile-border,#d7e0ed)!important;
+  }
+
+  body.tcr-cari-clean .tcr-page-table table.data tbody td::after,
+  body.tcr-cari-clean .tcr-page-table table.tcr-mobile-cards tbody td::after{
+    content:none!important;
+  }
+
+  body.tcr-cari-clean .tcr-page-table table.data tbody td.tcr-primary-id-cell,
+  body.tcr-cari-clean .tcr-page-table table.tcr-mobile-cards tbody td.tcr-primary-id-cell{
+    order:1!important;
+    grid-column:1!important;
+    grid-row:1!important;
+    position:relative!important;
+    padding-left:12px!important;
+    font-weight:800!important;
+  }
+
+  body.tcr-cari-clean .tcr-page-table table.data tbody td.tcr-status-cell,
+  body.tcr-cari-clean .tcr-page-table table.tcr-mobile-cards tbody td.tcr-status-cell{
+    order:2!important;
+    grid-column:2!important;
+    grid-row:1!important;
+  }
+
+  body.tcr-cari-clean .tcr-page-table table.data tbody td.tcr-primary-id-cell::after,
+  body.tcr-cari-clean .tcr-page-table table.tcr-mobile-cards tbody td.tcr-primary-id-cell::after{
+    content:""!important;
+    display:block!important;
+    position:absolute!important;
+    left:0!important;
+    top:0!important;
+    bottom:0!important;
+    width:5px!important;
+    border-radius:0 4px 4px 0!important;
+    background:transparent!important;
+    opacity:0!important;
+    pointer-events:none!important;
+    transition:opacity .16s ease, background-color .16s ease!important;
+  }
+
+  body.tcr-cari-clean .tcr-page-table table.data tbody tr:hover td.tcr-primary-id-cell::after,
+  body.tcr-cari-clean .tcr-page-table table.data tbody tr:focus-within td.tcr-primary-id-cell::after,
+  body.tcr-cari-clean .tcr-page-table table.tcr-mobile-cards tbody tr:hover td.tcr-primary-id-cell::after,
+  body.tcr-cari-clean .tcr-page-table table.tcr-mobile-cards tbody tr:focus-within td.tcr-primary-id-cell::after{
+    background:var(--tcr-mobile-primary,#0b67b2)!important;
+    opacity:1!important;
+  }
+
+  /* Cari Kartlar: ilk satır Kod + Durum + Ünvan. */
+  body.tcr-page-cari #cariTable td[data-label="Kod"]{
+    order:1!important;grid-column:1!important;grid-row:1!important;
+  }
+  body.tcr-page-cari #cariTable td[data-label="Durum"]{
+    order:2!important;grid-column:2!important;grid-row:1!important;
+  }
+  body.tcr-page-cari #cariTable td[data-label="Ünvan"]{
+    order:3!important;grid-column:3 / 5!important;grid-row:1!important;
+  }
+
+  /* Önceden daima görünen çizgiyi kesin olarak kapat. */
+  body.tcr-cari-clean .tcr-page-table table.data tbody td:first-child::after,
+  body.tcr-cari-clean .tcr-page-table table.tcr-mobile-cards tbody td:first-child::after{
+    background:transparent!important;
+    opacity:0!important;
+  }
+  body.tcr-cari-clean .tcr-page-table table.data tbody tr:hover td.tcr-primary-id-cell::after,
+  body.tcr-cari-clean .tcr-page-table table.data tbody tr:focus-within td.tcr-primary-id-cell::after,
+  body.tcr-cari-clean .tcr-page-table table.tcr-mobile-cards tbody tr:hover td.tcr-primary-id-cell::after,
+  body.tcr-cari-clean .tcr-page-table table.tcr-mobile-cards tbody tr:focus-within td.tcr-primary-id-cell::after{
+    background:var(--tcr-mobile-primary,#0b67b2)!important;
+    opacity:1!important;
+  }
+}

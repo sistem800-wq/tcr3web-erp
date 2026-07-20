@@ -1,0 +1,118 @@
+/* ============================================================
+   528 · TCR3WEB ERP — Mobil Ana Kimlik Hücresi Standardı
+   - Kod / İşlem No / Hareket No / Fiş No / Belge No vb. ilk hücre.
+   - Durum ikinci hücre.
+   - Vurgu çizgisi normalde gizli; yalnız hover/focus sırasında
+     birinci hücrenin solunda görünür.
+   ============================================================ */
+@media (max-width: 767.98px){
+  body table.data tbody tr,
+  body table.tcr-mobile-cards tbody tr{
+    border-left:1px solid var(--tcr-mobile-border,#d7e0ed)!important;
+  }
+
+  body table.data tbody tr > td,
+  body table.tcr-mobile-cards tbody tr > td{
+    order:10!important;
+  }
+
+  body table.data tbody tr > td.tcr-primary-id-cell,
+  body table.tcr-mobile-cards tbody tr > td.tcr-primary-id-cell{
+    order:1!important;
+    grid-column:1!important;
+    grid-row:1!important;
+    position:relative!important;
+    padding-left:12px!important;
+    font-weight:800!important;
+  }
+
+  body table.data tbody tr > td.tcr-status-cell,
+  body table.tcr-mobile-cards tbody tr > td.tcr-status-cell{
+    order:2!important;
+    grid-column:2!important;
+    grid-row:1!important;
+  }
+
+  body table.data tbody tr > td.tcr-action-column,
+  body table.tcr-mobile-cards tbody tr > td.tcr-action-column,
+  body table.data tbody tr > td[data-label="İşlem"],
+  body table.tcr-mobile-cards tbody tr > td[data-label="İşlem"]{
+    order:100!important;
+  }
+
+  /* Eski sürekli çizgileri tüm hücrelerde kapat. */
+  body table.data tbody tr > td::after,
+  body table.tcr-mobile-cards tbody tr > td::after,
+  body table.data tbody tr > td:first-child::after,
+  body table.tcr-mobile-cards tbody tr > td:first-child::after{
+    content:none!important;
+    display:none!important;
+    opacity:0!important;
+    background:transparent!important;
+  }
+
+  /* Çizgi yalnız ana kimlik hücresinde hazırlanır. */
+  body table.data tbody tr > td.tcr-primary-id-cell::after,
+  body table.tcr-mobile-cards tbody tr > td.tcr-primary-id-cell::after{
+    content:""!important;
+    display:block!important;
+    position:absolute!important;
+    left:0!important;
+    top:0!important;
+    bottom:0!important;
+    width:5px!important;
+    border-radius:0 4px 4px 0!important;
+    background:var(--tcr-mobile-primary,#0b67b2)!important;
+    opacity:0!important;
+    pointer-events:none!important;
+    transition:opacity .16s ease!important;
+  }
+
+  body table.data tbody tr:hover > td.tcr-primary-id-cell::after,
+  body table.data tbody tr:focus-within > td.tcr-primary-id-cell::after,
+  body table.tcr-mobile-cards tbody tr:hover > td.tcr-primary-id-cell::after,
+  body table.tcr-mobile-cards tbody tr:focus-within > td.tcr-primary-id-cell::after{
+    opacity:1!important;
+  }
+
+  /* Cari Kartlar: Kod ilk, Durum ikinci, Ünvan üçüncü hücre. */
+  body #cariTable tbody tr > td[data-col="kod"]{
+    order:1!important;
+    grid-column:1!important;
+    grid-row:1!important;
+  }
+  body #cariTable tbody tr > td[data-col="durum"]{
+    order:2!important;
+    grid-column:2!important;
+    grid-row:1!important;
+  }
+  body #cariTable tbody tr > td[data-col="unvan"]{
+    order:3!important;
+    grid-column:3 / 5!important;
+    grid-row:1!important;
+  }
+
+  /* Ana hücre sınıfı gecikirse Cari Kod yine doğru çizgiyi alır. */
+  body #cariTable tbody tr > td[data-col="kod"]{
+    position:relative!important;
+    padding-left:12px!important;
+  }
+  body #cariTable tbody tr > td[data-col="kod"]::after{
+    content:""!important;
+    display:block!important;
+    position:absolute!important;
+    left:0!important;
+    top:0!important;
+    bottom:0!important;
+    width:5px!important;
+    border-radius:0 4px 4px 0!important;
+    background:var(--tcr-mobile-primary,#0b67b2)!important;
+    opacity:0!important;
+    pointer-events:none!important;
+    transition:opacity .16s ease!important;
+  }
+  body #cariTable tbody tr:hover > td[data-col="kod"]::after,
+  body #cariTable tbody tr:focus-within > td[data-col="kod"]::after{
+    opacity:1!important;
+  }
+}

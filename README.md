@@ -1,6 +1,10 @@
-TCR3WEB ERP MASTER V2 — Paket 544
+TCR3WEB ERP — Paket 530
 
-- Kayıt kilidi tablo sütunlarından ve tüm tablo işlem butonlarından kaldırıldı.
-- Cari Kartlar seçim checkbox sütunu kaldırıldı.
-- Kolon seçme düğmesi sağda sabit tutuldu.
-- Kolon görünürlüğü değiştiğinde tablo genişliği ve işlem alanı bozulmaz.
+- 531 paketindeki mobil tablo başlıkları ve ilk hücre vurgu yapısı korunmuştur.
+- KPI başlık, tutar, açıklama ve rozet metni gerçekten kısalırsa otomatik hint eklenir.
+- Metin tam görünüyorsa hint oluşturulmaz.
+- Dinamik eklenen KPI kartlarında, ekran boyutu değişiminde ve mobil/tablet geçişinde yeniden kontrol edilir.
+- Genel kullanım için data-auto-hint niteliği desteklenir.
+
+## 528 Mobil Ana Hücre Standardı
+Mobil tablolarda Kod / İşlem No / Hareket No / Fiş No / Belge No ilk hücre, Durum ikinci hücredir. Sol vurgu çizgisi yalnız ana kimlik hücresinde ve yalnız hover/focus sırasında görünür.

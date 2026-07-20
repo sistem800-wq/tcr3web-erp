@@ -1,0 +1,27 @@
+/* TCR3WEB ERP · Tek filtre paneli */
+.tcr-filter-panel{position:relative;width:100%;min-width:0;padding:14px;border:1px solid #dbe4ee;border-left:4px solid #ef4444;border-radius:14px;background:#fff;box-sizing:border-box}
+.tcr-filter-title{display:block;margin:0 0 10px;font-size:13px;font-weight:800;color:#0f172a}
+.tcr-filter-grid{display:grid;grid-template-columns:minmax(260px,2fr) minmax(150px,1fr) minmax(150px,1fr) auto;align-items:end;gap:10px;width:100%;min-width:0}
+.tcr-filter-field{display:flex;flex-direction:column;gap:6px;min-width:0;margin:0!important}
+.tcr-filter-field>label{display:block;margin:0;font-size:12px;line-height:1.2;font-weight:800;color:#0f172a;white-space:nowrap}
+.tcr-filter-search-row{display:grid;grid-template-columns:minmax(0,1fr) 42px;gap:8px;min-width:0}
+.tcr-filter-search{position:relative;display:block;min-width:0;width:100%}
+.tcr-filter-search-icon{position:absolute;left:12px;top:50%;transform:translateY(-50%);width:18px;height:18px;color:#64748b;pointer-events:none}
+.tcr-filter-search input,.tcr-filter-field select{display:block;width:100%!important;max-width:none!important;min-width:0!important;height:42px!important;margin:0!important;border:1px solid #cfd9e6;border-radius:10px;background:#fff;color:#111827;font:inherit;box-sizing:border-box}
+.tcr-filter-search input{padding:0 12px 0 40px!important}
+.tcr-filter-field select{padding:0 36px 0 12px!important}
+.tcr-filter-clear{display:grid;place-items:center;width:42px!important;min-width:42px!important;height:42px!important;padding:0!important;margin:0!important;border:1px solid #2563eb!important;border-radius:10px!important;background:#fff!important;color:#2563eb!important}
+.tcr-filter-clear svg{width:18px;height:18px}
+.tcr-filter-tools{display:flex;align-items:center;justify-content:flex-end;gap:8px;height:42px}
+@media(max-width:1024px){
+ .tcr-filter-grid{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}
+ .tcr-filter-field-search{grid-column:1/-1}
+ .tcr-filter-tools{display:none!important}
+}
+@media(max-width:575.98px){
+ .tcr-filter-panel{padding:10px;border-radius:12px}
+ .tcr-filter-grid{display:flex!important;flex-direction:column!important;align-items:stretch!important;gap:10px!important}
+ .tcr-filter-field,.tcr-filter-field-search{display:flex!important;width:100%!important;max-width:none!important;min-width:0!important;align-self:stretch!important}
+ .tcr-filter-search-row{width:100%!important;grid-template-columns:minmax(0,1fr) 42px!important}
+ .tcr-filter-search,.tcr-filter-search input,.tcr-filter-field select{width:100%!important;max-width:none!important;min-width:0!important}
+}
