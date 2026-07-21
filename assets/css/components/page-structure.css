@@ -1,8 +1,0 @@
-/* TCR3WEB ERP · Ortak liste ekranı mimarisi v1 */
-.tcr-page-structure{display:flex;flex-direction:column;gap:16px;min-width:0}
-.tcr-page-section{min-width:0}
-.tcr-page-section[data-page-kpi]{margin:0}
-.tcr-page-section[data-page-filter]{margin:0}
-.tcr-page-table{min-width:0;background:#fff;border:1px solid #dbe4ee;border-radius:14px;box-shadow:0 8px 22px rgba(15,39,71,.06);overflow:hidden}
-.tcr-page-table [data-table-header],.tcr-page-table [data-table-body],.tcr-page-table [data-table-footer]{min-width:0}
-@media(max-width:767.98px){.tcr-page-structure{gap:12px}}

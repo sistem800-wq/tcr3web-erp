@@ -44,3 +44,125 @@ body.tcr-cari-master table.data .tcr-row-actions{position:relative;z-index:2;poi
   body.tcr-cari-master table.data tbody td:last-child .flex{display:flex!important;flex-wrap:wrap!important;gap:7px!important;pointer-events:auto!important}
   body.tcr-cari-master table.data .icon-btn{width:36px!important;height:36px!important;min-width:36px!important;pointer-events:auto!important;cursor:pointer!important}
 }
+
+/* ============================================================
+   523 · CARI MOBILE/TABLET SEMANTIC TABLE STANDARD — FINAL
+   Cari Kartlar: KOD | DURUM | ÜNVAN
+   Cari İşlemleri: İŞLEM NO | DURUM | CARİ
+   Cari Fişleri: FİŞ NO | DURUM | CARİ / İÇERİK
+   Accent line is attached only to the primary identity cell.
+   ============================================================ */
+@media (max-width: 991.98px){
+  /* Shared card reset: no permanent line on the whole card. */
+  body.tcr-cari-master #cariTable tbody tr,
+  body.tcr-cari-master #cariIslemTable tbody tr,
+  body.tcr-cari-master #cariFisTable tbody tr{
+    display:grid!important;
+    grid-template-columns:repeat(4,minmax(0,1fr))!important;
+    grid-auto-flow:row!important;
+    gap:0!important;
+    width:100%!important;
+    min-width:0!important;
+    padding:10px!important;
+    border:1px solid #d7e0ed!important;
+    border-left:1px solid #d7e0ed!important;
+    border-radius:13px!important;
+    overflow:hidden!important;
+    background:#fff!important;
+    box-shadow:0 2px 7px rgba(16,47,92,.05)!important;
+    transform:none!important;
+  }
+  body.tcr-cari-master #cariTable tbody td,
+  body.tcr-cari-master #cariIslemTable tbody td,
+  body.tcr-cari-master #cariFisTable tbody td{
+    grid-column:auto!important;
+    grid-row:auto!important;
+    min-width:0!important;
+    width:auto!important;
+    margin:0!important;
+    padding:8px!important;
+    border:0!important;
+    border-right:1px solid #e3eaf3!important;
+    border-bottom:1px solid #e3eaf3!important;
+    background:transparent!important;
+    position:relative!important;
+    order:initial!important;
+  }
+
+  /* CARI KARTLAR — exact requested visual order. */
+  body.tcr-cari-master #cariTable td[data-label="Kod"]{grid-column:1!important;grid-row:1!important}
+  body.tcr-cari-master #cariTable td[data-label="Durum"]{grid-column:2!important;grid-row:1!important}
+  body.tcr-cari-master #cariTable td[data-label="Ünvan"]{grid-column:3 / 5!important;grid-row:1!important;border-right:0!important}
+  body.tcr-cari-master #cariTable td[data-label="Tip"]{grid-column:1!important;grid-row:2!important}
+  body.tcr-cari-master #cariTable td[data-label="Şehir"]{grid-column:2!important;grid-row:2!important}
+  body.tcr-cari-master #cariTable td[data-label="Vade"]{grid-column:3!important;grid-row:2!important}
+  body.tcr-cari-master #cariTable td[data-label="Bakiye"]{grid-column:4!important;grid-row:2!important;border-right:0!important}
+  body.tcr-cari-master #cariTable td[data-label="Yetkili"]{display:none!important}
+  body.tcr-cari-master #cariTable td[data-label="İşlem"],
+  body.tcr-cari-master #cariTable td.tcr-action-column,
+  body.tcr-cari-master #cariTable tbody td:last-child{
+    grid-column:1 / -1!important;grid-row:3!important;
+    border-right:0!important;border-bottom:0!important;
+  }
+
+  /* CARI İŞLEMLERİ — same first-row principle. */
+  body.tcr-cari-master #cariIslemTable td[data-label="İşlem No"]{grid-column:1!important;grid-row:1!important}
+  body.tcr-cari-master #cariIslemTable td[data-label="Durum"]{grid-column:2!important;grid-row:1!important}
+  body.tcr-cari-master #cariIslemTable td[data-label="Cari"]{grid-column:3 / 5!important;grid-row:1!important;border-right:0!important}
+  body.tcr-cari-master #cariIslemTable td[data-label="Tip"]{grid-column:1!important;grid-row:2!important}
+  body.tcr-cari-master #cariIslemTable td[data-label="Tarih"]{grid-column:2!important;grid-row:2!important}
+  body.tcr-cari-master #cariIslemTable td[data-label="Kasa / Banka / Portföy"]{grid-column:3!important;grid-row:2!important}
+  body.tcr-cari-master #cariIslemTable td[data-label="Tutar"]{grid-column:4!important;grid-row:2!important;border-right:0!important}
+  body.tcr-cari-master #cariIslemTable td[data-label="Açıklama"]{grid-column:1 / -1!important;grid-row:3!important;border-right:0!important}
+  body.tcr-cari-master #cariIslemTable td[data-label="İşlem"],
+  body.tcr-cari-master #cariIslemTable td.tcr-action-column,
+  body.tcr-cari-master #cariIslemTable tbody td:last-child{
+    grid-column:1 / -1!important;grid-row:4!important;
+    border-right:0!important;border-bottom:0!important;
+  }
+
+  /* CARI FİŞLERİ — same first-row principle. */
+  body.tcr-cari-master #cariFisTable td[data-label="Fiş No"]{grid-column:1!important;grid-row:1!important}
+  body.tcr-cari-master #cariFisTable td[data-label="Durum"]{grid-column:2!important;grid-row:1!important}
+  body.tcr-cari-master #cariFisTable td[data-label="Cari / İçerik"]{grid-column:3 / 5!important;grid-row:1!important;border-right:0!important}
+  body.tcr-cari-master #cariFisTable td[data-label="Tip"]{grid-column:1!important;grid-row:2!important}
+  body.tcr-cari-master #cariFisTable td[data-label="Tarih"]{grid-column:2!important;grid-row:2!important}
+  body.tcr-cari-master #cariFisTable td[data-label="Kalem"]{grid-column:3!important;grid-row:2!important}
+  body.tcr-cari-master #cariFisTable td[data-label="Borç"]{grid-column:4!important;grid-row:2!important;border-right:0!important}
+  body.tcr-cari-master #cariFisTable td[data-label="Alacak"]{grid-column:1!important;grid-row:3!important}
+  body.tcr-cari-master #cariFisTable td[data-label="Açıklama"]{grid-column:2 / 5!important;grid-row:3!important;border-right:0!important}
+  body.tcr-cari-master #cariFisTable td[data-label="İşlem"],
+  body.tcr-cari-master #cariFisTable td.tcr-action-column,
+  body.tcr-cari-master #cariFisTable tbody td:last-child{
+    grid-column:1 / -1!important;grid-row:4!important;
+    border-right:0!important;border-bottom:0!important;
+  }
+
+  /* Primary-cell accent: only on row hover/focus, never on the card edge. */
+  body.tcr-cari-master #cariTable td[data-label="Kod"]::after,
+  body.tcr-cari-master #cariIslemTable td[data-label="İşlem No"]::after,
+  body.tcr-cari-master #cariFisTable td[data-label="Fiş No"]::after{
+    content:""!important;
+    position:absolute!important;
+    left:0!important;
+    top:0!important;
+    bottom:0!important;
+    width:4px!important;
+    border-radius:0 4px 4px 0!important;
+    background:#0877b9!important;
+    opacity:0!important;
+    transform:scaleY(.55)!important;
+    transform-origin:center!important;
+    transition:opacity .14s ease,transform .14s ease!important;
+    pointer-events:none!important;
+  }
+  body.tcr-cari-master #cariTable tbody tr:hover td[data-label="Kod"]::after,
+  body.tcr-cari-master #cariTable tbody tr:focus-within td[data-label="Kod"]::after,
+  body.tcr-cari-master #cariIslemTable tbody tr:hover td[data-label="İşlem No"]::after,
+  body.tcr-cari-master #cariIslemTable tbody tr:focus-within td[data-label="İşlem No"]::after,
+  body.tcr-cari-master #cariFisTable tbody tr:hover td[data-label="Fiş No"]::after,
+  body.tcr-cari-master #cariFisTable tbody tr:focus-within td[data-label="Fiş No"]::after{
+    opacity:1!important;
+    transform:scaleY(1)!important;
+  }
+}

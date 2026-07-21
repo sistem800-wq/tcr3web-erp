@@ -1,5 +1,0 @@
-/* KPI component boundary */
-.tcr-page-kpi>.tcr-ac-grid{margin:0!important}
-@media(max-width:767.98px){
-  .tcr-page-kpi>.tcr-ac-grid{grid-template-columns:1fr!important;gap:10px!important}
-}
