@@ -26,6 +26,10 @@
 
           const normalized=label.toLocaleLowerCase('tr-TR').replace(/\s+/g,' ').trim();
           cell.classList.remove('tcr-mobile-primary','tcr-mobile-status','tcr-mobile-title','tcr-mobile-secondary','tcr-mobile-extra');
+          const mobileKey=normalized
+            .replace(/ı/g,'i').replace(/ş/g,'s').replace(/ğ/g,'g').replace(/ü/g,'u').replace(/ö/g,'o').replace(/ç/g,'c')
+            .replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'');
+          cell.dataset.mobileKey=mobileKey;
           if(/^(kod|cari kod|işlem no|fiş no|hareket no|belge no|stok kodu|sipariş no|teklif no|fatura no)$/.test(normalized)){
             cell.classList.add('tcr-mobile-primary');
           }else if(normalized==='durum'){

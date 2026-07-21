@@ -2601,3 +2601,111 @@ body.tcr-page-cari-fisleri .record-lock-info-btn[aria-disabled="true"]{
   }
   body.tcr-cari-clean table.tcr-mobile-cards tbody td{padding:7px 6px!important;font-size:11px!important}
 }
+
+
+/* 525 — Final semantic mobile card order
+   Row 1: PRIMARY | STATUS | TITLE
+   Row 2: TYPE | CITY | TERM | BALANCE
+   Row 3: ACTIONS
+   Applied to Cari Kartlar, Cari İşlemleri and Cari Fişleri through semantic labels. */
+@media (max-width:767.98px){
+  body.tcr-cari-clean table.tcr-mobile-cards tbody tr,
+  body.tcr-cari-clean table.data tbody tr{
+    grid-template-columns:minmax(78px,.8fr) minmax(82px,.9fr) minmax(120px,1.7fr) minmax(92px,1fr)!important;
+    gap:0!important;
+    padding:10px!important;
+    border-left:1px solid var(--tcr-mobile-border)!important;
+    overflow:hidden!important;
+  }
+
+  body.tcr-cari-clean table.tcr-mobile-cards tbody td,
+  body.tcr-cari-clean table.data tbody td{
+    min-height:54px!important;
+    padding:8px 10px!important;
+    border-right:1px solid #e2e8f0!important;
+    border-bottom:1px solid #e2e8f0!important;
+  }
+
+  body.tcr-cari-clean table.tcr-mobile-cards tbody td.tcr-mobile-primary,
+  body.tcr-cari-clean table.data tbody td.tcr-mobile-primary{
+    grid-column:1!important;
+    grid-row:1!important;
+    order:1!important;
+    position:relative!important;
+    padding-left:12px!important;
+    font-weight:800!important;
+  }
+  body.tcr-cari-clean table.tcr-mobile-cards tbody td.tcr-mobile-status,
+  body.tcr-cari-clean table.data tbody td.tcr-mobile-status{
+    grid-column:2!important;
+    grid-row:1!important;
+    order:2!important;
+  }
+  body.tcr-cari-clean table.tcr-mobile-cards tbody td.tcr-mobile-title,
+  body.tcr-cari-clean table.data tbody td.tcr-mobile-title{
+    grid-column:3 / 5!important;
+    grid-row:1!important;
+    order:3!important;
+    border-right:0!important;
+    font-weight:700!important;
+  }
+
+  body.tcr-cari-clean table.tcr-mobile-cards tbody td[data-mobile-key="tip"],
+  body.tcr-cari-clean table.data tbody td[data-mobile-key="tip"]{
+    grid-column:1!important;grid-row:2!important;order:4!important;
+  }
+  body.tcr-cari-clean table.tcr-mobile-cards tbody td[data-mobile-key="sehir"],
+  body.tcr-cari-clean table.data tbody td[data-mobile-key="sehir"]{
+    grid-column:2!important;grid-row:2!important;order:5!important;
+  }
+  body.tcr-cari-clean table.tcr-mobile-cards tbody td[data-mobile-key="vade"],
+  body.tcr-cari-clean table.data tbody td[data-mobile-key="vade"]{
+    grid-column:3!important;grid-row:2!important;order:6!important;
+  }
+  body.tcr-cari-clean table.tcr-mobile-cards tbody td[data-mobile-key="bakiye"],
+  body.tcr-cari-clean table.data tbody td[data-mobile-key="bakiye"],
+  body.tcr-cari-clean table.tcr-mobile-cards tbody td[data-mobile-key="tutar"],
+  body.tcr-cari-clean table.data tbody td[data-mobile-key="tutar"]{
+    grid-column:4!important;grid-row:2!important;order:7!important;
+    border-right:0!important;
+    align-items:flex-end!important;
+    text-align:right!important;
+    font-weight:800!important;
+  }
+
+  body.tcr-cari-clean table.tcr-mobile-cards tbody td.tcr-action-column,
+  body.tcr-cari-clean table.data tbody td.tcr-action-column,
+  body.tcr-cari-clean table.tcr-mobile-cards tbody td:last-child,
+  body.tcr-cari-clean table.data tbody td:last-child{
+    grid-column:1 / 5!important;
+    grid-row:3!important;
+    order:20!important;
+    min-height:auto!important;
+    border-right:0!important;
+    border-bottom:0!important;
+    padding:9px 4px 2px!important;
+  }
+
+  body.tcr-cari-clean table.tcr-mobile-cards tbody td.tcr-mobile-extra,
+  body.tcr-cari-clean table.data tbody td.tcr-mobile-extra{
+    display:none!important;
+  }
+
+  body.tcr-cari-clean table.tcr-mobile-cards tbody td.tcr-mobile-primary::after,
+  body.tcr-cari-clean table.data tbody td.tcr-mobile-primary::after{
+    content:"";
+    position:absolute;
+    left:0;
+    top:0;
+    bottom:0;
+    width:4px;
+    border-radius:0 4px 4px 0;
+    background:var(--tcr-mobile-primary);
+    opacity:0;
+    transition:opacity .14s ease;
+  }
+  body.tcr-cari-clean table.tcr-mobile-cards tbody tr:hover td.tcr-mobile-primary::after,
+  body.tcr-cari-clean table.data tbody tr:hover td.tcr-mobile-primary::after{
+    opacity:1;
+  }
+}
