@@ -2471,3 +2471,133 @@ body.tcr-page-cari-fisleri .record-lock-info-btn[aria-disabled="true"]{
   body.tcr-page-cari-islemler #cariIslemTable .status-dot{display:none!important;content:none!important}
   body.tcr-page-cari-islemler #cariIslemTable td[data-label="Durum"] .badge{padding-left:9px!important}
 }
+
+/* 526 MASTER — deterministic Cari mobile card layout
+   Row 1: PRIMARY | STATUS | TITLE
+   Row 2: secondary fields
+   Row 3: actions
+   Accent line appears only beside PRIMARY on row hover/focus. */
+@media (max-width:767.98px){
+  body.tcr-cari-clean table.tcr-mobile-cards tbody tr{
+    display:grid!important;
+    grid-template-columns:minmax(82px,.82fr) minmax(86px,.86fr) minmax(0,1.3fr) minmax(92px,1fr)!important;
+    grid-auto-flow:row!important;
+    align-items:stretch!important;
+    padding:10px!important;
+    gap:0!important;
+    overflow:hidden!important;
+  }
+
+  body.tcr-cari-clean table.tcr-mobile-cards tbody td{
+    position:relative!important;
+    min-width:0!important;
+    width:auto!important;
+    margin:0!important;
+    padding:8px 8px!important;
+    border:0!important;
+    border-right:1px solid #dce6f2!important;
+    border-bottom:1px solid #dce6f2!important;
+    background:transparent!important;
+    overflow:hidden!important;
+  }
+
+  body.tcr-cari-clean table.tcr-mobile-cards tbody td::before{
+    display:block!important;
+    margin:0 0 4px!important;
+    white-space:nowrap!important;
+    overflow:hidden!important;
+    text-overflow:ellipsis!important;
+  }
+
+  body.tcr-cari-clean table.tcr-mobile-cards tbody td.tcr-mobile-primary{
+    grid-column:1!important;
+    grid-row:1!important;
+    order:1!important;
+    font-weight:900!important;
+    padding-left:10px!important;
+  }
+  body.tcr-cari-clean table.tcr-mobile-cards tbody td.tcr-mobile-status{
+    grid-column:2!important;
+    grid-row:1!important;
+    order:2!important;
+  }
+  body.tcr-cari-clean table.tcr-mobile-cards tbody td.tcr-mobile-title{
+    grid-column:3 / 5!important;
+    grid-row:1!important;
+    order:3!important;
+    font-weight:800!important;
+    border-right:0!important;
+  }
+
+  body.tcr-cari-clean table.tcr-mobile-cards tbody td.tcr-mobile-secondary{
+    grid-row:2!important;
+    order:10!important;
+  }
+  body.tcr-cari-clean table.tcr-mobile-cards tbody td.tcr-mobile-secondary:nth-of-type(n){grid-column:auto!important}
+  body.tcr-cari-clean table.tcr-mobile-cards tbody td.tcr-mobile-secondary:nth-last-of-type(1){border-right:0!important}
+
+  body.tcr-cari-clean table.tcr-mobile-cards tbody td.tcr-mobile-extra{
+    display:none!important;
+  }
+
+  body.tcr-cari-clean table.tcr-mobile-cards tbody td.tcr-action-column{
+    display:block!important;
+    grid-column:1 / -1!important;
+    grid-row:3!important;
+    order:99!important;
+    padding:8px 0 0!important;
+    border:0!important;
+    overflow:visible!important;
+  }
+
+  body.tcr-cari-clean table.tcr-mobile-cards tbody td.tcr-mobile-primary::after{
+    content:""!important;
+    position:absolute!important;
+    left:0!important;
+    top:0!important;
+    bottom:0!important;
+    width:4px!important;
+    border-radius:0 4px 4px 0!important;
+    background:#0b6fb8!important;
+    opacity:0!important;
+    transform:scaleY(.45)!important;
+    transform-origin:center!important;
+    transition:opacity .16s ease,transform .16s ease!important;
+    pointer-events:none!important;
+  }
+  body.tcr-cari-clean table.tcr-mobile-cards tbody tr:hover > td.tcr-mobile-primary::after,
+  body.tcr-cari-clean table.tcr-mobile-cards tbody tr:focus-within > td.tcr-mobile-primary::after{
+    opacity:1!important;
+    transform:scaleY(1)!important;
+  }
+
+  /* Cari Kartlar: row 2 = Tip | Şehir | Vade | Bakiye */
+  body.tcr-page-cari #cariTable td[data-label="Tip"]{grid-column:1!important}
+  body.tcr-page-cari #cariTable td[data-label="Şehir"]{grid-column:2!important}
+  body.tcr-page-cari #cariTable td[data-label="Vade"]{grid-column:3!important}
+  body.tcr-page-cari #cariTable td[data-label="Bakiye"]{grid-column:4!important;border-right:0!important}
+  body.tcr-page-cari #cariTable td[data-label="Yetkili"]{display:none!important}
+
+  /* Cari İşlemleri: row 2 = Tip | Tarih | Kasa/Banka | Tutar */
+  body.tcr-page-cari-islemler #cariIslemTable td[data-label="Tip"]{grid-column:1!important}
+  body.tcr-page-cari-islemler #cariIslemTable td[data-label="Tarih"]{grid-column:2!important}
+  body.tcr-page-cari-islemler #cariIslemTable td[data-label="Kasa / Banka / Portföy"]{grid-column:3!important}
+  body.tcr-page-cari-islemler #cariIslemTable td[data-label="Tutar"]{grid-column:4!important;border-right:0!important}
+  body.tcr-page-cari-islemler #cariIslemTable td[data-label="Açıklama"]{display:none!important}
+
+  /* Cari Fişleri: row 2 = Tip | Tarih | Borç | Alacak */
+  body.tcr-page-cari-fisleri #cariFisTable td[data-label="Tip"]{grid-column:1!important}
+  body.tcr-page-cari-fisleri #cariFisTable td[data-label="Tarih"]{grid-column:2!important}
+  body.tcr-page-cari-fisleri #cariFisTable td[data-label="Borç"]{grid-column:3!important}
+  body.tcr-page-cari-fisleri #cariFisTable td[data-label="Alacak"]{grid-column:4!important;border-right:0!important}
+  body.tcr-page-cari-fisleri #cariFisTable td[data-label="Kalem"],
+  body.tcr-page-cari-fisleri #cariFisTable td[data-label="Açıklama"]{display:none!important}
+}
+
+@media (max-width:420px){
+  body.tcr-cari-clean table.tcr-mobile-cards tbody tr{
+    grid-template-columns:minmax(76px,.8fr) minmax(78px,.82fr) minmax(0,1.16fr) minmax(88px,1fr)!important;
+    padding:8px!important;
+  }
+  body.tcr-cari-clean table.tcr-mobile-cards tbody td{padding:7px 6px!important;font-size:11px!important}
+}

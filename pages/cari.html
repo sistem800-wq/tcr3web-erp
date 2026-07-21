@@ -23,10 +23,6 @@
   <link rel="stylesheet" href="../assets/css/text-readability.css?v=20260712-657" />
   <link rel="stylesheet" href="../assets/css/cari-table-enhancements.css?v=20260713-613" />
   <link rel="stylesheet" href="../assets/css/cari-amount-status.css?v=20260712-621" />
-  <link rel="stylesheet" href="../assets/css/components/page-structure.css?v=20260720-532" />
-  <link rel="stylesheet" href="../assets/css/components/kpi-component.css?v=20260720-532" />
-  <link rel="stylesheet" href="../assets/css/components/filter-component.css?v=20260720-532" />
-  <link rel="stylesheet" href="../assets/css/components/table-component.css?v=20260720-529" />
 
   <style>
     /* 616 - Hareket Detayı ürün tablosu: modal genişliğine uyumlu kesin kolon hizası */
@@ -288,13 +284,14 @@
 </style>
   <link rel="stylesheet" href="../assets/css/cari-master.css?v=20260717-540" />
   <link rel="stylesheet" href="../assets/css/shared-shell.css?v=20260716-574" />
-  <link rel="stylesheet" href="../assets/css/mobile-primary-cell-standard.css?v=20260720-528" />
+
+  <link rel="stylesheet" href="../assets/css/mobile-tablet-framework.css?v=20260720-526" />
 </head>
-<body class="tcr-cari-master tcr-cari-clean">
+<body class="tcr-cari-master">
   <div id="app" class="app"></div>
   <script src="../assets/js/app.js?v=20260716-574"></script>
   <script src="../assets/js/tcr-actions.js?v=20260713-600"></script>
-  <script src="../assets/js/master-init.js?v=20260720-529"></script>
+  <script src="../assets/js/master-init.js?v=20260713-583"></script>
   <script src="../assets/js/tcr-table.js?v=20260713-587"></script>
   <script>
     const TURKIYE_ILLERI = ['Adana','Adıyaman','Afyonkarahisar','Ağrı','Aksaray','Amasya','Ankara','Antalya','Ardahan','Artvin','Aydın','Balıkesir','Bartın','Batman','Bayburt','Bilecik','Bingöl','Bitlis','Bolu','Burdur','Bursa','Çanakkale','Çankırı','Çorum','Denizli','Diyarbakır','Düzce','Edirne','Elazığ','Erzincan','Erzurum','Eskişehir','Gaziantep','Giresun','Gümüşhane','Hakkâri','Hatay','Iğdır','Isparta','İstanbul','İzmir','Kahramanmaraş','Karabük','Karaman','Kars','Kastamonu','Kayseri','Kırıkkale','Kırklareli','Kırşehir','Kilis','Kocaeli','Konya','Kütahya','Malatya','Manisa','Mardin','Mersin','Muğla','Muş','Nevşehir','Niğde','Ordu','Osmaniye','Rize','Sakarya','Samsun','Siirt','Sinop','Sivas','Şanlıurfa','Şırnak','Tekirdağ','Tokat','Trabzon','Tunceli','Uşak','Van','Yalova','Yozgat','Zonguldak'];
@@ -331,8 +328,6 @@
         </div>
       </div>
 
-      <div class="tcr-page-structure" data-page-structure>
-      <section class="tcr-page-section tcr-page-kpi" data-page-kpi>
       <div class="tcr-ac-grid">
         <button type="button" class="tcr-action-card tcr-ac-blue" onclick="filterTip('')">
           <span class="tcr-ac-icon">${ICONS.users}</span>
@@ -389,8 +384,6 @@
         </button>
       </div>
 
-      </section>
-
       <nav class="cari-mobile-nav" aria-label="Cari hızlı işlemler">
         <button type="button" class="active" onclick="toggleSidebar()">${ICONS.menu}<span>Menü</span></button>
         <button type="button" onclick="location.href='cari-form.html'">${ICONS.user_plus}<span>Yeni</span></button>
@@ -399,33 +392,29 @@
         <button type="button" onclick="filterBakiye('alacakli');scrollToCariTable()">${ICONS.trend_up}<span>Alacak</span></button>
       </nav>
 
-      <section class="tcr-page-section" data-page-filter>
-        <div class="tcr-filter-panel">
-          <span class="tcr-filter-title">Arama</span>
-          <div class="tcr-filter-grid">
-            <div class="tcr-filter-field tcr-filter-field-search">
-              <label for="cariSearchInput">Arama</label>
-              <div class="tcr-filter-search-row">
-                <div class="tcr-filter-search">
-                  <span class="tcr-filter-search-icon">${ICONS.search}</span>
-                  <input id="cariSearchInput" type="search" placeholder="Cari adı, kodu veya yetkili ara..." oninput="filterCari(this.value)" data-tcr-clear-ready="1" />
-                </div>
-                <button type="button" class="tcr-filter-clear" data-filter-clear title="Temizle" aria-label="Filtreleri temizle">${ICONS.brush || ICONS.edit}</button>
-              </div>
+      <div class="card cari-list-card">
+        <div class="card-body" style="padding:var(--s-4)">
+          <div class="toolbar">
+            <div class="toolbar-search">
+              <span class="toolbar-search-icon">${ICONS.search}</span>
+              <input type="text" placeholder="Cari adı, kodu veya yetkili ara..." oninput="filterCari(this.value)" />
             </div>
-            <div class="tcr-filter-field">
-              <label for="cariTipFilter">Tipler</label>
-              <select id="cariTipFilter" onchange="filterTip(this.value)">
-                <option value="">Tüm Tipler</option><option value="Müşteri">Müşteri</option><option value="Tedarikçi">Tedarikçi</option>
-              </select>
-            </div>
-            <div class="tcr-filter-field">
-              <label for="cariSehirFilter">Şehirler</label>
-              <select id="cariSehirFilter">
-                <option value="">Tüm Şehirler</option><option>İstanbul</option><option>İzmir</option><option>Ankara</option><option>Antalya</option><option>Trabzon</option><option>Kayseri</option>
-              </select>
-            </div>
-            <div class="tcr-filter-tools">
+            <select class="filter-select" onchange="filterTip(this.value)">
+              <option value="">Tüm Tipler</option>
+              <option value="Müşteri">Müşteri</option>
+              <option value="Tedarikçi">Tedarikçi</option>
+            </select>
+            <select class="filter-select">
+              <option>Tüm Şehirler</option>
+              <option>İstanbul</option>
+              <option>İzmir</option>
+              <option>Ankara</option>
+              <option>Antalya</option>
+              <option>Trabzon</option>
+              <option>Kayseri</option>
+            </select>
+            <div class="toolbar-spacer"></div>
+            <div class="tcr-table-header-controls">
               <div class="cari-column-selector-wrap">
                 <button type="button" class="icon-btn cari-column-selector-btn" onclick="event.stopPropagation();toggleCariColumnMenu()" title="Kolon Seç">${ICONS.settings || ICONS.sliders || ICONS.filter}</button>
                 <div id="cariColumnMenu" class="cari-column-menu" onclick="event.stopPropagation()">
@@ -441,11 +430,8 @@
               </div>
             </div>
           </div>
-        </div>
-      </section>
 
-      <section class="tcr-page-table" data-page-table>
-        <div data-table-body class="table-wrap" style="border:none">
+          <div class="table-wrap" style="border:none">
             <table class="data" id="cariTable" data-no-record-lock="true" data-no-column-selector="true">
               <thead><tr>
                 <th data-col="kod">Kod</th><th data-col="unvan">Ünvan</th><th data-col="tip">Tip</th><th data-col="yetkili">Yetkili</th><th data-col="sehir">Şehir</th><th data-col="vade">Vade</th><th class="num" data-col="bakiye">Bakiye</th><th data-col="durum">Durum</th><th class="tcr-action-column" data-sort="off">İşlem</th>
@@ -487,8 +473,8 @@
                 </tr>
               </tfoot>
             </table>
+          </div>
         </div>
-      </section>
       </div>
 
       ${modalHtml('cariActivityModal', 'Cari İşlem Takvimi', `
@@ -1140,6 +1126,7 @@ function filterCari(v) {
       openModal('hareketDetayModal');
     }
   </script>
-  <script src="../assets/js/components/filter-component.js?v=20260720-532"></script>
+
+  <script src="../assets/js/mobile-tablet-framework.js?v=20260720-526"></script>
 </body>
 </html>
