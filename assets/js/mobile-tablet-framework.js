@@ -23,24 +23,6 @@
           cell.dataset.label=label;
           if(/^(işlem|işlemler)$/i.test(label)||cell.querySelector('.icon-btn,.table-actions,.actions')) cell.classList.add('tcr-action-column');
           if(/^(cari|ünvan|cari \/ içerik|açıklama)$/i.test(label)) cell.dataset.mobileSpan='2';
-
-          const normalized=label.toLocaleLowerCase('tr-TR').replace(/\s+/g,' ').trim();
-          cell.classList.remove('tcr-mobile-primary','tcr-mobile-status','tcr-mobile-title','tcr-mobile-secondary','tcr-mobile-extra');
-          const mobileKey=normalized
-            .replace(/ı/g,'i').replace(/ş/g,'s').replace(/ğ/g,'g').replace(/ü/g,'u').replace(/ö/g,'o').replace(/ç/g,'c')
-            .replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'');
-          cell.dataset.mobileKey=mobileKey;
-          if(/^(kod|cari kod|işlem no|fiş no|hareket no|belge no|stok kodu|sipariş no|teklif no|fatura no)$/.test(normalized)){
-            cell.classList.add('tcr-mobile-primary');
-          }else if(normalized==='durum'){
-            cell.classList.add('tcr-mobile-status');
-          }else if(/^(ünvan|cari|cari \/ içerik|stok|stok adı|açıklama)$/.test(normalized)){
-            cell.classList.add('tcr-mobile-title');
-          }else if(/^(tip|şehir|tarih|vade|bakiye|tutar|kasa \/ banka \/ portföy|kasa \/ banka \/ pos|borç|alacak)$/.test(normalized)){
-            cell.classList.add('tcr-mobile-secondary');
-          }else if(!cell.classList.contains('tcr-action-column')){
-            cell.classList.add('tcr-mobile-extra');
-          }
         });
       });
     });
