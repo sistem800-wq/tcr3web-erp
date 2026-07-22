@@ -53,6 +53,18 @@
     @media (max-width:768px){.ci-detail-hero{align-items:flex-start;flex-direction:column}.ci-detail-amount{text-align:left}.ci-detail-grid{grid-template-columns:1fr;padding:4px 14px}.ci-detail-item:nth-last-child(-n+2){border-bottom:1px solid #e5e7eb}.ci-detail-item:last-child{border-bottom:0}.ci-detail-item{grid-template-columns:1fr;gap:4px}.ci-detail-value{text-align:left}.data .flex.gap-2{gap:4px}.data .icon-btn{width:28px!important;height:28px!important}}
     .ci-actions{position:relative;display:inline-flex;gap:6px;justify-content:flex-end;align-items:center;overflow:visible}
     .ci-table-wrap{overflow:visible!important}
+    .cari-filter-card{margin-bottom:16px!important}
+    .cari-filter-card>.card-body{padding:12px!important;height:auto!important;min-height:0!important;max-height:none!important}
+    .cari-filter-card .tcr-responsive-filter{margin:0!important}
+    .cari-table-card{margin-top:0!important}
+    .cari-table-card>.card-body{padding:0!important;height:auto!important;min-height:0!important;max-height:none!important}
+    .cari-table-card .ci-table-wrap{margin:0!important;border:0!important}
+    @media (max-width:1024px){
+      .cari-filter-card{margin-bottom:12px!important}
+      .cari-filter-card>.card-body{padding:10px!important}
+      .cari-table-card{background:transparent!important;border:0!important;box-shadow:none!important}
+      .cari-table-card>.card-body{padding:0!important}
+    }
     .ci-output-menu{position:fixed!important;z-index:2147483647!important;width:210px;border:1px solid var(--border);border-radius:14px;background:#fff!important;box-shadow:0 28px 70px rgba(15,23,42,.28);padding:7px;display:none;text-align:left;isolation:isolate;transform:translateZ(0);overflow:hidden;pointer-events:auto}
     .ci-output-menu.open{display:block!important}
     .ci-output-title{font-size:10px;font-weight:900;color:var(--text-mute);text-transform:uppercase;letter-spacing:.08em;padding:7px 9px 6px;border-bottom:1px solid var(--border);margin-bottom:5px;white-space:nowrap;background:#fff!important}
@@ -198,9 +210,10 @@
     }
   </style>
 
-  <link rel="stylesheet" href="../assets/css/tcr-cari-list-final.css?v=20260722-515" />
+  <link rel="stylesheet" href="../assets/css/tcr-cari-list-final.css?v=20260722-509" />
+  <link rel="stylesheet" href="../assets/css/cari-page-final-fixes.css?v=20260722-513" />
 </head>
-<body class="tcr-cari-clean">
+<body class="tcr-cari-clean tcr-page-cari-islemler">
   <div id="app" class="app"></div>
   <script src="../assets/js/app.js?v=20260716-574"></script>
   <script src="../assets/js/tcr-actions.js?v=20260713-600"></script>
@@ -303,7 +316,6 @@
         <td data-label="İşlem"><div class="tcr-row-actions">
           <button type="button" class="icon-btn" title="Gör" onclick="openCariIslemDetail('${row.no}')">${CI_SVG_EYE}</button>
           <button type="button" class="icon-btn success" title="Düzenle" onclick="openCariIslemModal('${row.tip}','${row.no}')">${CI_SVG_EDIT}</button>
-          <button type="button" data-tcr-lock-action="1" class="icon-btn ${locked?'tcr-lock-closed':'tcr-lock-open'}" title="${locked?'Kayıt kilitli':'Kayıt düzenlenebilir'}" onclick="showCariLockInfo('${row.no}',${locked})">${locked?CI_SVG_LOCK:CI_SVG_LOCK_OPEN}</button>
           <button type="button" class="icon-btn ci-output-trigger" title="Diğer işlemler" onclick="toggleCariOutputMenu(event,'${row.no}')">${CI_SVG_MORE}</button>
         </div></td>
       </tr>`;
@@ -321,8 +333,27 @@
         ${CARI_ISLEM_KARTLARI.map(t=>{const c=MOCK_CARI_ISLEM.filter(f=>(t.match||[t.id]).includes(f.tip)).length;const cc=t.color.includes('accent')?'green':t.color.includes('danger')?'red':t.color.includes('primary')?'blue':'orange';return `<button type="button" class="tcr-action-card tcr-ac-${cc}" onclick="openCariIslemModal('${t.actionTip}')"><span class="tcr-ac-icon">${ICONS[t.iconKey]||ICONS.file}</span><span class="tcr-ac-content"><span class="tcr-ac-title">${t.label}</span><span class="tcr-ac-desc">${t.desc}</span></span><span class="tcr-ac-badge">${c}</span></button>`}).join('')}
       </div>
       <nav class="cari-mobile-nav" aria-label="Cari işlem hızlı işlemler"><button type="button" class="active" onclick="toggleSidebar()">${ICONS.menu}<span>Menü</span></button><button type="button" onclick="openCariIslemModal('tahsilat')">${ICONS.cash}<span>Tahsilat</span></button><button type="button" onclick="openCariIslemModal('odeme')">${ICONS.wallet}<span>Ödeme</span></button><button type="button" onclick="openCariIslemModal('cek_islemi')">${ICONS.file_check}<span>Çek</span></button><button type="button" onclick="openCariIslemModal('senet_islemi')">${ICONS.file_text}<span>Senet</span></button></nav>
-      <div class="card cari-list-card"><div class="card-body" style="padding:var(--s-4)"><div class="toolbar tcr-responsive-filter"><div class="toolbar-search"><span class="toolbar-search-icon">${ICONS.search}</span><input type="text" placeholder="İşlem no, cari veya açıklama ara..." oninput="filterCariIslemTable(this.value)" /></div><select class="filter-select" onchange="filterCariIslemTip(this.value)"><option value="">Tüm Tipler</option>${CARI_ISLEM_TIPLERI.map(t=>`<option value="${t.id}">${t.label}</option>`).join('')}</select><select class="filter-select" onchange="filterCariIslemDurum(this.value)"><option value="">Tüm Durumlar</option><option>Onaylandı</option><option>Bekliyor</option><option>Taslak</option></select><div class="tcr-filter-desktop-tools"><select class="tcr-filter-page-size" aria-label="Sayfa başına kayıt"><option>10</option><option>25</option><option>50</option><option>100</option><option>250</option><option>Hepsi</option></select></div><div class="toolbar-spacer"></div></div>
-      <div class="table-wrap ci-table-wrap" style="border:none"><table class="data" id="cariIslemTable"><thead><tr><th>İşlem No</th><th>Tip</th><th>Tarih</th><th>Cari</th><th>Kasa / Banka / Portföy</th><th class="num">Tutar</th><th>Durum</th><th>Açıklama</th><th>İşlem</th></tr></thead><tbody>${rows}</tbody><tfoot class="cari-bakiye-footer"><tr><td colspan="5" class="cari-bakiye-footer-label">Toplam:</td><td colspan="4"><div class="cari-bakiye-footer-values"><span class="cari-footer-total cari-footer-borc">Giriş: <strong id="ciFooterGiris">0,00 ₺</strong></span><span class="cari-footer-total cari-footer-alacak">Çıkış: <strong id="ciFooterCikis">0,00 ₺</strong></span><span class="cari-footer-total cari-footer-net">Net: <strong id="ciFooterNet">0,00 ₺</strong></span></div></td></tr></tfoot></table></div></div></div>
+      <section class="card cari-filter-card" aria-label="Cari işlem arama ve filtreleri">
+        <div class="card-body">
+          <div class="toolbar tcr-responsive-filter">
+            <div class="toolbar-search"><span class="toolbar-search-icon">${ICONS.search}</span><input type="text" placeholder="İşlem no, cari veya açıklama ara..." oninput="filterCariIslemTable(this.value)" /></div>
+            <select class="filter-select" onchange="filterCariIslemTip(this.value)"><option value="">Tüm Tipler</option>${CARI_ISLEM_TIPLERI.map(t=>`<option value="${t.id}">${t.label}</option>`).join('')}</select>
+            <select class="filter-select" onchange="filterCariIslemDurum(this.value)"><option value="">Tüm Durumlar</option><option>Onaylandı</option><option>Bekliyor</option><option>Taslak</option></select>
+            <div class="tcr-filter-desktop-tools"><select class="tcr-filter-page-size" aria-label="Sayfa başına kayıt"><option>10</option><option>25</option><option>50</option><option>100</option><option>250</option><option>Hepsi</option></select></div>
+          </div>
+        </div>
+      </section>
+      <section class="card cari-table-card" aria-label="Cari işlem listesi">
+        <div class="card-body">
+          <div class="table-wrap ci-table-wrap">
+            <table class="data" id="cariIslemTable" data-no-column-selector="true">
+              <thead><tr><th>İşlem No</th><th>Tip</th><th>Tarih</th><th>Cari</th><th>Kasa / Banka / Portföy</th><th class="num">Tutar</th><th>Durum</th><th>Açıklama</th><th>İşlem</th></tr></thead>
+              <tbody>${rows}</tbody>
+              <tfoot class="cari-bakiye-footer"><tr><td colspan="5" class="cari-bakiye-footer-label">Toplam:</td><td colspan="4"><div class="cari-bakiye-footer-values"><span class="cari-footer-total cari-footer-borc">Giriş: <strong id="ciFooterGiris">0,00 ₺</strong></span><span class="cari-footer-total cari-footer-alacak">Çıkış: <strong id="ciFooterCikis">0,00 ₺</strong></span><span class="cari-footer-total cari-footer-net">Net: <strong id="ciFooterNet">0,00 ₺</strong></span></div></td></tr></tfoot>
+            </table>
+          </div>
+        </div>
+      </section>
       ${modalHtml('cariOdemeModal', 'Cari İşlem', `
         <div class="form-grid-2">
           <div class="form-field"><label class="form-label">İşlem No</label><input class="form-input mono" id="co-no" value="YENİ" readonly /></div>
@@ -1021,7 +1052,7 @@
         const view = live.find(btn => /gör|gor/i.test(btn.getAttribute('title') || ''));
         const edit = live.find(btn => /düzenle|duzenle/i.test(btn.getAttribute('title') || ''));
         const more = live.find(btn => /diğer|diger|menü|menu/i.test(btn.getAttribute('title') || ''));
-        [view, edit, canonicalLock, more].filter(Boolean).forEach(btn => group.appendChild(btn));
+        [view, edit, more].filter(Boolean).forEach(btn => group.appendChild(btn));
       });
     }
 

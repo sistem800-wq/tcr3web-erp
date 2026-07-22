@@ -1,5 +1,7 @@
-# Paket 514
+Paket 510 — Cari modülleri ortak filtre/tablo kart standardı ve mobil semantik sıra
 
-- Cari Kartlar tablo başlığındaki ayar simgesi kaldırıldı.
-- Tablo başlangıcındaki Kilit sütunu ve kilit simgeleri kaldırıldı.
-- Kolon seçimi yalnız filtre satırındaki ayar düğmesinden kullanılmaya devam eder.
+512 TCR3WEB Cari İşlemleri filtre ve tablo kart ayrımı
+
+- Arama ve filtreler bağımsız karttır.
+- İşlem tablosu bağımsız karttır.
+- Mobil, tablet ve Windows görünümünde tablo filtre kartının içinde değildir.

@@ -67,3 +67,106 @@ body.tcr-page-cari #cariTable th.cari-column-selector-head,
 body.tcr-page-cari #cariTable button.cari-column-selector-btn {
   display:none!important;
 }
+
+
+/* 510 · Cari modülleri ortak temiz kart/filtre/tablo standardı */
+body.tcr-cari-clean #content .cari-filter-card{
+  margin:0 0 14px!important;
+  height:auto!important;min-height:0!important;max-height:none!important;
+  border-left:4px solid #ef3340!important;
+}
+body.tcr-cari-clean #content .cari-filter-card>.card-body{
+  display:block!important;padding:12px!important;height:auto!important;min-height:0!important;max-height:none!important;
+}
+body.tcr-cari-clean #content .cari-filter-card .tcr-responsive-filter{margin:0!important}
+body.tcr-cari-clean #content .cari-table-card{
+  margin:0!important;height:auto!important;min-height:0!important;max-height:none!important;
+  border-left:0!important;
+}
+body.tcr-cari-clean #content .cari-table-card>.card-body{
+  padding:0!important;height:auto!important;min-height:0!important;max-height:none!important;
+}
+body.tcr-cari-clean #content .cari-table-card .ci-table-wrap{
+  margin:0!important;border:0!important;overflow:visible!important;
+}
+body.tcr-cari-clean [data-tcr-lock-action],
+body.tcr-cari-clean .tcr-lock-open,
+body.tcr-cari-clean .tcr-lock-closed,
+body.tcr-cari-clean button[title*="kilit" i],
+body.tcr-cari-clean button[aria-label*="kilit" i]{display:none!important}
+
+@media(max-width:1199.98px){
+  body.tcr-cari-clean #content .cari-filter-card{margin-bottom:14px!important}
+  body.tcr-cari-clean #content .cari-filter-card>.card-body{padding:10px!important}
+  body.tcr-cari-clean #content .cari-table-card{background:transparent!important;border:0!important;box-shadow:none!important}
+  body.tcr-cari-clean #content .cari-table-card>.card-body{padding:0!important}
+}
+
+/* Cari İşlemleri mobil/tablet: İŞLEM NO | DURUM | CARİ / ikinci satır detay / üçüncü satır işlemler */
+@media(max-width:991.98px){
+  body.tcr-page-cari-islemler #cariIslemTable tbody tr{
+    grid-template-columns:minmax(0,.95fr) minmax(0,.9fr) minmax(0,1.1fr) minmax(0,1.05fr)!important;
+    grid-template-rows:auto auto auto!important;
+    border-left:1px solid #cbd9ea!important;
+  }
+  body.tcr-page-cari-islemler #cariIslemTable tbody td[data-label="İşlem No"]{grid-column:1!important;grid-row:1!important;order:0!important;border-left:4px solid transparent!important;font-family:'JetBrains Mono',monospace!important;font-size:10px!important;overflow-wrap:anywhere!important}
+  body.tcr-page-cari-islemler #cariIslemTable tbody td[data-label="Durum"]{grid-column:2!important;grid-row:1!important;order:0!important}
+  body.tcr-page-cari-islemler #cariIslemTable tbody td[data-label="Cari"]{grid-column:3/5!important;grid-row:1!important;order:0!important}
+  body.tcr-page-cari-islemler #cariIslemTable tbody td[data-label="Tip"]{grid-column:1!important;grid-row:2!important;order:0!important}
+  body.tcr-page-cari-islemler #cariIslemTable tbody td[data-label="Tarih"]{grid-column:2!important;grid-row:2!important;order:0!important}
+  body.tcr-page-cari-islemler #cariIslemTable tbody td[data-label="Kasa / Banka / Portföy"]{grid-column:3!important;grid-row:2!important;order:0!important}
+  body.tcr-page-cari-islemler #cariIslemTable tbody td[data-label="Tutar"]{grid-column:4!important;grid-row:2!important;order:0!important}
+  body.tcr-page-cari-islemler #cariIslemTable tbody td[data-label="Açıklama"]{display:none!important}
+  body.tcr-page-cari-islemler #cariIslemTable tbody td[data-label="İşlem"]{grid-column:1/-1!important;grid-row:3!important;order:0!important}
+  body.tcr-page-cari-islemler #cariIslemTable tbody tr:hover td[data-label="İşlem No"],
+  body.tcr-page-cari-islemler #cariIslemTable tbody tr:focus-within td[data-label="İşlem No"]{border-left-color:#0b78b5!important}
+}
+
+/* Cari Fişleri mobil/tablet: FİŞ NO | DURUM | CARİ / ikinci satır detay / üçüncü satır işlemler */
+@media(max-width:991.98px){
+  body.tcr-page-cari-fisleri #cariFisTable tbody tr{
+    grid-template-columns:repeat(4,minmax(0,1fr))!important;
+    grid-template-rows:auto auto auto!important;
+    border-left:1px solid #cbd9ea!important;
+  }
+  body.tcr-page-cari-fisleri #cariFisTable tbody td[data-label="Fiş No"]{grid-column:1!important;grid-row:1!important;order:0!important;border-left:4px solid transparent!important;font-family:'JetBrains Mono',monospace!important;font-size:10px!important;overflow-wrap:anywhere!important}
+  body.tcr-page-cari-fisleri #cariFisTable tbody td[data-label="Durum"]{grid-column:2!important;grid-row:1!important;order:0!important}
+  body.tcr-page-cari-fisleri #cariFisTable tbody td[data-label="Cari / İçerik"]{grid-column:3/5!important;grid-row:1!important;order:0!important}
+  body.tcr-page-cari-fisleri #cariFisTable tbody td[data-label="Tip"]{grid-column:1!important;grid-row:2!important;order:0!important}
+  body.tcr-page-cari-fisleri #cariFisTable tbody td[data-label="Tarih"]{grid-column:2!important;grid-row:2!important;order:0!important}
+  body.tcr-page-cari-fisleri #cariFisTable tbody td[data-label="Borç"]{grid-column:3!important;grid-row:2!important;order:0!important}
+  body.tcr-page-cari-fisleri #cariFisTable tbody td[data-label="Alacak"]{grid-column:4!important;grid-row:2!important;order:0!important}
+  body.tcr-page-cari-fisleri #cariFisTable tbody td[data-label="Kalem"],
+  body.tcr-page-cari-fisleri #cariFisTable tbody td[data-label="Açıklama"]{display:none!important}
+  body.tcr-page-cari-fisleri #cariFisTable tbody td[data-label="İşlem"]{grid-column:1/-1!important;grid-row:3!important;order:0!important}
+  body.tcr-page-cari-fisleri #cariFisTable tbody tr:hover td[data-label="Fiş No"],
+  body.tcr-page-cari-fisleri #cariFisTable tbody tr:focus-within td[data-label="Fiş No"]{border-left-color:#0b78b5!important}
+}
+
+/* 509 · Cari liste tabloları: filtre kartıyla aynı dış sol vurgu çizgisi */
+body.tcr-cari-clean #content .cari-table-card{
+  border-left:4px solid #ef3340!important;
+  border-top-left-radius:14px!important;
+  border-bottom-left-radius:14px!important;
+  overflow:visible!important;
+}
+body.tcr-cari-clean #content .cari-table-card>.card-body{
+  border-top-left-radius:10px!important;
+  border-bottom-left-radius:10px!important;
+}
+
+@media(max-width:1199.98px){
+  body.tcr-cari-clean #content .cari-table-card{
+    background:transparent!important;
+    border-top:0!important;
+    border-right:0!important;
+    border-bottom:0!important;
+    border-left:4px solid #ef3340!important;
+    box-shadow:none!important;
+    border-radius:0!important;
+    padding-left:6px!important;
+  }
+  body.tcr-cari-clean #content .cari-table-card>.card-body{
+    padding:0!important;
+  }
+}

@@ -225,7 +225,8 @@
   'use strict';
 
   const PAGE_EXCLUDES = new Set([
-    'dashboard.html', 'settings.html', 'action-button-standard.html'
+    'dashboard.html', 'settings.html', 'action-button-standard.html',
+    'cari.html', 'cari-islemler.html', 'cari-fisleri.html'
   ]);
   const HEADER_EXCLUDES = /^(işlem|işlemler|aksiyon|aksiyonlar)$/i;
   let tableCounter = 0;
