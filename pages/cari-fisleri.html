@@ -18,16 +18,169 @@
   <link rel="stylesheet" href="../assets/css/style.css?v=20260712-653" />
   <link rel="stylesheet" href="../assets/css/responsive-master.css?v=20260713-591" />
   <link rel="stylesheet" href="../assets/css/performance.css?v=20260711-700" />
-  <link rel="stylesheet" href="../assets/css/tcr-table.css?v=20260722-518-filter-clean" />
+  <link rel="stylesheet" href="../assets/css/tcr-table.css?v=20260713-583" />
   <link rel="stylesheet" href="../assets/css/kpi-standard.css?v=20260712-694" />
   <link rel="stylesheet" href="../assets/css/text-readability.css?v=20260712-657" />
   <link rel="stylesheet" href="../assets/css/cari-amount-status.css?v=20260712-621" />
-  <link rel="stylesheet" href="../assets/css/cari-master.css?v=20260721-523-final" />
   <link rel="stylesheet" href="../assets/css/shared-shell.css?v=20260717-561" />
 
-  <link rel="stylesheet" href="../assets/css/cari-filter-standard.css?v=20260722-518" />
+  <style id="tcr-cari-single-source-final">
+    /* 559 · Kilit aksiyonu sağ işlem butonlarında; Durum yalnız fiş onay durumudur */
+    #cariIslemTable .status::before,
+    #cariFisTable .status::before{display:none!important}
+
+    #cariIslemTable th:last-child,#cariIslemTable td:last-child{
+      width:176px!important;min-width:176px!important;white-space:nowrap!important;text-align:right!important
+    }
+    #cariFisTable th:last-child,#cariFisTable td:last-child{
+      width:142px!important;min-width:142px!important;white-space:nowrap!important;text-align:right!important
+    }
+    .tcr-row-actions{
+      display:flex!important;flex-flow:row nowrap!important;align-items:center!important;
+      justify-content:flex-end!important;gap:6px!important;white-space:nowrap!important;width:max-content!important;
+      margin-left:auto!important
+    }
+    .tcr-row-actions .icon-btn{
+      flex:0 0 34px!important;width:34px!important;height:34px!important;
+      display:inline-grid!important;place-items:center!important;margin:0!important
+    }
+    .tcr-row-actions .icon-btn svg{width:17px!important;height:17px!important;pointer-events:none!important}
+    .tcr-lock-open{border-color:#16a34a!important;color:#16a34a!important;background:#fff!important}
+    .tcr-lock-closed{border-color:#ef4444!important;color:#ef4444!important;background:#fff!important}
+    .tcr-lock-open:hover,.tcr-lock-open:focus-visible,
+    .tcr-lock-closed:hover,.tcr-lock-closed:focus-visible{
+      border-color:#2563eb!important;color:#2563eb!important;background:#eff6ff!important
+    }
+    #cariIslemTable tbody tr:hover td[data-label="Açıklama"],
+    #cariFisTable tbody tr:hover td[data-label="Açıklama"]{
+      color:#111827!important;opacity:1!important;visibility:visible!important
+    }
+
+    @media (max-width:991.98px){
+      #cariIslemTable,#cariFisTable{display:block!important;width:100%!important}
+      #cariIslemTable thead,#cariFisTable thead,
+      #cariIslemTable tfoot,#cariFisTable tfoot{display:none!important}
+      #cariIslemTable tbody,#cariFisTable tbody{display:grid!important;gap:12px!important}
+      #cariIslemTable tbody tr,#cariFisTable tbody tr{
+        display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr))!important;
+        border:1px solid #cbd9ea!important;border-left:5px solid #0b78b5!important;
+        border-radius:14px!important;background:#fff!important;overflow:hidden!important;
+        box-shadow:0 2px 7px rgba(15,23,42,.05)!important;transform:none!important
+      }
+      #cariIslemTable tbody tr:hover,#cariFisTable tbody tr:hover{
+        transform:none!important;background:#fff!important;border-color:#8db5df!important;
+        border-left-color:#0b78b5!important;box-shadow:0 4px 12px rgba(15,23,42,.09)!important
+      }
+      #cariIslemTable tbody td,#cariFisTable tbody td{
+        display:block!important;min-width:0!important;width:auto!important;padding:9px 8px!important;
+        border:0!important;border-right:1px solid #dbe5f1!important;border-bottom:1px solid #dbe5f1!important;
+        box-shadow:none!important;white-space:normal!important;overflow-wrap:anywhere!important;
+        background:#fff!important;color:#111827!important;font-size:12px!important;line-height:1.25!important
+      }
+      #cariIslemTable tbody td::before,#cariFisTable tbody td::before{
+        content:attr(data-label);display:block;margin-bottom:4px;font-size:9px;line-height:1;
+        font-weight:800;color:#526783;text-transform:uppercase;letter-spacing:.03em
+      }
+      #cariIslemTable tbody td[data-label="Açıklama"],
+      #cariFisTable tbody td[data-label="Açıklama"]{
+        grid-column:1/-1!important;min-height:46px!important;color:#111827!important;
+        opacity:1!important;visibility:visible!important;background:#fff!important
+      }
+      #cariIslemTable tbody td[data-label="İşlem"],
+      #cariFisTable tbody td[data-label="İşlem"]{
+        grid-column:1/-1!important;order:99!important;border:0!important;padding:9px!important;background:#fff!important
+      }
+      #cariIslemTable tbody td[data-label="İşlem"]::before,
+      #cariFisTable tbody td[data-label="İşlem"]::before{display:none!important}
+      .tcr-row-actions{justify-content:flex-start!important;min-width:0!important;width:auto!important;margin-left:0!important}
+      #cariIslemTable tbody td:nth-child(4n),#cariFisTable tbody td:nth-child(4n){border-right:0!important}
+    }
+    @media (max-width:520px){
+      #cariIslemTable tbody td,#cariFisTable tbody td{font-size:11px!important;padding:8px 6px!important}
+      #cariIslemTable tbody td[data-label="İşlem No"],#cariFisTable tbody td[data-label="Fiş No"]{
+        font-family:'JetBrains Mono',monospace;font-size:10px!important
+      }
+    }
+  </style>
+
+
+
+  <style id="tcr-561-cari-fis-final-fix">
+    /* Mobil/tablet KPI kartları her zaman görünür */
+    @media (max-width: 991.98px){
+      body[data-page="cari-fisleri"] .tcr-ac-grid,
+      .page-cari-fisleri .tcr-ac-grid,
+      .tcr-ac-grid{
+        display:grid!important;
+        grid-template-columns:1fr!important;
+        gap:10px!important;
+        width:100%!important;
+        margin:0 0 12px!important;
+        opacity:1!important;
+        visibility:visible!important;
+        height:auto!important;
+        max-height:none!important;
+        overflow:visible!important;
+      }
+      .tcr-ac-grid .tcr-action-card{
+        display:grid!important;
+        grid-template-columns:44px minmax(0,1fr) auto!important;
+        align-items:center!important;
+        min-height:68px!important;
+        width:100%!important;
+      }
+    }
+
+    /* Header görünümü değişmez; aktif sıralamada yalnız ok mavi */
+    #cariFisTable thead th[aria-sort],
+    #cariFisTable thead th.is-sorted,
+    #cariFisTable thead th.sorted,
+    #cariFisTable thead th.sort-active,
+    #cariFisTable thead th.active-sort{
+      background:#f8fafc!important;
+      color:#0f172a!important;
+    }
+    #cariFisTable thead th[aria-sort] svg,
+    #cariFisTable thead th.is-sorted svg,
+    #cariFisTable thead th.sorted svg,
+    #cariFisTable thead th.sort-active svg,
+    #cariFisTable thead th.active-sort svg,
+    #cariFisTable thead th[aria-sort]::after,
+    #cariFisTable thead th.is-sorted::after,
+    #cariFisTable thead th.sorted::after,
+    #cariFisTable thead th.sort-active::after,
+    #cariFisTable thead th.active-sort::after{
+      color:#1d4ed8!important;
+      stroke:#1d4ed8!important;
+      opacity:1!important;
+    }
+
+    /* İşlem butonları tek satır */
+    #cariFisTable td[data-label="İşlem"],
+    #cariFisTable th:last-child{
+      min-width:142px!important;
+      width:142px!important;
+      white-space:nowrap!important;
+    }
+    #cariFisTable td[data-label="İşlem"] .tcr-row-actions{
+      display:flex!important;
+      flex-flow:row nowrap!important;
+      align-items:center!important;
+      justify-content:flex-end!important;
+      gap:6px!important;
+      width:max-content!important;
+      margin-left:auto!important;
+    }
+    @media (max-width:991.98px){
+      #cariFisTable td[data-label="İşlem"] .tcr-row-actions{
+        justify-content:flex-start!important;
+        margin-left:0!important;
+      }
+    }
+  </style>
+
 </head>
-<body class="tcr-cari-master">
+<body class="tcr-cari-clean">
   <div id="app" class="app"></div>
   <script src="../assets/js/app.js?v=20260716-574"></script>
   <script src="../assets/js/tcr-actions.js?v=20260713-600"></script>
@@ -67,14 +220,14 @@
     function cfStatusBadge(status) { const cls=status==='Onaylandı'?'status active':status==='Bekliyor'?'status warning':'status'; return `<span class="${cls}">${status}</span>`; }
     function cfTipLabel(tip) { return CARI_FIS_TIPLERI.find(x=>x.id===tip)?.label || tip; }
     function showCariFisLockInfo(no,locked) { toast(locked?`${no} kaydı kilitli`:`${no} kaydı düzenlenebilir`,locked?'warning':'success'); }
-    function cfRow(row,index) { const lockState=cfLockState(index); const locked=lockState.key==='locked'; return `<tr data-tip="${row.tip}" data-no="${row.no}" data-lock-state="${lockState.key}"><td data-label="Fiş No" class="mono"><strong>${row.no}</strong></td><td data-label="Tip">${cfTipLabel(row.tip)}</td><td data-label="Tarih">${fmtDate(row.tarih)}</td><td data-label="Cari / İçerik"><strong>${row.cari}</strong></td><td data-label="Kalem" class="num">${row.kalem}</td><td data-label="Borç" class="num" style="color:#dc2626;font-weight:900">${fmtMoney(row.borc)}</td><td data-label="Alacak" class="num" style="color:#059669;font-weight:900">${fmtMoney(row.alacak)}</td><td data-label="Durum">${cfStatusBadge(row.durum)}</td><td data-label="Açıklama">${row.aciklama||'-'}</td><td data-label="İşlem"><div class="tcr-row-actions"><button type="button" class="icon-btn" title="Gör" onclick="toast('${row.no} görüntülendi')">${CF_SVG_EYE}</button><button type="button" class="icon-btn success" title="Düzenle" onclick="location.href='cari-fis-form.html?no=${encodeURIComponent(row.no)}'">${CF_SVG_EDIT}</button></div></td></tr>`; }
+    function cfRow(row,index) { const lockState=cfLockState(index); const locked=lockState.key==='locked'; return `<tr data-tip="${row.tip}" data-no="${row.no}" data-lock-state="${lockState.key}"><td data-label="Fiş No" class="mono"><strong>${row.no}</strong></td><td data-label="Tip">${cfTipLabel(row.tip)}</td><td data-label="Tarih">${fmtDate(row.tarih)}</td><td data-label="Cari / İçerik"><strong>${row.cari}</strong></td><td data-label="Kalem" class="num">${row.kalem}</td><td data-label="Borç" class="num" style="color:#dc2626;font-weight:900">${fmtMoney(row.borc)}</td><td data-label="Alacak" class="num" style="color:#059669;font-weight:900">${fmtMoney(row.alacak)}</td><td data-label="Durum">${cfStatusBadge(row.durum)}</td><td data-label="Açıklama">${row.aciklama||'-'}</td><td data-label="İşlem"><div class="tcr-row-actions"><button type="button" class="icon-btn" title="Gör" onclick="toast('${row.no} görüntülendi')">${CF_SVG_EYE}</button><button type="button" class="icon-btn success" title="Düzenle" onclick="location.href='cari-fis-form.html?no=${encodeURIComponent(row.no)}'">${CF_SVG_EDIT}</button><button type="button" data-tcr-lock-action="1" class="icon-btn ${locked?'tcr-lock-closed':'tcr-lock-open'}" title="${locked?'Kayıt kilitli':'Kilit işlemleri'}" onclick="showCariFisLockInfo('${row.no}',${locked})">${locked?CF_SVG_LOCK:CF_SVG_LOCK_OPEN}</button></div></td></tr>`; }
 
     bootPage('cari-fisleri', () => {
       const fisRows=MOCK_CARI_FIS.map(cfRow).join('');
       return `<div class="page-head"><div><div class="breadcrumb"><a href="dashboard.html">Genel</a><span>›</span><a href="cari.html">Cari</a><span>›</span><span>Cari Fişleri</span></div><h1 class="page-title">${ICONS['file-text']} Cari Fişleri</h1><div class="page-sub">Açılış, devir ve virman fiş kayıtları</div></div><div class="page-actions"><button class="btn btn-ghost" onclick="toast('Cari fiş raporu indirildi (prototip)')">${ICONS.download} Rapor</button><button class="btn btn-primary" onclick="location.href='cari-fis-form.html?tip=acilis'">${ICONS.plus} Yeni Fiş</button></div></div>
       <div class="tcr-ac-grid">${CARI_FIS_TIPLERI.map(t=>{const c=MOCK_CARI_FIS.filter(f=>f.tip===t.id).length;const cc=t.id==='acilis'?'green':t.id==='devir'?'blue':'red';return `<button type="button" class="tcr-action-card tcr-ac-${cc}" onclick="location.href='cari-fis-form.html?tip=${t.id}'"><span class="tcr-ac-icon">${ICONS[t.iconKey]||ICONS.file}</span><span class="tcr-ac-content"><span class="tcr-ac-title">${t.label}</span><span class="tcr-ac-desc">${t.desc}</span></span><span class="tcr-ac-badge">${c}</span></button>`}).join('')}</div>
       <nav class="cari-mobile-nav" aria-label="Cari fiş hızlı işlemler"><button type="button" class="active" onclick="toggleSidebar()">${ICONS.menu}<span>Menü</span></button><button type="button" onclick="location.href='cari-fis-form.html?tip=acilis'">${ICONS.plus}<span>Yeni Fiş</span></button><button type="button" onclick="filterCariFisTip('acilis');scrollToCariFisTable()">${ICONS.inbox}<span>Açılış</span></button><button type="button" onclick="filterCariFisTip('devir');scrollToCariFisTable()">${ICONS['trend-up']}<span>Devir</span></button><button type="button" onclick="filterCariFisTip('virman');scrollToCariFisTable()">${ICONS.send}<span>Virman</span></button></nav>
-      <div class="card cari-list-card"><div class="card-body" style="padding:var(--s-4)"><div class="toolbar tcr-cari-filter-grid"><div class="tcr-filter-field tcr-filter-field--search"><label class="tcr-filter-label">Arama</label><div class="toolbar-search"><span class="toolbar-search-icon">${ICONS.search}</span><input type="text" placeholder="Fiş no, cari veya açıklama ara..." oninput="filterCariFisTable(this.value)" /></div></div><div class="tcr-filter-field"><label class="tcr-filter-label">Tipler</label><select class="filter-select" onchange="filterCariFisTip(this.value)"><option value="">Tüm Tipler</option>${CARI_FIS_TIPLERI.map(t=>`<option value="${t.id}">${t.label}</option>`).join('')}</select></div><div class="tcr-filter-field"><label class="tcr-filter-label">Durumlar</label><select class="filter-select" onchange="filterCariFisDurum(this.value)"><option value="">Tüm Durumlar</option><option>Onaylandı</option><option>Bekliyor</option><option>Taslak</option></select></div></div><div class="table-wrap" style="border:none"><table class="data" id="cariFisTable" data-no-record-lock="true"><thead><tr><th>Fiş No</th><th>Tip</th><th>Tarih</th><th>Cari / İçerik</th><th class="num">Kalem</th><th class="num">Borç</th><th class="num">Alacak</th><th>Durum</th><th>Açıklama</th><th>İşlem</th></tr></thead><tbody>${fisRows}</tbody><tfoot class="cari-bakiye-footer"><tr><td colspan="4" class="cari-bakiye-footer-label">Toplam:</td><td colspan="6"><div class="cari-bakiye-footer-values"><span class="cari-footer-total cari-footer-borc">Borç: <strong id="cfFooterBorc">0,00 ₺</strong></span><span class="cari-footer-total cari-footer-alacak">Alacak: <strong id="cfFooterAlacak">0,00 ₺</strong></span><span class="cari-footer-total cari-footer-net">Net: <strong id="cfFooterNet">0,00 ₺</strong></span></div></td></tr></tfoot></table></div></div></div>`;
+      <div class="card cari-list-card"><div class="card-body" style="padding:var(--s-4)"><div class="toolbar"><div class="toolbar-search"><span class="toolbar-search-icon">${ICONS.search}</span><input type="text" placeholder="Fiş no, cari veya açıklama ara..." oninput="filterCariFisTable(this.value)" /></div><select class="filter-select" onchange="filterCariFisTip(this.value)"><option value="">Tüm Tipler</option>${CARI_FIS_TIPLERI.map(t=>`<option value="${t.id}">${t.label}</option>`).join('')}</select><select class="filter-select" onchange="filterCariFisDurum(this.value)"><option value="">Tüm Durumlar</option><option>Onaylandı</option><option>Bekliyor</option><option>Taslak</option></select><div class="toolbar-spacer"></div></div><div class="table-wrap" style="border:none"><table class="data" id="cariFisTable"><thead><tr><th>Fiş No</th><th>Tip</th><th>Tarih</th><th>Cari / İçerik</th><th class="num">Kalem</th><th class="num">Borç</th><th class="num">Alacak</th><th>Durum</th><th>Açıklama</th><th>İşlem</th></tr></thead><tbody>${fisRows}</tbody><tfoot class="cari-bakiye-footer"><tr><td colspan="4" class="cari-bakiye-footer-label">Toplam:</td><td colspan="6"><div class="cari-bakiye-footer-values"><span class="cari-footer-total cari-footer-borc">Borç: <strong id="cfFooterBorc">0,00 ₺</strong></span><span class="cari-footer-total cari-footer-alacak">Alacak: <strong id="cfFooterAlacak">0,00 ₺</strong></span><span class="cari-footer-total cari-footer-net">Net: <strong id="cfFooterNet">0,00 ₺</strong></span></div></td></tr></tfoot></table></div></div></div>`;
     });
 
     function filterCariFisTable(v) {
@@ -219,6 +372,9 @@
         requestAnimationFrame(() => { queued = false; run(); });
       }).observe(table, {subtree:true, childList:true, attributes:true, attributeFilter:['class','title','aria-label']});
     }
+
+    document.addEventListener('DOMContentLoaded', () => tcrInitCariActionGuard('cariFisTable'));
+    window.addEventListener('load', () => tcrInitCariActionGuard('cariFisTable'));
 
   </script>
 </body>

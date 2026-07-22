@@ -3606,17 +3606,153 @@ window.addEventListener('resize', function(){
 
 
 /* ============================================================
-   544 - Kayıt kilidi tablo standardından tamamen kaldırıldı
+   749 - Tcr3WEB Modül Bazlı Kayıt Erişim / Kilit Standardı
    ============================================================ */
+const TCR3_LOCK_DEFAULTS = {
+  'dashboard':5,'cari':5,'cari-islemler':5,'cari-fisleri':5,'stok':5,'stok-islemler':5,
+  'satis':5,'satis-form':5,'alim':5,'alim-form':5,'teklif':7,'teklif-form':7,
+  'as':7,'as-form':7,'vs':7,'vs-form':7,'kasa':3,'banka':3,'cek':10,'senet':10,
+  'depo-islemler':5,'depo-akis':5,'servis':30,'servis-talep':30,'servis-havuzu':30,'servis-usta':30,
+  'sanal-pos':3,'uretim':7,'personel':30,'avans':5,'maas':30,'vade':5,'raporlar':30
+};
+function getLockPolicies(){
+  try { return Object.assign({}, TCR3_LOCK_DEFAULTS, JSON.parse(localStorage.getItem('tcr3_lock_policies')||'{}')); }
+  catch(e){ return Object.assign({}, TCR3_LOCK_DEFAULTS); }
+}
+function getCurrentModuleKey(){
+  const file=(location.pathname.split('/').pop()||'dashboard.html').replace('.html','');
+  return file || 'dashboard';
+}
+function parseTrDate(text){
+  if(!text) return null;
+  const s=String(text).trim();
+  let m=s.match(/\b(\d{1,2})[.\/-](\d{1,2})[.\/-](\d{4})\b/);
+  if(m) return new Date(Number(m[3]),Number(m[2])-1,Number(m[1]));
+  m=s.match(/\b(\d{4})-(\d{1,2})-(\d{1,2})\b/);
+  if(m) return new Date(Number(m[1]),Number(m[2])-1,Number(m[3]));
+  return null;
+}
+function daysBetweenToday(d){
+  const a=new Date(); a.setHours(0,0,0,0); const b=new Date(d); b.setHours(0,0,0,0);
+  return Math.floor((a-b)/86400000);
+}
+function findRowDate(row){
+  const cells=[...row.cells];
+  for(const c of cells){ const d=parseTrDate(c.textContent); if(d) return d; }
+  return null;
+}
+function lockedActionText(btn){
+  return [btn.textContent,btn.title,btn.getAttribute('aria-label'),btn.dataset.action,btn.name,btn.id]
+    .filter(Boolean).join(' ').toLocaleLowerCase('tr-TR');
+}
+function isRestrictedLockedAction(btn){
+  const t=lockedActionText(btn);
+  return /düzenle|duzenle|edit|iptal|cancel/.test(t);
+}
+function ensureLockTooltip(){
+  let t=document.getElementById('recordLockTooltip');
+  if(!t){ t=document.createElement('div'); t.id='recordLockTooltip'; t.className='record-lock-tooltip'; document.body.appendChild(t); }
+  return t;
+}
+function bindStateDot(dot){
+  if(dot.dataset.bound) return; dot.dataset.bound='1';
+  const tip=ensureLockTooltip();
+  dot.addEventListener('mouseenter',()=>{
+    tip.innerHTML=dot.dataset.tip||''; const r=dot.getBoundingClientRect();
+    tip.style.left=Math.min(window.innerWidth-295,Math.max(12,r.left-8))+'px';
+    tip.style.top=Math.min(window.innerHeight-120,r.bottom+10)+'px'; tip.classList.add('show');
+  });
+  dot.addEventListener('mouseleave',()=>tip.classList.remove('show'));
+}
+function tcr3LockSvg(locked){
+  return locked
+    ? `<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="18" height="11" x="3" y="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>`
+    : `<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="18" height="11" x="3" y="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 9.7-1.7"/></svg>`;
+}
+function showRecordLockInfo(locked,dateText,days,age){
+  let overlay=document.getElementById('recordLockInfoOverlay');
+  if(!overlay){
+    overlay=document.createElement('div');
+    overlay.id='recordLockInfoOverlay';
+    overlay.className='record-lock-info-overlay';
+    overlay.innerHTML=`<div class="record-lock-info-dialog" role="dialog" aria-modal="true" aria-labelledby="recordLockInfoTitle">
+      <div class="record-lock-info-head"><strong id="recordLockInfoTitle">Kilit Bilgisi</strong><button type="button" class="record-lock-info-close" aria-label="Kapat">×</button></div>
+      <div class="record-lock-info-body"></div>
+      <div class="record-lock-info-foot"><button type="button" class="btn btn-danger record-lock-info-close">Kapat</button></div>
+    </div>`;
+    overlay.addEventListener('click',e=>{if(e.target===overlay || e.target.closest('.record-lock-info-close')) overlay.classList.remove('is-open')});
+    document.body.appendChild(overlay);
+  }
+  const remaining=Math.max(0,days-age);
+  overlay.querySelector('.record-lock-info-body').innerHTML=`
+    <div class="record-lock-info-status ${locked?'is-locked':'is-open'}">${tcr3LockSvg(locked)}<div><strong>${locked?'Kayıt kilitli':'Kayıt düzenlenebilir'}</strong><span>${locked?'Erişim süresi dolmuş.':'Erişim süresi devam ediyor.'}</span></div></div>
+    <dl class="record-lock-info-grid"><div><dt>İşlem tarihi</dt><dd>${dateText}</dd></div><div><dt>Kilit süresi</dt><dd>${days} gün</dd></div><div><dt>Geçen süre</dt><dd>${age} gün</dd></div><div><dt>${locked?'Aşılan süre':'Kalan süre'}</dt><dd>${locked?Math.max(0,age-days):remaining} gün</dd></div></dl>`;
+  overlay.classList.add('is-open');
+}
+function createRecordLockButton(locked,dateText,days,age){
+  const btn=document.createElement('button');
+  btn.type='button';
+  btn.className='icon-btn record-lock-info-btn '+(locked?'is-locked':'is-open');
+  btn.title=locked?'Kilitli kayıt bilgisi':'Açık kilit bilgisi';
+  btn.setAttribute('aria-label',btn.title);
+  btn.innerHTML=tcr3LockSvg(locked);
+  btn.addEventListener('click',e=>{e.preventDefault();e.stopPropagation();showRecordLockInfo(locked,dateText,days,age)});
+  return btn;
+}
 function applyRecordLockStandard(){
-  document.querySelectorAll('.record-lock-head,.record-lock-cell,.record-state-head,.record-state-cell,.record-lock-info-btn,[data-tcr-lock-action]').forEach(el=>el.remove());
-  document.querySelectorAll('tr.is-record-locked').forEach(row=>row.classList.remove('is-record-locked'));
-  document.querySelectorAll('.record-action-blocked').forEach(el=>{
-    el.classList.remove('record-action-blocked');
-    el.removeAttribute('aria-disabled');
+  const moduleKey=getCurrentModuleKey(); const policies=getLockPolicies(); const days=Number(policies[moduleKey]??5);
+  document.querySelectorAll('table.data').forEach(table=>{
+    if(
+      table.closest('#tab-kilit') || table.dataset.noRecordLock === 'true' || table.id === 'ekstreTable' ||
+      table.closest('.modal') || table.classList.contains('hareket-urun-table') || table.classList.contains('stok-detail-line-table')
+    ) return;
+    const scope=table.closest('.card, .modal, section, main')||table.parentElement;
+    const sectionTitle=scope?.querySelector('.card-title, .fis-section-title, .text-soft, h2, h3, h4')?.textContent||'';
+    const isLineItemsTable=table.classList.contains('form-line-table') || /kalemler|kalemleri|ürün kalemleri|sipariş kalemleri|teklif kalemleri|fatura kalemleri|cari hesap kalemleri/i.test(sectionTitle.trim());
+    if(isLineItemsTable){table.querySelectorAll('.record-state-head,.record-state-cell').forEach(el=>el.remove());return;}
+
+    const actionButtonMode=['cari-islemler','cari-fisleri'].includes(moduleKey);
+    const headRow=table.tHead?.rows?.[0]; if(!headRow) return;
+
+    /* Önce eski kırmızı/yeşil nokta sütunlarını temizle. */
+    table.querySelectorAll('.record-state-head,.record-state-cell').forEach(el=>el.remove());
+
+    if(!actionButtonMode && !headRow.querySelector('.record-lock-head')){
+      const th=document.createElement('th'); th.className='record-lock-head'; th.textContent='Kilit'; headRow.insertBefore(th,headRow.firstElementChild);
+    }
+
+    [...(table.tBodies[0]?.rows||[])].forEach(row=>{
+      const date=findRowDate(row); const age=date?daysBetweenToday(date):0; const locked=!!(days>0 && date && age>=days);
+      const dateText=date?date.toLocaleDateString('tr-TR'):'Tarih bilgisi bulunamadı';
+
+      if(actionButtonMode){
+        const actionCell=row.cells[row.cells.length-1];
+        if(actionCell && !actionCell.querySelector('.record-lock-info-btn')){
+          const actionWrap=actionCell.querySelector('.table-actions,.row-actions,.finance-actions,.actions')||actionCell;
+          const lockBtn=createRecordLockButton(locked,dateText,days,age);
+          const menuBtn=[...actionWrap.querySelectorAll('button,a')].find(el=>/menü|menu|diğer|diger|more|\.\.\./i.test([el.title,el.getAttribute('aria-label'),el.textContent].filter(Boolean).join(' ')));
+          if(menuBtn) actionWrap.insertBefore(lockBtn,menuBtn); else actionWrap.appendChild(lockBtn);
+        }
+      }else if(!row.querySelector('.record-lock-cell')){
+        const td=document.createElement('td'); td.className='record-lock-cell'; td.appendChild(createRecordLockButton(locked,dateText,days,age)); row.insertBefore(td,row.firstElementChild);
+      }
+
+      row.classList.toggle('is-record-locked',locked);
+      if(locked){
+        row.querySelectorAll('button,a.btn').forEach(btn=>{
+          if(btn.classList.contains('record-lock-info-btn')) return;
+          if(isRestrictedLockedAction(btn) && !btn.dataset.recordLockBound){
+            btn.dataset.recordLockBound='1'; btn.classList.add('record-action-blocked'); btn.setAttribute('aria-disabled','true');
+            btn.addEventListener('click',e=>{e.preventDefault();e.stopImmediatePropagation();toast('Günü geçmiş kayıtlarda düzenleme ve iptal işlemleri kapalıdır.','error')},true);
+          }
+        });
+      }
+    });
+    table.dataset.recordLockApplied='1';
   });
 }
-document.addEventListener('DOMContentLoaded',()=>setTimeout(applyRecordLockStandard,0));
+const tcr3LockObserver=new MutationObserver(()=>requestAnimationFrame(applyRecordLockStandard));
+document.addEventListener('DOMContentLoaded',()=>{tcr3LockObserver.observe(document.body,{childList:true,subtree:true});setTimeout(applyRecordLockStandard,80)});
 window.applyRecordLockStandard=applyRecordLockStandard;
 
 /* 743 - MASTER panel/KPI semantik renk standardı */

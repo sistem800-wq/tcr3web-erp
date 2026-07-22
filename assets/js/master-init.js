@@ -104,7 +104,7 @@
   }
 
   function enhanceSearchInput(input){
-    if (document.body.classList.contains('tcr-cari-clean') || document.body.classList.contains('tcr-cari-master')) return;
+    if (document.body.classList.contains('tcr-cari-clean')) return;
     if (!isSearchInput(input) || input.dataset.tcrClearReady === '1') return;
     if (input.closest('.modal,[role="dialog"]') && !input.closest('.evrak-search')) return;
 
@@ -149,7 +149,15 @@
     input.dataset.tcrClearReady = '1';
   }
 
+  function removeCariClearControls(root){
+    if (!document.body.classList.contains('tcr-cari-clean')) return;
+    const scope = root && root.querySelectorAll ? root : document;
+    scope.querySelectorAll('.tcr-search-clear-btn, .cmf-clear, [aria-label="Aramayı temizle"], [aria-label="Filtreleri temizle"]').forEach(btn => btn.remove());
+  }
+
   function enhanceSearches(root){
+    removeCariClearControls(root);
+    if (document.body.classList.contains('tcr-cari-clean')) return;
     const inputs = root.matches?.('input') ? [root] : Array.from(root.querySelectorAll?.('input') || []);
     inputs.forEach(enhanceSearchInput);
   }
@@ -160,7 +168,6 @@
   }
 
   function enhanceToolbarLabels(root){
-    if (document.body.classList.contains('tcr-cari-master')) return;
     const toolbars = root.matches?.('.toolbar,.finance-toolbar,.filter-toolbar,.table-toolbar')
       ? [root]
       : Array.from(root.querySelectorAll?.('.toolbar,.finance-toolbar,.filter-toolbar,.table-toolbar') || []);
@@ -344,18 +351,6 @@
     });
   }
 
-  function findTableToolbar(table) {
-    const scope = table.closest('.card-body, .panel-body, .content-card, section') || table.parentElement;
-    let toolbar = scope?.querySelector(':scope > .toolbar, :scope > .tcr-table-toolbar, .toolbar');
-    if (!toolbar) {
-      toolbar = document.createElement('div');
-      toolbar.className = 'toolbar tcr-table-generated-toolbar';
-      const wrap = table.closest('.table-wrap') || table;
-      wrap.parentElement.insertBefore(toolbar, wrap);
-    }
-    return toolbar;
-  }
-
   function enhance(table) {
     if (!isEligibleTable(table)) return;
     const headRow = table.tHead.rows[0];
@@ -369,6 +364,11 @@
     table.classList.add('tcr-column-managed');
     const key = tableKey(table);
     const state = loadState(key);
+
+    const selectorTh = actionIndex >= 0 ? headRow.cells[actionIndex] : document.createElement('th');
+    selectorTh.classList.add('tcr-column-selector-head');
+    selectorTh.setAttribute('aria-label', actionIndex >= 0 ? 'İşlemler ve kolon seçimi' : 'Kolon seçimi');
+    if (actionIndex < 0) selectorTh.className = 'tcr-column-selector-head';
     const wrap = document.createElement('div');
     wrap.className = 'tcr-column-selector-wrap';
     const button = document.createElement('button');
@@ -380,6 +380,7 @@
     button.innerHTML = settingsIcon;
     const menu = document.createElement('div');
     menu.className = 'tcr-column-selector-menu';
+    menu.innerHTML = '';
 
     candidates.forEach(({ index, label }) => {
       const id = `${key.replace(/[^a-z0-9]/gi, '-')}-${index}`;
@@ -407,22 +408,22 @@
       button.setAttribute('aria-expanded', String(opening));
     });
     menu.addEventListener('click', event => event.stopPropagation());
-    wrap.append(button, menu);
 
-    const toolbar = findTableToolbar(table);
-    let controls = toolbar.querySelector('.tcr-table-header-controls');
-    if (!controls) {
-      controls = document.createElement('div');
-      controls.className = 'tcr-table-header-controls';
-      toolbar.appendChild(controls);
+    wrap.append(button, menu);
+    if (actionIndex >= 0) {
+      selectorTh.replaceChildren(wrap);
+      markActionCells(table, actionIndex);
+    } else {
+      selectorTh.appendChild(wrap);
+      headRow.appendChild(selectorTh);
+      ensureBodyCells(table);
     }
-    controls.appendChild(wrap);
-    markActionCells(table, actionIndex);
   }
 
   function scan() {
     scheduled = false;
     document.querySelectorAll('#content table.data').forEach(enhance);
+    document.querySelectorAll('#content table.data.tcr-column-managed').forEach(ensureBodyCells);
   }
 
   function scheduleScan() {
@@ -526,18 +527,3 @@
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else init();
   window.addEventListener('load',()=>{if(!document.querySelector('.tcr-metro-actions'))init();});
 })();
-
-
-/* 544 · Kolon menüsü viewport'a sabitlenir; tablo genişliği değişmez. */
-document.addEventListener('click',function(e){
-  const btn=e.target.closest('.tcr-column-selector-btn');
-  if(!btn) return;
-  requestAnimationFrame(function(){
-    const menu=btn.parentElement?.querySelector('.tcr-column-selector-menu');
-    if(!menu||!menu.classList.contains('open')||window.innerWidth<=767) return;
-    const r=btn.getBoundingClientRect();
-    menu.style.top=Math.min(window.innerHeight-440,r.bottom+8)+'px';
-    menu.style.right=Math.max(16,window.innerWidth-r.right)+'px';
-    menu.style.left='auto';
-  });
-},true);

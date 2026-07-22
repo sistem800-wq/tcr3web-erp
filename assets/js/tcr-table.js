@@ -242,24 +242,23 @@
     select.value = savedSize;
 
     let toolbar = findToolbar(table);
-    if (!toolbar) {
+    if (toolbar) {
+      const enhancedRow = toolbar.querySelector('.tcr-search-action-row');
+      if (enhancedRow) {
+        enhancedRow.insertBefore(control, enhancedRow.firstChild);
+      } else {
+        const search = toolbar.querySelector('.toolbar-search, [class*="search"], input[type="search"], input[placeholder*="ara" i]');
+        const target = search?.closest('.toolbar-search, .form-group, .input-icon') || search;
+        if (target && target.parentElement === toolbar) toolbar.insertBefore(control, target);
+        else toolbar.insertBefore(control, toolbar.firstChild);
+      }
+    } else {
       toolbar = document.createElement('div');
-      toolbar.className = 'toolbar tcr-table-generated-toolbar';
+      toolbar.className = 'tcr-table-generated-toolbar';
+      toolbar.appendChild(control);
       const wrap = table.closest('.table-wrap') || table;
       wrap.parentElement.insertBefore(toolbar, wrap);
     }
-
-    let controls = toolbar.querySelector('.tcr-table-header-controls');
-    if (!controls) {
-      controls = document.createElement('div');
-      controls.className = 'tcr-table-header-controls';
-      toolbar.appendChild(controls);
-    }
-
-    control.classList.add('tcr-table-page-size--toolbar');
-    const columnSelector = controls.querySelector('.cari-column-selector-wrap, .tcr-column-selector-wrap');
-    if (columnSelector) controls.insertBefore(control, columnSelector);
-    else controls.appendChild(control);
 
     const footer = document.createElement('div');
     footer.className = 'tcr-table-pagination-footer';
@@ -274,8 +273,7 @@
       info: footer.querySelector('.tcr-table-pagination-info'),
       pageText: footer.querySelector('.tcr-table-page-text'),
       prev: footer.querySelector('.tcr-prev'),
-      next: footer.querySelector('.tcr-next'),
-      control
+      next: footer.querySelector('.tcr-next')
     };
     select.addEventListener('change', () => {
       table._tcrPagination.size = select.value;
