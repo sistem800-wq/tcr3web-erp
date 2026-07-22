@@ -1,4 +1,4 @@
-TCR3WEB ERP MASTER V2 — Paket 521
+# TCR3WEB ERP MASTER — Paket 519
 
 - Kayıt kilidi tablo sütunlarından ve tüm tablo işlem butonlarından kaldırıldı.
 - Cari Kartlar seçim checkbox sütunu kaldırıldı.
