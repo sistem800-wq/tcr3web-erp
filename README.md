@@ -1,4 +1,4 @@
-TCR3WEB ERP MASTER V2 — Paket 522
+TCR3WEB ERP MASTER V2 — Paket 521
 
 - Kayıt kilidi tablo sütunlarından ve tüm tablo işlem butonlarından kaldırıldı.
 - Cari Kartlar seçim checkbox sütunu kaldırıldı.
@@ -12,3 +12,9 @@ TCR3WEB ERP MASTER V2 — Paket 522
 - Cari Fişleri: FİŞ NO | DURUM | CARİ / İÇERİK.
 - Eski yüksek özgüllüklü tcr-table kuralları dosyanın sonunda kesin olarak ezildi.
 - Kart solundaki sürekli çizgi kaldırıldı; çizgi yalnız ilk kimlik hücresinde hover/focus sırasında görünür.
+
+
+## Paket 521
+- Cari Kartlar, Cari İşlemleri ve Cari Fişleri arama/filtre alanları ortak düzene alındı.
+- Arama alanı tam genişlikte; alt satır filtreleri eşit genişlikte ve boşluksuzdur.
+- Mobil/tablette tablo öncesindeki gereksiz dikey boşluk kaldırıldı.

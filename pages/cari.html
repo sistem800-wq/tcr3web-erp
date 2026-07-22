@@ -18,7 +18,7 @@
   <link rel="stylesheet" href="../assets/css/style.css?v=20260712-653" />
   <link rel="stylesheet" href="../assets/css/responsive-master.css?v=20260713-591" />
   <link rel="stylesheet" href="../assets/css/performance.css?v=20260711-700" />
-  <link rel="stylesheet" href="../assets/css/tcr-table.css?v=20260721-522-final" />
+  <link rel="stylesheet" href="../assets/css/tcr-table.css?v=20260721-521-filter" />
   <link rel="stylesheet" href="../assets/css/kpi-standard.css?v=20260712-694" />
   <link rel="stylesheet" href="../assets/css/text-readability.css?v=20260712-657" />
   <link rel="stylesheet" href="../assets/css/cari-table-enhancements.css?v=20260713-613" />
@@ -392,26 +392,34 @@
 
       <div class="card cari-list-card">
         <div class="card-body" style="padding:var(--s-4)">
-          <div class="toolbar">
-            <div class="toolbar-search">
-              <span class="toolbar-search-icon">${ICONS.search}</span>
-              <input type="text" placeholder="Cari adı, kodu veya yetkili ara..." oninput="filterCari(this.value)" />
+          <div class="toolbar tcr-cari-filter-grid">
+            <div class="tcr-filter-field tcr-filter-field--search">
+              <label class="tcr-filter-label">Arama</label>
+              <div class="toolbar-search">
+                <span class="toolbar-search-icon">${ICONS.search}</span>
+                <input type="text" placeholder="Cari adı, kodu veya yetkili ara..." oninput="filterCari(this.value)" />
+              </div>
             </div>
-            <select class="filter-select" onchange="filterTip(this.value)">
-              <option value="">Tüm Tipler</option>
-              <option value="Müşteri">Müşteri</option>
-              <option value="Tedarikçi">Tedarikçi</option>
-            </select>
-            <select class="filter-select">
-              <option>Tüm Şehirler</option>
-              <option>İstanbul</option>
-              <option>İzmir</option>
-              <option>Ankara</option>
-              <option>Antalya</option>
-              <option>Trabzon</option>
-              <option>Kayseri</option>
-            </select>
-            <div class="toolbar-spacer"></div>
+            <div class="tcr-filter-field">
+              <label class="tcr-filter-label">Tipler</label>
+              <select class="filter-select" onchange="filterTip(this.value)">
+                <option value="">Tüm Tipler</option>
+                <option value="Müşteri">Müşteri</option>
+                <option value="Tedarikçi">Tedarikçi</option>
+              </select>
+            </div>
+            <div class="tcr-filter-field">
+              <label class="tcr-filter-label">Şehirler</label>
+              <select class="filter-select">
+                <option>Tüm Şehirler</option>
+                <option>İstanbul</option>
+                <option>İzmir</option>
+                <option>Ankara</option>
+                <option>Antalya</option>
+                <option>Trabzon</option>
+                <option>Kayseri</option>
+              </select>
+            </div>
             <div class="tcr-table-header-controls">
               <div class="cari-column-selector-wrap">
                 <button type="button" class="icon-btn cari-column-selector-btn" onclick="event.stopPropagation();toggleCariColumnMenu()" title="Kolon Seç">${ICONS.settings || ICONS.sliders || ICONS.filter}</button>
