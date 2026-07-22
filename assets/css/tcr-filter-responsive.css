@@ -1,0 +1,116 @@
+/* 516 — Cari liste filtre standardı
+   Windows: tek satır; arama kalan alanın tamamını kaplar.
+   Tablet/Mobil: iki satır; arama üstte tam genişlik, filtreler altta eşit genişlikte. */
+
+body.tcr-cari-clean #content .cari-list-card,
+body.tcr-cari-clean #content .cari-list-card > .card-body {
+  min-height: 0 !important;
+  height: auto !important;
+}
+
+body.tcr-cari-clean #content .toolbar.tcr-responsive-filter {
+  display: flex !important;
+  align-items: center !important;
+  align-content: normal !important;
+  justify-content: flex-start !important;
+  flex-wrap: nowrap !important;
+  gap: 10px !important;
+  width: 100% !important;
+  min-height: 0 !important;
+  height: auto !important;
+  margin: 0 0 12px !important;
+  padding: 0 !important;
+  overflow: visible !important;
+}
+
+body.tcr-cari-clean #content .toolbar.tcr-responsive-filter > .toolbar-search {
+  position: relative !important;
+  display: block !important;
+  flex: 1 1 auto !important;
+  width: auto !important;
+  min-width: 240px !important;
+  max-width: none !important;
+  height: 42px !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  grid-column: auto !important;
+  grid-row: auto !important;
+}
+
+body.tcr-cari-clean #content .toolbar.tcr-responsive-filter .toolbar-search-icon {
+  position: absolute !important;
+  left: 12px !important;
+  top: 50% !important;
+  transform: translateY(-50%) !important;
+  z-index: 2 !important;
+  pointer-events: none !important;
+}
+
+body.tcr-cari-clean #content .toolbar.tcr-responsive-filter .toolbar-search input {
+  display: block !important;
+  width: 100% !important;
+  min-width: 0 !important;
+  max-width: none !important;
+  height: 42px !important;
+  margin: 0 !important;
+  padding: 0 12px 0 38px !important;
+  box-sizing: border-box !important;
+}
+
+body.tcr-cari-clean #content .toolbar.tcr-responsive-filter > .filter-select {
+  flex: 0 0 190px !important;
+  width: 190px !important;
+  min-width: 0 !important;
+  max-width: 190px !important;
+  height: 42px !important;
+  margin: 0 !important;
+  grid-column: auto !important;
+  grid-row: auto !important;
+}
+
+body.tcr-cari-clean #content .toolbar.tcr-responsive-filter > .toolbar-spacer {
+  display: none !important;
+}
+
+@media (max-width: 1199.98px) {
+  body.tcr-cari-clean #content .toolbar.tcr-responsive-filter {
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) !important;
+    grid-template-rows: auto auto !important;
+    gap: 8px !important;
+  }
+
+  body.tcr-cari-clean #content .toolbar.tcr-responsive-filter > .toolbar-search {
+    grid-column: 1 / -1 !important;
+    grid-row: 1 !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: none !important;
+  }
+
+  body.tcr-cari-clean #content .toolbar.tcr-responsive-filter > .filter-select {
+    grid-row: 2 !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: none !important;
+    flex: none !important;
+  }
+
+  body.tcr-cari-clean #content .toolbar.tcr-responsive-filter > .filter-select:nth-of-type(1) {
+    grid-column: 1 !important;
+  }
+
+  body.tcr-cari-clean #content .toolbar.tcr-responsive-filter > .filter-select:nth-of-type(2) {
+    grid-column: 2 !important;
+  }
+}
+
+@media (max-width: 575.98px) {
+  body.tcr-cari-clean #content .cari-list-card > .card-body {
+    padding: 10px !important;
+  }
+
+  body.tcr-cari-clean #content .toolbar.tcr-responsive-filter {
+    gap: 8px !important;
+  }
+}
