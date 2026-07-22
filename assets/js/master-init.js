@@ -104,7 +104,7 @@
   }
 
   function enhanceSearchInput(input){
-    if (document.body.classList.contains('tcr-cari-clean')) return;
+    if (document.body.classList.contains('tcr-cari-clean') || document.body.classList.contains('tcr-cari-master')) return;
     if (!isSearchInput(input) || input.dataset.tcrClearReady === '1') return;
     if (input.closest('.modal,[role="dialog"]') && !input.closest('.evrak-search')) return;
 
@@ -160,6 +160,7 @@
   }
 
   function enhanceToolbarLabels(root){
+    if (document.body.classList.contains('tcr-cari-master')) return;
     const toolbars = root.matches?.('.toolbar,.finance-toolbar,.filter-toolbar,.table-toolbar')
       ? [root]
       : Array.from(root.querySelectorAll?.('.toolbar,.finance-toolbar,.filter-toolbar,.table-toolbar') || []);
