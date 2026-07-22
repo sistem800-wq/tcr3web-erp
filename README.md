@@ -18,3 +18,7 @@ TCR3WEB ERP MASTER V2 — Paket 521
 - Cari Kartlar, Cari İşlemleri ve Cari Fişleri arama/filtre alanları ortak düzene alındı.
 - Arama alanı tam genişlikte; alt satır filtreleri eşit genişlikte ve boşluksuzdur.
 - Mobil/tablette tablo öncesindeki gereksiz dikey boşluk kaldırıldı.
+
+
+## Paket 520
+Cari mobil arama alanı sol boşluksuz ve kompakt hale getirildi; filtreler aramanın hemen altına taşındı.
