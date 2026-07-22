@@ -58,3 +58,12 @@ body.tcr-cari-clean #content .toolbar.tcr-responsive-filter>.toolbar-spacer{disp
  body.tcr-cari-clean #cariTable tbody tr:hover>td[data-col="kod"],body.tcr-cari-clean #cariTable tbody tr:focus-within>td[data-col="kod"]{border-left-color:#0b78b5!important}
 }
 body.tcr-cari-clean [data-tcr-lock-action],body.tcr-cari-clean .tcr-lock-open,body.tcr-cari-clean .tcr-lock-closed{display:none!important}
+
+/* 514 · Cari Kartlar: kayıt kilidi ve tablo başlığı ayar hücresi kaldırıldı. */
+body.tcr-page-cari #cariTable .record-lock-head,
+body.tcr-page-cari #cariTable .record-lock-cell,
+body.tcr-page-cari #cariTable .record-lock-info-btn,
+body.tcr-page-cari #cariTable th.cari-column-selector-head,
+body.tcr-page-cari #cariTable button.cari-column-selector-btn {
+  display:none!important;
+}
