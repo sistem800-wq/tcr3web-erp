@@ -1,0 +1,60 @@
+/* 515 — Cari listeleri temiz ve ortak responsive filtre standardı */
+body.tcr-cari-clean #content .cari-list-card,
+body.tcr-cari-clean #content .cari-list-card>.card-body{height:auto!important;min-height:0!important;max-height:none!important}
+body.tcr-cari-clean #content .cari-list-card>.card-body{display:block!important;padding:14px!important}
+body.tcr-cari-clean #content .toolbar.tcr-responsive-filter{
+ display:flex!important;flex-flow:row nowrap!important;align-items:flex-end!important;justify-content:flex-start!important;
+ gap:10px!important;width:100%!important;height:auto!important;min-height:0!important;max-height:none!important;
+ margin:0 0 12px!important;padding:0!important;overflow:visible!important
+}
+body.tcr-cari-clean #content .toolbar.tcr-responsive-filter>*{min-width:0!important}
+body.tcr-cari-clean #content .toolbar.tcr-responsive-filter>.toolbar-search{
+ position:relative!important;display:block!important;flex:1 1 0!important;width:auto!important;min-width:280px!important;max-width:none!important;
+ height:42px!important;margin:0!important;padding:0!important;grid-column:auto!important;grid-row:auto!important
+}
+body.tcr-cari-clean #content .toolbar.tcr-responsive-filter .toolbar-search-icon{
+ position:absolute!important;left:12px!important;top:50%!important;transform:translateY(-50%)!important;z-index:2!important;pointer-events:none!important
+}
+body.tcr-cari-clean #content .toolbar.tcr-responsive-filter .toolbar-search input{
+ display:block!important;width:100%!important;min-width:0!important;max-width:none!important;height:42px!important;margin:0!important;
+ padding:0 12px 0 38px!important;box-sizing:border-box!important
+}
+body.tcr-cari-clean #content .toolbar.tcr-responsive-filter>.filter-select{
+ flex:0 0 190px!important;width:190px!important;min-width:190px!important;max-width:190px!important;height:42px!important;margin:0!important;
+ grid-column:auto!important;grid-row:auto!important
+}
+body.tcr-cari-clean #content .tcr-filter-desktop-tools{display:flex!important;align-items:center!important;gap:8px!important;flex:0 0 auto!important}
+body.tcr-cari-clean #content .tcr-filter-page-size{width:74px!important;min-width:74px!important;height:42px!important;border:1px solid var(--border,#d7e0ec)!important;border-radius:10px!important;background:#fff!important;padding:0 9px!important}
+body.tcr-cari-clean #content .tcr-filter-settings{width:42px!important;height:42px!important;min-width:42px!important}
+body.tcr-cari-clean #content .toolbar.tcr-responsive-filter>.toolbar-spacer{display:none!important}
+
+@media(max-width:1199.98px){
+ body.tcr-cari-clean #content .toolbar.tcr-responsive-filter{
+  display:grid!important;grid-template-columns:minmax(0,1fr) minmax(0,1fr)!important;grid-template-rows:42px 42px!important;
+  gap:8px!important;align-items:stretch!important
+ }
+ body.tcr-cari-clean #content .toolbar.tcr-responsive-filter>.toolbar-search{grid-column:1/-1!important;grid-row:1!important;width:100%!important;min-width:0!important;height:42px!important}
+ body.tcr-cari-clean #content .toolbar.tcr-responsive-filter>.filter-select{grid-row:2!important;width:100%!important;min-width:0!important;max-width:none!important;height:42px!important;flex:none!important}
+ body.tcr-cari-clean #content .toolbar.tcr-responsive-filter>.filter-select:nth-of-type(1){grid-column:1!important}
+ body.tcr-cari-clean #content .toolbar.tcr-responsive-filter>.filter-select:nth-of-type(2){grid-column:2!important}
+ body.tcr-cari-clean #content .tcr-filter-desktop-tools{display:none!important}
+ body.tcr-cari-clean #content .cari-list-card>.card-body{padding:10px!important}
+ body.tcr-cari-clean .cari-column-selector-head,body.tcr-cari-clean .cari-column-selector-btn,body.tcr-cari-clean .tcr-table-page-size,body.tcr-cari-clean .tcr-table-generated-toolbar{display:none!important}
+ html,body{max-width:100%!important;overflow-x:hidden!important}
+}
+
+/* Mobil/tablet cari kart sırası: KOD | DURUM | ÜNVAN */
+@media(max-width:1199.98px){
+ body.tcr-cari-clean #cariTable tbody tr{display:grid!important;grid-template-columns:1fr 1fr 1fr 1fr!important;grid-template-rows:auto auto auto!important;border-left:0!important}
+ body.tcr-cari-clean #cariTable tbody tr>td[data-col="kod"]{grid-column:1!important;grid-row:1!important;border-left:4px solid transparent!important}
+ body.tcr-cari-clean #cariTable tbody tr>td[data-col="durum"]{grid-column:2!important;grid-row:1!important}
+ body.tcr-cari-clean #cariTable tbody tr>td[data-col="unvan"]{grid-column:3/5!important;grid-row:1!important}
+ body.tcr-cari-clean #cariTable tbody tr>td[data-col="tip"]{grid-column:1!important;grid-row:2!important}
+ body.tcr-cari-clean #cariTable tbody tr>td[data-col="sehir"]{grid-column:2!important;grid-row:2!important}
+ body.tcr-cari-clean #cariTable tbody tr>td[data-col="vade"]{grid-column:3!important;grid-row:2!important}
+ body.tcr-cari-clean #cariTable tbody tr>td[data-col="bakiye"]{grid-column:4!important;grid-row:2!important}
+ body.tcr-cari-clean #cariTable tbody tr>td[data-col="yetkili"]{display:none!important}
+ body.tcr-cari-clean #cariTable tbody tr>td:last-child{grid-column:1/-1!important;grid-row:3!important}
+ body.tcr-cari-clean #cariTable tbody tr:hover>td[data-col="kod"],body.tcr-cari-clean #cariTable tbody tr:focus-within>td[data-col="kod"]{border-left-color:#0b78b5!important}
+}
+body.tcr-cari-clean [data-tcr-lock-action],body.tcr-cari-clean .tcr-lock-open,body.tcr-cari-clean .tcr-lock-closed{display:none!important}
